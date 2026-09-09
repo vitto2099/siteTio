@@ -1,51 +1,51 @@
 import React from 'react';
-import { MapPin, Mail, Facebook, Instagram, ShieldCheck, Scale, Award, FileCheck, Navigation } from 'lucide-react';
+import { MapPin, Mail, Facebook, Instagram, ShieldCheck, CheckCircle2, Phone, Clock } from 'lucide-react';
 import WhatsAppIcon from '../common/WhatsAppIcon';
 import { SITE_CONFIG, getWhatsAppUrl } from '../../config';
 
 export default function AboutContact() {
   const waUrl = getWhatsAppUrl("Olá Anderson! Vim pelo site e gostaria de agendar uma consultoria imobiliária.");
 
-  const differentials = [
-    { icon: Scale, title: "Segurança Jurídica", desc: "Análise minuciosa de matrículas, certidões e histórico do imóvel." },
-    { icon: Award, title: "Avaliação Justa", desc: "Precificação alinhada à realidade de mercado de Itaiópolis e região." },
-    { icon: FileCheck, title: "Contratos Blindados", desc: "Elaboração de minutas transparentes para total tranquilidade das partes." },
-    { icon: ShieldCheck, title: "CRECI Regularizado", desc: "Intermediação oficial com responsabilidade técnica e ética profissional." }
+  const services = [
+    { title: "Segurança Jurídica", desc: "Análise minuciosa de matrículas, certidões negativas e histórico do imóvel para uma compra 100% segura." },
+    { title: "Avaliação Justa de Mercado", desc: "Precificação precisa alinhada à realidade de compra e venda em Itaiópolis e cidades vizinhas." },
+    { title: "Apoio em Financiamentos", desc: "Orientação e assessoria completa nos processos de crédito habitacional (Caixa Econômica, BB e bancos privados)." },
+    { title: "Atendimento Personalizado", desc: "Negociação direta com o corretor responsável, com transparência e ética do início à entrega das chaves." }
   ];
 
   return (
-    <section style={{ padding: '5.5rem 0', backgroundColor: 'var(--bg-main)' }} id="sobre">
+    <section style={{ padding: '5rem 0', backgroundColor: '#F8FAFC' }} id="sobre">
       <div className="container">
         
-        {/* Section Header */}
-        <div style={{ textAlign: 'center', maxWidth: '700px', margin: '0 auto 3.5rem' }}>
-          <span style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--accent-red)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-            Sobre o Corretor
+        {/* Cabeçalho da Seção */}
+        <div style={{ textAlign: 'center', maxWidth: '720px', margin: '0 auto 3.5rem' }}>
+          <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#0B192C', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+            Sobre o Profissional
           </span>
-          <h2 style={{ fontSize: '2.4rem', margin: '0.4rem 0', fontWeight: 900, color: 'var(--primary-dark)' }}>
-            Experiência & Dedicação Imobiliária
+          <h2 style={{ fontSize: '2.25rem', margin: '0.5rem 0', fontWeight: 800, color: '#0F172A', letterSpacing: '-0.02em' }}>
+            Anderson Kunicki Corretor Imobiliário
           </h2>
-          <p style={{ color: 'var(--text-muted)', fontSize: '1.05rem', lineHeight: 1.6 }}>
-            Mais do que intermediar imóveis, conectamos pessoas a novos começos com ética e transparência.
+          <p style={{ color: '#64748B', fontSize: '1.05rem', lineHeight: 1.6 }}>
+            Compromisso, ética e conhecimento prático do mercado imobiliário de Itaiópolis e Planalto Norte Catarinense.
           </p>
         </div>
 
-        {/* Main About Card */}
+        {/* Card Principal de Apresentação */}
         <div style={{
           backgroundColor: '#FFFFFF',
-          borderRadius: 'var(--radius-lg)',
-          border: '1px solid var(--border-subtle)',
+          borderRadius: '16px',
+          border: '1px solid #E2E8F0',
           overflow: 'hidden',
-          boxShadow: 'var(--shadow-md)',
+          boxShadow: '0 4px 20px rgba(15, 23, 42, 0.05)',
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
-          marginBottom: '4rem'
+          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+          marginBottom: '3.5rem'
         }}>
-          {/* Photo Column with Luxury Framing */}
+          {/* Coluna da Foto do Anderson */}
           <div style={{ 
-            backgroundColor: 'var(--primary-dark)', 
+            backgroundColor: '#0F172A', 
             position: 'relative', 
-            minHeight: '480px',
+            minHeight: '440px',
             overflow: 'hidden'
           }}>
             <img 
@@ -54,217 +54,168 @@ export default function AboutContact() {
               style={{ 
                 width: '100%', 
                 height: '100%', 
-                objectFit: 'cover',
+                objectFit: 'cover', 
                 objectPosition: 'center 15%',
                 display: 'block'
               }}
               onError={(e) => { e.target.src = '/banner.jpg'; }}
             />
-            {/* Subtle Gradient Shadow for Badge readability */}
-            <div style={{
-              position: 'absolute',
-              inset: 0,
-              background: 'linear-gradient(to top, rgba(7, 21, 39, 0.85) 0%, rgba(7, 21, 39, 0.2) 30%, transparent 60%)',
-              pointerEvents: 'none'
-            }} />
             
-            {/* Verified Floating Badge */}
+            {/* Selo do CRECI no pé da foto */}
             <div style={{
               position: 'absolute',
-              bottom: '1.5rem',
-              left: '1.5rem',
-              right: '1.5rem',
-              backgroundColor: 'rgba(7, 21, 39, 0.92)',
-              backdropFilter: 'blur(12px)',
+              bottom: '1.25rem',
+              left: '1.25rem',
+              right: '1.25rem',
+              backgroundColor: 'rgba(15, 23, 42, 0.9)',
+              backdropFilter: 'blur(8px)',
               color: '#FFFFFF',
-              padding: '0.85rem 1.25rem',
-              borderRadius: 'var(--radius-sm)',
-              border: '1px solid rgba(212, 175, 55, 0.45)',
-              boxShadow: '0 10px 30px rgba(0, 0, 0, 0.35)',
+              padding: '0.75rem 1.15rem',
+              borderRadius: '8px',
+              border: '1px solid rgba(255, 255, 255, 0.15)',
               display: 'flex',
               alignItems: 'center',
               gap: '0.75rem',
               zIndex: 2
             }}>
               <div style={{
-                width: '36px',
-                height: '36px',
+                width: '32px',
+                height: '32px',
                 borderRadius: '50%',
-                backgroundColor: 'rgba(212, 175, 55, 0.15)',
-                color: 'var(--gold-primary)',
+                backgroundColor: '#1E293B',
+                color: '#60A5FA',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 flexShrink: 0
               }}>
-                <ShieldCheck size={20} />
+                <ShieldCheck size={18} />
               </div>
               <div>
-                <strong style={{ display: 'block', fontSize: '0.875rem' }}>Registro Oficial Homologado</strong>
-                <span style={{ fontSize: '0.75rem', color: '#CBD5E1' }}>CRECI-SC 60173 F • Santa Catarina</span>
+                <div style={{ fontSize: '0.85rem', fontWeight: 800 }}>Corretor Credenciado</div>
+                <div style={{ fontSize: '0.75rem', color: '#94A3B8' }}>{SITE_CONFIG.creci} • Santa Catarina</div>
               </div>
             </div>
           </div>
 
-          {/* Bio & Contact Column */}
-          <div style={{ padding: 'clamp(2rem, 5vw, 3.5rem)', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-            <div style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.4rem',
-              backgroundColor: 'var(--accent-red-subtle)',
-              color: 'var(--accent-red)',
-              fontWeight: 800,
-              fontSize: '0.8rem',
-              padding: '0.35rem 0.85rem',
-              borderRadius: 'var(--radius-xs)',
-              marginBottom: '1rem',
-              width: 'fit-content',
-              letterSpacing: '0.05em'
-            }}>
-              CRECI-SC 60173 F
-            </div>
-
-            <h3 style={{ fontSize: '2.25rem', color: 'var(--primary-dark)', marginBottom: '1rem', fontWeight: 900 }}>
-              Anderson Kunicki
+          {/* Coluna do Conteúdo / Biografia */}
+          <div style={{ padding: '2.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.35rem' }}>
+              Atendimento Dedicado
+            </span>
+            <h3 style={{ fontSize: '1.65rem', fontWeight: 800, color: '#0F172A', marginBottom: '1.25rem', lineHeight: 1.25 }}>
+              Segurança e tranquilidade para o seu patrimônio
             </h3>
-
-            <p style={{ color: 'var(--text-body)', fontSize: '1.025rem', lineHeight: 1.75, marginBottom: '2rem' }}>
-              Atuando com compromisso no mercado imobiliário de <strong>Itaiópolis e todo o Planalto Norte Catarinense</strong>, prestamos assessoria completa para quem deseja comprar, vender, alugar ou avaliar imóveis urbanos e rurais. Garantimos segurança jurídica, suporte no financiamento bancário e atendimento de alto padrão.
+            
+            <p style={{ color: '#475569', fontSize: '0.975rem', lineHeight: 1.7, marginBottom: '1.25rem' }}>
+              Atuando no mercado imobiliário de Itaiópolis e região, Anderson Kunicki oferece assessoria completa na compra, venda e locação de casas, terrenos urbanos e propriedades rurais.
             </p>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.15rem', marginBottom: '2.25rem' }}>
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
-                <div style={{ width: '42px', height: '42px', borderRadius: 'var(--radius-sm)', backgroundColor: 'var(--primary-light)', color: 'var(--primary-blue)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <MapPin size={20} />
-                </div>
-                <div>
-                  <strong style={{ display: 'block', fontSize: '0.9rem', color: 'var(--primary-dark)' }}>Sede de Atendimento</strong>
-                  <span style={{ color: 'var(--text-muted)', fontSize: '0.925rem' }}>{SITE_CONFIG.fullAddress}</span>
-                </div>
-              </div>
+            <p style={{ color: '#475569', fontSize: '0.975rem', lineHeight: 1.7, marginBottom: '2rem' }}>
+              Cada negociação é conduzida com atenção rigorosa à documentação, histórico cartorário e viabilidade financeira, assegurando que você faça o melhor negócio com total clareza e respaldo técnico.
+            </p>
 
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
-                <div style={{ width: '42px', height: '42px', borderRadius: 'var(--radius-sm)', backgroundColor: 'var(--primary-light)', color: 'var(--primary-blue)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <Mail size={20} />
-                </div>
-                <div>
-                  <strong style={{ display: 'block', fontSize: '0.9rem', color: 'var(--primary-dark)' }}>E-mail Direto</strong>
-                  <a href={`mailto:${SITE_CONFIG.email}`} style={{ color: 'var(--accent-red)', fontWeight: 700, fontSize: '0.95rem' }}>
-                    {SITE_CONFIG.email}
-                  </a>
-                </div>
-              </div>
+            {/* Ações de Contato Direto */}
+            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+              <a 
+                href={waUrl} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="btn btn-whatsapp" 
+                style={{ padding: '0.85rem 1.6rem', fontSize: '0.95rem', borderRadius: '10px' }}
+              >
+                <WhatsAppIcon size={18} color="#FFFFFF" /> Falar no WhatsApp
+              </a>
 
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
-                <div style={{ width: '42px', height: '42px', borderRadius: 'var(--radius-sm)', backgroundColor: '#FDF2F8', color: '#E1306C', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <Instagram size={20} />
-                </div>
-                <div>
-                  <strong style={{ display: 'block', fontSize: '0.9rem', color: 'var(--primary-dark)' }}>Instagram Oficial</strong>
-                  <a href={SITE_CONFIG.instagramUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#E1306C', fontWeight: 700, fontSize: '0.95rem' }}>
-                    {SITE_CONFIG.instagramHandle || '@kunickianderson'}
-                  </a>
-                </div>
-              </div>
-
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
-                <div style={{ width: '42px', height: '42px', borderRadius: 'var(--radius-sm)', backgroundColor: '#EFF6FF', color: '#1877F2', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <Facebook size={20} />
-                </div>
-                <div>
-                  <strong style={{ display: 'block', fontSize: '0.9rem', color: 'var(--primary-dark)' }}>Facebook Oficial</strong>
-                  <a href={SITE_CONFIG.facebookUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#1877F2', fontWeight: 700, fontSize: '0.95rem' }}>
-                    facebook.com/anderson.kunicki.9
-                  </a>
-                </div>
-              </div>
+              <a 
+                href={`tel:${SITE_CONFIG.phoneRaw}`} 
+                className="btn btn-outline" 
+                style={{ padding: '0.85rem 1.4rem', fontSize: '0.95rem', borderRadius: '10px', borderColor: '#CBD5E1' }}
+              >
+                <Phone size={16} /> {SITE_CONFIG.phoneFormatted}
+              </a>
             </div>
-
-            <a href={waUrl} target="_blank" rel="noopener noreferrer" className="btn btn-whatsapp" style={{ width: 'fit-content', padding: '0.9rem 1.8rem', fontWeight: 800, fontSize: '1rem' }}>
-              <WhatsAppIcon size={20} color="#FFFFFF" /> Iniciar Conversa no WhatsApp
-            </a>
           </div>
         </div>
 
-        {/* 4 Pillars Grid */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-          gap: '1.5rem',
-          marginBottom: '4.5rem'
-        }}>
-          {differentials.map((item, idx) => {
-            const Icon = item.icon;
-            return (
-              <div 
-                key={idx}
-                style={{
-                  backgroundColor: '#FFFFFF',
-                  padding: '2rem 1.75rem',
-                  borderRadius: 'var(--radius-md)',
-                  border: '1px solid var(--border-subtle)',
-                  boxShadow: 'var(--shadow-card)',
-                  transition: 'var(--transition)'
-                }}
-                onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = 'var(--shadow-md)'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'var(--shadow-card)'; }}
-              >
-                <div style={{
-                  width: '46px',
-                  height: '46px',
-                  borderRadius: 'var(--radius-sm)',
-                  backgroundColor: 'var(--primary-light)',
-                  color: 'var(--primary-blue)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginBottom: '1.25rem'
-                }}>
-                  <Icon size={24} />
-                </div>
-                <h4 style={{ fontSize: '1.15rem', color: 'var(--primary-dark)', fontWeight: 800, marginBottom: '0.5rem' }}>
+        {/* Grade de 4 Pilares Profissionais */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem', marginBottom: '3.5rem' }}>
+          {services.map((item, idx) => (
+            <div 
+              key={idx}
+              style={{
+                backgroundColor: '#FFFFFF',
+                borderRadius: '12px',
+                padding: '1.5rem',
+                border: '1px solid #E2E8F0',
+                boxShadow: '0 2px 6px rgba(15, 23, 42, 0.03)'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
+                <CheckCircle2 size={18} style={{ color: '#16A34A', flexShrink: 0 }} />
+                <h4 style={{ fontSize: '1rem', fontWeight: 700, color: '#0F172A', margin: 0 }}>
                   {item.title}
                 </h4>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.925rem', lineHeight: 1.55 }}>
-                  {item.desc}
-                </p>
               </div>
-            );
-          })}
+              <p style={{ fontSize: '0.875rem', color: '#64748B', lineHeight: 1.6, margin: 0 }}>
+                {item.desc}
+              </p>
+            </div>
+          ))}
         </div>
 
-        {/* Map Section */}
-        <div style={{ textAlign: 'center', marginBottom: '1.75rem' }}>
-          <span style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--primary-blue)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-            Visite Nosso Escritório
-          </span>
-          <h3 style={{ fontSize: '2rem', color: 'var(--primary-dark)', margin: '0.3rem 0', fontWeight: 900 }}>
-            Localização em Itaiópolis - SC
-          </h3>
-          <p style={{ color: 'var(--text-muted)', fontSize: '1rem', maxWidth: '600px', margin: '0 auto' }}>
-            Rua Francisco Mielzkovski, 173 - Centro. Fácil acesso para você nos visitar e planejar seu investimento imobiliário.
-          </p>
-        </div>
-
+        {/* Localização do Escritório e Informações Práticas */}
         <div style={{
-          borderRadius: 'var(--radius-lg)',
-          overflow: 'hidden',
-          boxShadow: 'var(--shadow-lg)',
-          border: '1px solid var(--border-subtle)',
-          height: '440px',
-          width: '100%',
-          position: 'relative'
+          backgroundColor: '#FFFFFF',
+          borderRadius: '16px',
+          border: '1px solid #E2E8F0',
+          padding: '2rem',
+          boxShadow: '0 2px 8px rgba(15, 23, 42, 0.04)',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+          gap: '2rem',
+          alignItems: 'center'
         }}>
-          <iframe 
-            title="Mapa de Localização do Escritório - Anderson Kunicki Imóveis"
-            src="https://maps.google.com/maps?q=Rua%20Francisco%20Mielzkovski,%20173%20Itai%C3%B3polis%20-%20SC&t=&z=16&ie=UTF8&iwloc=&output=embed"
-            width="100%" 
-            height="100%" 
-            style={{ border: 0 }} 
-            allowFullScreen="" 
-            loading="lazy"
-          />
+          <div>
+            <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#0B192C', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+              Endereço do Escritório
+            </span>
+            <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#0F172A', margin: '0.4rem 0 1rem' }}>
+              Venha tomar um café conosco
+            </h3>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.925rem', color: '#475569' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                <MapPin size={18} style={{ color: '#0B192C', flexShrink: 0, marginTop: '2px' }} />
+                <span>{SITE_CONFIG.fullAddress}</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <Mail size={18} style={{ color: '#0B192C', flexShrink: 0 }} />
+                <a href={`mailto:${SITE_CONFIG.email}`} style={{ color: '#0B192C', fontWeight: 600 }}>{SITE_CONFIG.email}</a>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <Clock size={18} style={{ color: '#0B192C', flexShrink: 0 }} />
+                <span>Segunda a Sexta: 08:30 às 18:00 • Sábados: 08:30 às 12:00</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Mapa do Google Maps */}
+          <div style={{ borderRadius: '12px', overflow: 'hidden', height: '220px', border: '1px solid #E2E8F0' }}>
+            <iframe
+              title="Localização do Escritório Anderson Kunicki em Itaiópolis"
+              width="100%"
+              height="100%"
+              frameBorder="0"
+              scrolling="no"
+              marginHeight="0"
+              marginWidth="0"
+              src="https://maps.google.com/maps?q=Rua+Francisco+Mielzkovski,+173+-+Centro,+Itai%C3%B3polis+-+SC&t=&z=15&ie=UTF8&iwloc=&output=embed"
+              style={{ border: 0 }}
+              allowFullScreen=""
+              loading="lazy"
+            />
+          </div>
         </div>
 
       </div>

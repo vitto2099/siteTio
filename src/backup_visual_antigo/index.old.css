@@ -1,0 +1,651 @@
+/* ==========================================================================
+   Anderson Kunicki Corretor Imobiliário - Luxury Modern Design System
+   ========================================================================== */
+
+:root {
+  /* Core Luxury Palette */
+  --primary-dark: #071527;
+  --primary-navy: #0B2240;
+  --primary-blue: #123B6B;
+  --primary-light: #EEF5FC;
+  
+  --accent-red: #C81D25;
+  --accent-red-hover: #A8141B;
+  --accent-red-subtle: rgba(200, 29, 37, 0.08);
+  --accent-red-glow: rgba(200, 29, 37, 0.35);
+  
+  --gold-primary: #D4AF37;
+  --gold-light: #FBF4DC;
+  --gold-gradient: linear-gradient(135deg, #D4AF37 0%, #F3E0A3 50%, #B89225 100%);
+  --gold-subtle: rgba(212, 175, 55, 0.12);
+  --gold-glow: rgba(212, 175, 55, 0.3);
+  
+  /* Neutros Ultra-Clean */
+  --bg-main: #F8FAFC;
+  --bg-card: #FFFFFF;
+  --bg-card-hover: #FAFCFE;
+  --bg-subtle: #F1F5F9;
+  
+  --text-dark: #0F172A;
+  --text-body: #334155;
+  --text-muted: #64748B;
+  --text-light: #94A3B8;
+  --text-white: #FFFFFF;
+  
+  --border-subtle: #E2E8F0;
+  --border-medium: #CBD5E1;
+  --border-focus: #123B6B;
+  
+  /* Sombras Modernas e Suaves */
+  --shadow-xs: 0 1px 3px rgba(15, 23, 42, 0.04);
+  --shadow-sm: 0 3px 10px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 10px 25px -4px rgba(15, 23, 42, 0.08), 0 4px 6px -2px rgba(15, 23, 42, 0.04);
+  --shadow-lg: 0 20px 40px -8px rgba(15, 23, 42, 0.14), 0 8px 16px -4px rgba(15, 23, 42, 0.06);
+  --shadow-card: 0 4px 20px rgba(15, 23, 42, 0.05);
+  --shadow-glow-red: 0 0 20px rgba(200, 29, 37, 0.25);
+  --shadow-glow-gold: 0 0 20px rgba(212, 175, 55, 0.25);
+  
+  /* Raios e Transições */
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-full: 9999px;
+  
+  /* Tipografia Moderna & Elegante (Montserrat + Lora + Hind Madurai) */
+  --font-heading: 'Montserrat', sans-serif;
+  --font-serif: 'Lora', serif;
+  --font-body: 'Hind Madurai', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  --transition-fast: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-smooth: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Reset & Box Sizing */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg-main);
+  color: var(--text-dark);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  color: var(--primary-dark);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.font-serif, .font-accent {
+  font-family: var(--font-serif);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+  outline: none;
+}
+
+input, select, textarea {
+  font-family: inherit;
+}
+
+.container {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #F1F5F9;
+}
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-blue);
+}
+
+/* ==========================================================================
+   Animações & Efeitos Visuais
+   ========================================================================== */
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-7px); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { transform: scale(1); opacity: 0.85; }
+  50% { transform: scale(1.05); opacity: 1; filter: drop-shadow(0 0 12px var(--accent-red-glow)); }
+}
+
+@keyframes radarWave {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.35); opacity: 0; }
+  100% { transform: scale(1.35); opacity: 0; }
+}
+
+@keyframes shimmerEffect {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-float {
+  animation: floatSlow 4s ease-in-out infinite;
+}
+
+/* ==========================================================================
+   Botões Modernos & Efeitos de Hover
+   ========================================================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  padding: 0.75rem 1.45rem;
+  font-size: 0.925rem;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+  white-space: nowrap;
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn-red {
+  background: linear-gradient(135deg, #C81D25 0%, #9E1219 100%);
+  color: var(--text-white);
+  box-shadow: 0 4px 15px rgba(200, 29, 37, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.btn-red:hover {
+  background: linear-gradient(135deg, #DB242D 0%, #B3161E 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(200, 29, 37, 0.45);
+  color: #FFFFFF;
+}
+
+.btn-gold {
+  background: var(--gold-gradient);
+  color: #071527;
+  font-weight: 800;
+  box-shadow: 0 4px 14px var(--gold-glow);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn-gold:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(212, 175, 55, 0.45);
+}
+
+.btn-navy {
+  background: linear-gradient(135deg, #0B2240 0%, #071527 100%);
+  color: var(--text-white);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.btn-navy:hover {
+  background: linear-gradient(135deg, #123B6B 0%, #0B2240 100%);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  color: #FFFFFF;
+}
+
+.btn-outline {
+  border: 1.5px solid var(--border-subtle);
+  color: var(--primary-navy);
+  background: #FFFFFF;
+}
+
+.btn-outline:hover {
+  border-color: var(--primary-blue);
+  background: var(--primary-light);
+  color: var(--primary-blue);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-xs);
+}
+
+.btn-whatsapp {
+  background: linear-gradient(135deg, #25D366 0%, #179E4A 100%);
+  color: var(--text-white);
+  box-shadow: 0 4px 15px rgba(37, 211, 102, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-whatsapp:hover {
+  background: linear-gradient(135deg, #2CF075 0%, #1BB354 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(37, 211, 102, 0.45);
+  color: #FFFFFF;
+}
+
+.btn-sm {
+  padding: 0.45rem 0.85rem;
+  font-size: 0.825rem;
+  border-radius: var(--radius-xs);
+}
+
+/* ==========================================================================
+   Badges Modernas
+   ========================================================================== */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-xs);
+  font-size: 0.725rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  backdrop-filter: blur(8px);
+}
+
+.badge-venda {
+  background: #FEF2F2;
+  color: #B91C1C;
+  border: 1px solid #FECACA;
+}
+
+.badge-aluguel {
+  background: #EFF6FF;
+  color: #1D4ED8;
+  border: 1px solid #BFDBFE;
+}
+
+.badge-featured {
+  background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
+  color: #92400E;
+  border: 1px solid #FDE68A;
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.2);
+}
+
+.badge-sold {
+  background: #F1F5F9;
+  color: #64748B;
+  border: 1px solid #E2E8F0;
+}
+
+/* ==========================================================================
+   Modais & Overlays Glassmorphism
+   ========================================================================== */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(7, 21, 39, 0.82);
+  backdrop-filter: blur(10px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 1rem;
+  animation: modalFadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-content {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 880px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  animation: modalScaleUp 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalScaleUp {
+  from { transform: scale(0.96) translateY(12px); opacity: 0; }
+  to { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+/* ==========================================================================
+   Formulários & Inputs Clean
+   ========================================================================== */
+.input-field {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  font-size: 0.925rem;
+  color: var(--text-dark);
+  background: #FFFFFF;
+  transition: var(--transition);
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: var(--primary-blue);
+  background: #FFFFFF;
+  box-shadow: 0 0 0 3px rgba(18, 59, 107, 0.12);
+}
+
+/* ==========================================================================
+   Grid & Layout
+   ========================================================================== */
+.grid-properties {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 2.25rem;
+}
+
+/* ==========================================================================
+   Toast Notification Flutuante
+   ========================================================================== */
+.toast-notification {
+  position: fixed;
+  bottom: 2rem;
+  left: 2rem;
+  z-index: 3000;
+  background-color: var(--primary-dark);
+  color: #FFFFFF;
+  padding: 0.95rem 1.5rem;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-lg);
+  border-left: 4px solid var(--accent-red);
+  font-weight: 600;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  animation: toastSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes toastSlideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* ==========================================================================
+   Mobile First Responsiveness & Drawers
+   ========================================================================== */
+.mobile-nav-drawer {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 300px;
+  height: 100vh;
+  background-color: #FFFFFF;
+  box-shadow: var(--shadow-lg);
+  z-index: 2500;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 1.5rem;
+  transition: right 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mobile-nav-drawer.open {
+  right: 0;
+}
+
+.mobile-nav-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(7, 21, 39, 0.65);
+  backdrop-filter: blur(6px);
+  z-index: 2400;
+  opacity: 0;
+  visibility: hidden;
+  transition: var(--transition);
+}
+
+.mobile-nav-overlay.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+@media (max-width: 992px) {
+  .desktop-nav {
+    display: none !important;
+  }
+  .mobile-toggle-btn {
+    display: inline-flex !important;
+  }
+}
+
+@media (min-width: 993px) {
+  .mobile-toggle-btn {
+    display: none !important;
+  }
+  .mobile-nav-drawer, .mobile-nav-overlay {
+    display: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  html {
+    font-size: 15px;
+  }
+  .container {
+    padding: 0 1.25rem;
+  }
+  .grid-properties {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .toast-notification {
+    left: 1rem;
+    right: 1rem;
+    bottom: 1.5rem;
+  }
+}
+
+/* ==========================================================================
+   Header Responsivo, Scroll & Centralização do Menu
+   ========================================================================== */
+.header-top-bar {
+  background-color: var(--primary-dark);
+  color: #CBD5E1;
+  font-size: 0.76rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  transition: max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease, padding 0.35s ease;
+  max-height: 48px;
+  opacity: 1;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.header-top-bar.scrolled {
+  max-height: 0 !important;
+  opacity: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  border-bottom: none !important;
+  pointer-events: none;
+}
+
+.header-top-bar .container {
+  white-space: nowrap;
+  flex-wrap: nowrap !important;
+  overflow: hidden;
+}
+
+.header-top-bar-secondary {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.header-main-nav {
+  transition: padding 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.header-col-left {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex: 1;
+  min-width: 0;
+}
+
+.header-col-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 2;
+}
+
+.header-col-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 1;
+  gap: 0.65rem;
+}
+
+/* Animações Fluídas de Cards & Imagens */
+.property-card {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease !important;
+}
+
+.property-card:hover {
+  transform: translateY(-8px) !important;
+  box-shadow: 0 22px 45px -12px rgba(15, 23, 42, 0.18), 0 0 0 1px rgba(18, 59, 107, 0.12) !important;
+}
+
+.property-card:hover img {
+  transform: scale(1.06) !important;
+}
+
+@media (max-width: 992px) {
+  .header-col-center {
+    display: none !important;
+  }
+}
+
+@media (max-width: 860px) {
+  .header-top-bar-secondary {
+    display: none !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .header-top-bar {
+    display: none !important;
+  }
+  .header-brand-title {
+    font-size: 1.05rem !important;
+  }
+  .header-brand-creci {
+    font-size: 0.62rem !important;
+  }
+  .header-wa-text {
+    display: none !important;
+  }
+  .header-wa-btn {
+    padding: 0.45rem 0.6rem !important;
+  }
+}
+
+/* ==========================================================================
+   Footer Colapsável (Minimizado por padrão com botão de expansão)
+   ========================================================================== */
+.footer-collapsible {
+  background-color: var(--primary-dark);
+  color: #FFFFFF;
+  border-top: 3px solid var(--accent-red);
+  position: relative;
+  z-index: 10;
+}
+
+.footer-bar-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.85rem 1.5rem;
+  background: rgba(0, 0, 0, 0.25);
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.footer-expand-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(255, 255, 255, 0.08);
+  color: #E2E8F0;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  padding: 0.42rem 0.95rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.footer-expand-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  color: #FFFFFF;
+  border-color: rgba(255, 255, 255, 0.35);
+  transform: translateY(-1px);
+}
+
+.footer-updated-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  color: #94A3B8;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.25rem 0.65rem;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+

@@ -1,2 +1,111 @@
-// Lista inicial de imóveis (inicia vazia para receber apenas cadastros reais)
-export const INITIAL_PROPERTIES = [];
+// Imóveis reais/amostra selecionados para Itaiópolis e região
+export const INITIAL_PROPERTIES = [
+  {
+    id: "prop-ak-101",
+    code: "AK-101",
+    title: "Casa de Alvenaria no Centro com Edícula",
+    purpose: "venda",
+    type: "casa",
+    price: 420000,
+    neighborhood: "Centro",
+    city: "Itaiópolis",
+    state: "SC",
+    area: 165,
+    landArea: 420,
+    bedrooms: 3,
+    suites: 1,
+    bathrooms: 2,
+    garage: 2,
+    featured: true,
+    status: "ativo",
+    description: "Excelente residência em alvenaria localizada em rua tranquila e asfaltada no Centro de Itaiópolis. Possui 3 dormitórios (sendo 1 suíte espaçosa), sala de estar e jantar integradas, cozinha ampla com móveis sob medida, área de serviço separada, edícula com churrasqueira a carvão e garagem coberta para 2 veículos. Terreno todo murado com portão eletrônico e quintal gramado.",
+    features: ["Suíte Master", "Churrasqueira", "Edícula", "Portão Eletrônico", "Rua Asfaltada", "Móveis Planejados", "Quintal Amplo", "Próximo a Comércios"],
+    imageUrl: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1000&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1000&q=80"
+    ],
+    createdAt: "2026-09-01"
+  },
+  {
+    id: "prop-ak-102",
+    code: "AK-102",
+    title: "Chácara com Área Verde e Nascente em Moema",
+    purpose: "venda",
+    type: "sitio",
+    price: 320000,
+    neighborhood: "Moema",
+    city: "Itaiópolis",
+    state: "SC",
+    area: 90,
+    landArea: 20000,
+    bedrooms: 2,
+    suites: 0,
+    bathrooms: 1,
+    garage: 2,
+    featured: true,
+    status: "ativo",
+    description: "Linda chácara de 20.000 m² (2 hectares) em Moema, interior de Itaiópolis. Propriedade com ótima topografia, nascente de água cristalina, pequeno tanque de peixes, pomar formado com árvores frutíferas e casa rústica de campo aconchegante com fogão a lenha. Ideal para descanso nos finais de semana ou para moradia com contato direto com a natureza.",
+    features: ["Nascente de Água", "Tanque de Peixes", "Fogão a Lenha", "Pomar", "Área de Pastagem", "Energia Elétrica", "Fácil Acesso"],
+    imageUrl: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1000&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1000&q=80"
+    ],
+    createdAt: "2026-09-03"
+  },
+  {
+    id: "prop-ak-103",
+    code: "AK-103",
+    title: "Terreno Residencial Pronto para Construir no Lucena",
+    purpose: "venda",
+    type: "terreno",
+    price: 115000,
+    neighborhood: "Lucena",
+    city: "Itaiópolis",
+    state: "SC",
+    area: 450,
+    landArea: 450,
+    bedrooms: 0,
+    suites: 0,
+    bathrooms: 0,
+    garage: 0,
+    featured: false,
+    status: "ativo",
+    description: "Excelente lote residencial de 450 m² (15m x 30m) em área residencial consolidada no Bairro Lucena. Topografia plana, acima do nível da rua, pronto para iniciar a construção da sua casa própria ou investimento. Rua com infraestrutura completa de água tratada, energia elétrica e iluminação pública. Escritura pública e documentação 100% regular.",
+    features: ["Topografia Plana", "Documentação 100% Regular", "Pronto para Construir", "Água e Energia", "Bairro Residencial Tranquilo"],
+    imageUrl: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1000&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1000&q=80"
+    ],
+    createdAt: "2026-09-05"
+  },
+  {
+    id: "prop-ak-104",
+    code: "AK-104",
+    title: "Residência Moderna com Varanda e Garagem Coberta",
+    purpose: "venda",
+    type: "casa",
+    price: 285000,
+    neighborhood: "Vila Nova",
+    city: "Itaiópolis",
+    state: "SC",
+    area: 110,
+    landArea: 360,
+    bedrooms: 2,
+    suites: 0,
+    bathrooms: 1,
+    garage: 1,
+    featured: true,
+    status: "ativo",
+    description: "Casa aconchegante e bem arejada no Bairro Vila Nova. Composta por 2 quartos confortáveis, sala de estar iluminada, copa e cozinha com acabamento moderno, banheiro social com box de vidro, lavanderia coberta e ampla varanda frontal. Terreno individual com espaço livre para ampliações ou jardim.",
+    features: ["Varanda Frontal", "Lavanderia Fechada", "Piso Cerâmico", "Muros Altos", "Espaço para Ampliação", "Aceita Financiamento"],
+    imageUrl: "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=1000&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=1000&q=80"
+    ],
+    createdAt: "2026-09-07"
+  }
+];

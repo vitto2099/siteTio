@@ -1,159 +1,100 @@
 import React from 'react';
-import { RotateCcw, SlidersHorizontal, ArrowUpDown } from 'lucide-react';
+import { RotateCcw, ArrowUpDown } from 'lucide-react';
 
 export default function PropertyFilters({ filters, setFilters, totalCount, onReset }) {
+  const categories = [
+    { id: 'todos', label: 'Todos' },
+    { id: 'casa', label: 'Casas' },
+    { id: 'terreno', label: 'Terrenos' },
+    { id: 'sitio', label: 'Sítios & Chácaras' },
+    { id: 'apartamento', label: 'Apartamentos' }
+  ];
+
+  const hasActiveFilters = filters.keyword || filters.purpose !== 'todos' || filters.type !== 'todos' || filters.maxPrice !== 'Infinity';
+
   return (
     <div style={{
-      backgroundColor: 'var(--bg-card)',
-      padding: '1.5rem 1.75rem',
-      borderRadius: 'var(--radius-md)',
-      border: '1px solid var(--border-subtle)',
-      marginBottom: '2.5rem',
-      boxShadow: 'var(--shadow-sm)'
+      backgroundColor: '#FFFFFF',
+      padding: '1.25rem 1.5rem',
+      borderRadius: '12px',
+      border: '1px solid #E2E8F0',
+      marginBottom: '2rem',
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      flexWrap: 'wrap',
+      gap: '1rem',
+      boxShadow: '0 2px 6px rgba(15, 23, 42, 0.04)'
     }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '1.25rem' }}>
-        
-        {/* Purpose Luxury Pills */}
-        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-          {[
-            { id: 'todos', label: 'Todos os Imóveis' },
-            { id: 'venda', label: 'À Venda' },
-            { id: 'aluguel', label: 'Para Alugar' }
-          ].map(pill => {
-            const isActive = filters.purpose === pill.id;
-            return (
-              <button
-                key={pill.id}
-                onClick={() => setFilters(prev => ({ ...prev, purpose: pill.id }))}
-                style={{
-                  padding: '0.5rem 1.25rem',
-                  borderRadius: '9999px',
-                  fontSize: '0.875rem',
-                  fontWeight: 700,
-                  backgroundColor: isActive ? 'var(--primary-dark)' : 'var(--bg-subtle)',
-                  color: isActive ? '#FFFFFF' : 'var(--text-body)',
-                  border: '1px solid ' + (isActive ? 'var(--primary-dark)' : 'var(--border-subtle)'),
-                  boxShadow: isActive ? '0 4px 12px rgba(7, 21, 39, 0.2)' : 'none',
-                  transition: 'var(--transition)'
-                }}
-              >
-                {pill.label}
-              </button>
-            );
-          })}
+      {/* Category Pills Rápidas */}
+      <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', alignItems: 'center' }}>
+        {categories.map(cat => {
+          const isActive = filters.type === cat.id;
+          return (
+            <button
+              key={cat.id}
+              onClick={() => setFilters(prev => ({ ...prev, type: cat.id }))}
+              style={{
+                padding: '0.4rem 0.95rem',
+                borderRadius: '8px',
+                fontSize: '0.84rem',
+                fontWeight: 600,
+                backgroundColor: isActive ? '#0B192C' : '#F1F5F9',
+                color: isActive ? '#FFFFFF' : '#334155',
+                border: '1px solid ' + (isActive ? '#0B192C' : '#E2E8F0'),
+                cursor: 'pointer',
+                transition: 'all 0.2s ease'
+              }}
+            >
+              {cat.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Contador e Ordenação */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+        <div style={{
+          fontSize: '0.85rem',
+          color: '#64748B',
+          fontWeight: 600
+        }}>
+          <strong style={{ color: '#0F172A' }}>{totalCount}</strong> {totalCount === 1 ? 'imóvel encontrado' : 'imóveis encontrados'}
         </div>
 
-        {/* Counter & Reset */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <div style={{
-            backgroundColor: 'var(--primary-light)',
-            color: 'var(--primary-blue)',
-            padding: '0.35rem 0.85rem',
-            borderRadius: '20px',
-            fontSize: '0.85rem',
-            fontWeight: 800
-          }}>
-            {totalCount} {totalCount === 1 ? 'imóvel disponível' : 'imóveis disponíveis'}
-          </div>
-          
+        {/* Ordenar por */}
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+          <ArrowUpDown size={13} style={{ color: '#64748B' }} />
+          <select 
+            className="input-field"
+            value={filters.sortBy || 'recente'}
+            onChange={(e) => setFilters(prev => ({ ...prev, sortBy: e.target.value }))}
+            style={{
+              padding: '0.35rem 0.65rem',
+              fontSize: '0.82rem',
+              borderRadius: '6px',
+              backgroundColor: '#F8FAFC',
+              borderColor: '#E2E8F0',
+              fontWeight: 600,
+              color: '#334155'
+            }}
+          >
+            <option value="recente">Mais Recentes</option>
+            <option value="menor-preco">Menor Preço</option>
+            <option value="maior-preco">Maior Preço</option>
+          </select>
+        </div>
+
+        {hasActiveFilters && (
           <button 
             onClick={onReset} 
             className="btn btn-outline btn-sm"
-            title="Limpar todos os filtros de busca"
-            style={{ fontWeight: 700 }}
+            style={{ fontSize: '0.78rem', padding: '0.35rem 0.65rem', fontWeight: 600, color: '#64748B' }}
+            title="Limpar filtros"
           >
-            <RotateCcw size={13} /> Limpar Filtros
+            <RotateCcw size={12} /> Limpar
           </button>
-        </div>
-      </div>
-
-      {/* Extended Filters row */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1.25rem' }}>
-        <div>
-          <label style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--primary-dark)', textTransform: 'uppercase', marginBottom: '0.35rem', display: 'block', letterSpacing: '0.04em' }}>
-            Tipo de Imóvel
-          </label>
-          <select 
-            className="input-field" 
-            style={{ padding: '0.6rem 0.85rem', fontSize: '0.875rem', backgroundColor: 'var(--bg-subtle)', fontWeight: 600 }}
-            value={filters.type}
-            onChange={(e) => setFilters(prev => ({ ...prev, type: e.target.value }))}
-          >
-            <option value="todos">Todos os Tipos</option>
-            <option value="casa">Casas</option>
-            <option value="terreno">Terrenos e Lotes</option>
-            <option value="sitio">Sítios e Chácaras</option>
-            <option value="apartamento">Apartamentos</option>
-            <option value="comercial">Salas Comerciais</option>
-          </select>
-        </div>
-
-        <div>
-          <label style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--primary-dark)', textTransform: 'uppercase', marginBottom: '0.35rem', display: 'block', letterSpacing: '0.04em' }}>
-            Dormitórios
-          </label>
-          <select 
-            className="input-field" 
-            style={{ padding: '0.6rem 0.85rem', fontSize: '0.875rem', backgroundColor: 'var(--bg-subtle)', fontWeight: 600 }}
-            value={filters.bedrooms}
-            onChange={(e) => setFilters(prev => ({ ...prev, bedrooms: e.target.value }))}
-          >
-            <option value="todos">Qualquer quantidade</option>
-            <option value="1">1+ Quartos</option>
-            <option value="2">2+ Quartos</option>
-            <option value="3">3+ Quartos</option>
-            <option value="4">4+ Quartos</option>
-          </select>
-        </div>
-
-        <div>
-          <label style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--primary-dark)', textTransform: 'uppercase', marginBottom: '0.35rem', display: 'block', letterSpacing: '0.04em' }}>
-            Preço Máximo
-          </label>
-          <select 
-            className="input-field" 
-            style={{ padding: '0.6rem 0.85rem', fontSize: '0.875rem', backgroundColor: 'var(--bg-subtle)', fontWeight: 600 }}
-            value={filters.maxPrice}
-            onChange={(e) => setFilters(prev => ({ ...prev, maxPrice: e.target.value }))}
-          >
-            <option value="Infinity">Sem limite de preço</option>
-            <option value="200000">Até R$ 200.000</option>
-            <option value="400000">Até R$ 400.000</option>
-            <option value="600000">Até R$ 600.000</option>
-            <option value="1000000">Até R$ 1.000.000</option>
-            <option value="2000000">Até R$ 2.000.000</option>
-          </select>
-        </div>
-
-        <div>
-          <label style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--primary-dark)', textTransform: 'uppercase', marginBottom: '0.35rem', display: 'block', letterSpacing: '0.04em' }}>
-            Palavra-chave
-          </label>
-          <input 
-            type="text"
-            className="input-field"
-            placeholder="Ex: Suíte, Piscina, Centro..."
-            style={{ padding: '0.6rem 0.85rem', fontSize: '0.875rem', backgroundColor: 'var(--bg-subtle)', fontWeight: 500 }}
-            value={filters.keyword}
-            onChange={(e) => setFilters(prev => ({ ...prev, keyword: e.target.value }))}
-          />
-        </div>
-
-        <div>
-          <label style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--primary-dark)', textTransform: 'uppercase', marginBottom: '0.35rem', display: 'block', letterSpacing: '0.04em' }}>
-            Ordenar por
-          </label>
-          <select
-            className="input-field"
-            style={{ padding: '0.6rem 0.85rem', fontSize: '0.875rem', backgroundColor: 'var(--bg-subtle)', fontWeight: 600 }}
-            value={filters.sortBy || 'recente'}
-            onChange={(e) => setFilters(prev => ({ ...prev, sortBy: e.target.value }))}
-          >
-            <option value="recente">Mais recentes</option>
-            <option value="preco-asc">Menor preço primeiro</option>
-            <option value="preco-desc">Maior preço primeiro</option>
-          </select>
-        </div>
+        )}
       </div>
     </div>
   );
