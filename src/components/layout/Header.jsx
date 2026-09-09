@@ -1,10 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MapPin, Mail, Facebook, Instagram, Shield, PlusCircle, Menu, X, User, Home } from 'lucide-react';
 import WhatsAppIcon from '../common/WhatsAppIcon';
 import { SITE_CONFIG, getWhatsAppUrl } from '../../config';
 
 export default function Header({ currentTab, setCurrentTab, onOpenAdminModal, currentUser }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 30);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const waUrl = getWhatsAppUrl("Olá Anderson! Gostaria de informações sobre os imóveis disponíveis.");
 
@@ -25,12 +34,14 @@ export default function Header({ currentTab, setCurrentTab, onOpenAdminModal, cu
         position: 'sticky',
         top: 0,
         zIndex: 1000,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: 'rgba(255, 255, 255, 0.98)',
+        backdropFilter: 'blur(10px)',
         borderBottom: '1px solid var(--border-subtle)',
-        boxShadow: 'var(--shadow-xs)'
+        boxShadow: isScrolled ? '0 4px 20px rgba(7, 21, 39, 0.08)' : 'var(--shadow-xs)',
+        transition: 'box-shadow 0.25s ease'
       }}>
-        {/* Top bar info */}
-        <div className="header-top-bar">
+        {/* Top bar info (se esconde suavemente ao rolar) */}
+        <div className={`header-top-bar ${isScrolled ? 'scrolled' : ''}`}>
           <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap' }}>
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
@@ -52,35 +63,44 @@ export default function Header({ currentTab, setCurrentTab, onOpenAdminModal, cu
           </div>
         </div>
 
-        {/* Main navigation bar */}
-        <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem 1.5rem', gap: '1rem' }}>
-          {/* Logo & Brand */}
-          <a href="/" onClick={(e) => { e.preventDefault(); setCurrentTab('home'); }} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', textDecoration: 'none', flexShrink: 0 }}>
-            <img 
-              src="/favicon.svg" 
-              alt="Anderson Kunicki Corretor Imobiliário" 
-              style={{ 
-                height: '42px', 
-                width: '42px', 
-                borderRadius: '10px', 
-                objectFit: 'cover',
-                flexShrink: 0,
-                boxShadow: '0 2px 8px rgba(7, 21, 39, 0.15)'
-              }}
-            />
-            <div style={{ minWidth: 0 }}>
-              <div className="header-brand-title" style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--primary-dark)', letterSpacing: '-0.02em', lineHeight: 1.1, whiteSpace: 'nowrap' }}>
-                Anderson <span style={{ color: 'var(--accent-red)' }}>Kunicki</span>
+        {/* Main navigation bar (3 colunas: Marca à esquerda, Menu centralizado, Ações à direita) */}
+        <div className="container header-main-nav" style={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center', 
+          padding: isScrolled ? '0.55rem 1.5rem' : '0.85rem 1.5rem', 
+          gap: '1rem' 
+        }}>
+          {/* Coluna Esquerda: Logo & Marca */}
+          <div className="header-col-left">
+            <a href="/" onClick={(e) => { e.preventDefault(); setCurrentTab('home'); }} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', textDecoration: 'none' }}>
+              <img 
+                src="/favicon.svg" 
+                alt="Anderson Kunicki Corretor Imobiliário" 
+                style={{ 
+                  height: isScrolled ? '38px' : '42px', 
+                  width: isScrolled ? '38px' : '42px', 
+                  borderRadius: '10px', 
+                  objectFit: 'cover',
+                  flexShrink: 0,
+                  boxShadow: '0 2px 8px rgba(7, 21, 39, 0.15)',
+                  transition: 'height 0.2s ease, width 0.2s ease'
+                }}
+              />
+              <div style={{ minWidth: 0 }}>
+                <div className="header-brand-title" style={{ fontSize: isScrolled ? '1.15rem' : '1.2rem', fontWeight: 800, color: 'var(--primary-dark)', letterSpacing: '-0.02em', lineHeight: 1.1, whiteSpace: 'nowrap', transition: 'font-size 0.2s ease' }}>
+                  Anderson <span style={{ color: 'var(--accent-red)' }}>Kunicki</span>
+                </div>
+                <div className="header-brand-creci" style={{ fontSize: '0.68rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', whiteSpace: 'nowrap' }}>
+                  Corretor Imobiliário • {SITE_CONFIG.creci}
+                </div>
               </div>
-              <div className="header-brand-creci" style={{ fontSize: '0.68rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', whiteSpace: 'nowrap' }}>
-                Corretor Imobiliário • {SITE_CONFIG.creci}
-              </div>
-            </div>
-          </a>
+            </a>
+          </div>
 
-          {/* Desktop Nav Items */}
-          <nav className="desktop-nav" style={{ display: 'flex', alignItems: 'center' }}>
-            <ul style={{ display: 'flex', gap: '1.5rem', listStyle: 'none', margin: 0, padding: 0, alignItems: 'center' }}>
+          {/* Coluna Central: Menu de Navegação Centralizado */}
+          <nav className="desktop-nav header-col-center">
+            <ul style={{ display: 'flex', gap: '1.75rem', listStyle: 'none', margin: 0, padding: 0, alignItems: 'center' }}>
               {navItems.map(item => {
                 const isActive = currentTab === item.id;
                 return (
@@ -96,7 +116,7 @@ export default function Header({ currentTab, setCurrentTab, onOpenAdminModal, cu
                         color: isActive 
                           ? 'var(--accent-red)' 
                           : (item.isSpecial ? 'var(--primary-blue)' : 'var(--text-body)'), 
-                        fontSize: '0.925rem', 
+                        fontSize: '0.95rem', 
                         textDecoration: 'none',
                         display: 'inline-flex',
                         alignItems: 'center',
@@ -118,8 +138,8 @@ export default function Header({ currentTab, setCurrentTab, onOpenAdminModal, cu
             </ul>
           </nav>
 
-          {/* Header Action Buttons */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', flexShrink: 0 }}>
+          {/* Coluna Direita: Botões de Ação */}
+          <div className="header-col-right">
             {currentTab === 'admin' && currentUser && (
               <button className="btn btn-red btn-sm" onClick={onOpenAdminModal} style={{ fontWeight: 700 }}>
                 <PlusCircle size={15} /> <span className="header-wa-text">Novo Imóvel</span>

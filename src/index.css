@@ -488,7 +488,7 @@ input, select, textarea {
 }
 
 /* ==========================================================================
-   Header Responsivo & Ajustes de Alinhamento
+   Header Responsivo, Scroll & Centralização do Menu
    ========================================================================== */
 .header-top-bar {
   background-color: var(--primary-dark);
@@ -496,6 +496,52 @@ input, select, textarea {
   font-size: 0.76rem;
   padding: 0.4rem 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  transition: max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease, padding 0.35s ease;
+  max-height: 50px;
+  opacity: 1;
+  overflow: hidden;
+}
+
+.header-top-bar.scrolled {
+  max-height: 0 !important;
+  opacity: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  border-bottom: none !important;
+  pointer-events: none;
+}
+
+.header-main-nav {
+  transition: padding 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.header-col-left {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex: 1;
+  min-width: 0;
+}
+
+.header-col-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 2;
+}
+
+.header-col-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 1;
+  gap: 0.65rem;
+}
+
+@media (max-width: 992px) {
+  .header-col-center {
+    display: none !important;
+  }
 }
 
 @media (max-width: 768px) {
