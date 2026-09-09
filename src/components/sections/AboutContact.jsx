@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapPin, Mail, Facebook, Instagram, ShieldCheck, CheckCircle2, Phone, Clock } from 'lucide-react';
+import { MapPin, Mail, Facebook, Instagram, ShieldCheck, CheckCircle2, Phone, Clock, Navigation, Compass } from 'lucide-react';
 import WhatsAppIcon from '../common/WhatsAppIcon';
 import { SITE_CONFIG, getWhatsAppUrl } from '../../config';
 
@@ -198,23 +198,124 @@ export default function AboutContact() {
                 <span>Segunda a Sexta: 08:30 às 18:00 • Sábados: 08:30 às 12:00</span>
               </div>
             </div>
+
+            {/* Botões de Ação Direta para o GPS */}
+            <div style={{ display: 'flex', gap: '0.65rem', flexWrap: 'wrap', marginTop: '1.25rem' }}>
+              <a 
+                href="https://www.google.com/maps/dir/?api=1&destination=-26.332491,-49.906809"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-outline btn-sm"
+                style={{
+                  fontSize: '0.82rem',
+                  fontWeight: 700,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                  borderColor: '#0B192C',
+                  color: '#0B192C',
+                  padding: '0.5rem 0.85rem'
+                }}
+                title="Traçar rota no Google Maps até o escritório"
+              >
+                <Navigation size={14} style={{ color: '#2563EB' }} />
+                <span>Traçar Rota no Google Maps</span>
+              </a>
+
+              <a 
+                href="https://waze.com/ul?ll=-26.332491,-49.906809&navigate=yes"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-outline btn-sm"
+                style={{
+                  fontSize: '0.82rem',
+                  fontWeight: 700,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                  borderColor: '#CBD5E1',
+                  color: '#334155',
+                  padding: '0.5rem 0.85rem'
+                }}
+                title="Abrir navegação no Waze"
+              >
+                <Compass size={14} style={{ color: '#0284C7' }} />
+                <span>Abrir no Waze</span>
+              </a>
+            </div>
           </div>
 
-          {/* Mapa do Google Maps */}
-          <div style={{ borderRadius: '12px', overflow: 'hidden', height: '220px', border: '1px solid #E2E8F0' }}>
+          {/* Mapa do Google Maps com Ponto Exato Fixado por Coordenadas */}
+          <div style={{ position: 'relative', borderRadius: '12px', overflow: 'hidden', height: '260px', border: '1px solid #E2E8F0', boxShadow: '0 2px 8px rgba(15, 23, 42, 0.05)' }}>
+            
+            {/* Faixa superior de confirmação de endereço exato */}
+            <div style={{
+              position: 'absolute',
+              top: '0.75rem',
+              left: '0.75rem',
+              right: '0.75rem',
+              backgroundColor: 'rgba(11, 25, 44, 0.92)',
+              backdropFilter: 'blur(6px)',
+              color: '#FFFFFF',
+              padding: '0.4rem 0.75rem',
+              borderRadius: '6px',
+              fontSize: '0.74rem',
+              fontWeight: 600,
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              zIndex: 2,
+              pointerEvents: 'none'
+            }}>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+                <MapPin size={13} style={{ color: '#4ADE80' }} /> Ponto Exato: Rua Francisco Mielzkovski, 173
+              </span>
+              <span style={{ fontSize: '0.7rem', color: '#94A3B8' }}>Centro, Itaiópolis</span>
+            </div>
+
+            {/* Iframe com latitude e longitude exatas para nunca perder o ponto */}
             <iframe
-              title="Localização do Escritório Anderson Kunicki em Itaiópolis"
+              title="Localização Exata do Escritório Anderson Kunicki em Itaiópolis"
               width="100%"
               height="100%"
               frameBorder="0"
               scrolling="no"
               marginHeight="0"
               marginWidth="0"
-              src="https://maps.google.com/maps?q=Rua+Francisco+Mielzkovski,+173+-+Centro,+Itai%C3%B3polis+-+SC&t=&z=15&ie=UTF8&iwloc=&output=embed"
+              src="https://maps.google.com/maps?q=-26.332491,-49.906809+(Anderson+Kunicki+Corretor+Imobiliario)&t=&z=17&ie=UTF8&iwloc=&output=embed"
               style={{ border: 0 }}
               allowFullScreen=""
               loading="lazy"
             />
+
+            {/* Botão flutuante 'Como Chegar (GPS)' sobre o mapa */}
+            <a 
+              href="https://www.google.com/maps/dir/?api=1&destination=-26.332491,-49.906809"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                position: 'absolute',
+                bottom: '0.75rem',
+                right: '0.75rem',
+                backgroundColor: '#0B192C',
+                color: '#FFFFFF',
+                padding: '0.45rem 0.85rem',
+                borderRadius: '6px',
+                fontSize: '0.78rem',
+                fontWeight: 700,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.35rem',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                textDecoration: 'none',
+                zIndex: 2,
+                transition: 'all 0.2s'
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#1E293B'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#0B192C'; }}
+            >
+              <Navigation size={13} style={{ color: '#60A5FA' }} /> Como Chegar (GPS)
+            </a>
           </div>
         </div>
 
