@@ -1,0 +1,13 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Coleção de imóveis do site
+    match /properties/{propertyId} {
+      // Qualquer visitante pode ver os imóveis no catálogo público
+      allow read: if true;
+      
+      // Apenas o corretor/administrador autenticado pode criar, editar ou excluir
+      allow write: if request.auth != null;
+    }
+  }
+}

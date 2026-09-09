@@ -44,7 +44,14 @@ export function useAuth(onToast) {
     // 1. Tentar Login via Firebase Auth se estiver configurado
     if (isFirebaseConfigured && auth) {
       try {
-        const email = cleanUser.includes('@') ? cleanUser : `${cleanUser}@andersonkunicki.com.br`;
+        let email = cleanUser;
+        if (!cleanUser.includes('@')) {
+          if (cleanUser.toLowerCase() === 'andersonkunicki' || cleanUser.toLowerCase() === 'admin') {
+            email = 'andersonkunicki@gmail.com';
+          } else {
+            email = `${cleanUser}@andersonkunicki.com.br`;
+          }
+        }
         const userCredential = await signInWithEmailAndPassword(auth, email, passwordInput);
         const user = userCredential.user;
         const name = user.displayName || user.email?.split('@')[0] || 'andersonkunicki';
@@ -53,11 +60,7 @@ export function useAuth(onToast) {
         if (onToast) onToast(`Bem-vindo, ${name}! Autenticado com sucesso.`);
         return true;
       } catch (err) {
-        console.warn('Falha no login Firebase Auth, tentando fallback seguro:', err.code);
-        if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
-          if (onToast) onToast('Senha incorreta. Tente novamente.');
-          return false;
-        }
+        console.warn('Firebase Auth não autenticou (ou usuário não criado na nuvem), usando validação de segurança local.');
       }
     }
 
@@ -65,10 +68,9 @@ export function useAuth(onToast) {
     const hashedInput = await hashPassword(passwordInput);
     const customHash = localStorage.getItem(CUSTOM_PASS_STORAGE_KEY);
 
-    // Hashes SHA-256 autorizados
+    // Hash SHA-256 autorizado oficial (fiorino2026)
     const validHashes = [
-      '0a2fb47fa6a7f7d142ce049386d34b46294a282f6e9196b0bd59048a1c97042a',
-      '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918'
+      'ecf39b525dc6050fb392ac8a15a1c0bdbac1f766f37d24147bea88d38455a04d'
     ];
 
     if (customHash) {
@@ -124,9 +126,14 @@ export function useAuth(onToast) {
     // 2. Alterar no modo de segurança local (SHA-256)
     const currentHashed = await hashPassword(currentPass);
     const storedCustom = localStorage.getItem(CUSTOM_PASS_STORAGE_KEY);
+    const defaultHashes = [
+      'ecf39b525dc6050fb392ac8a15a1c0bdbac1f766f37d24147bea88d38455a04d',
+      '0a2fb47fa6a7f7d142ce049386d34b46294a282f6e9196b0bd59048a1c97042a',
+      '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918'
+    ];
     const validCurrent = storedCustom 
       ? (currentHashed === storedCustom)
-      : (currentHashed === '0a2fb47fa6a7f7d142ce049386d34b46294a282f6e9196b0bd59048a1c97042a' || currentHashed === '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918');
+      : defaultHashes.includes(currentHashed);
 
     if (!validCurrent) {
       throw new Error('A senha atual informada está incorreta.');
@@ -147,7 +154,9 @@ export function useAuth(onToast) {
       clearTimeout(timeoutId);
       timeoutId = setTimeout(() => {
         logout();
-        alert('Sua sessão foi encerrada automaticamente após 30 minutos de inatividade para sua segurança.');
+        if (onToast) {
+          onToast('Sessão encerrada automaticamente por inatividade (30 min).');
+        }
       }, INACTIVITY_LIMIT);
     };
 
@@ -159,7 +168,7 @@ export function useAuth(onToast) {
       clearTimeout(timeoutId);
       events.forEach(ev => window.removeEventListener(ev, resetTimer));
     };
-  }, [currentUser, logout]);
+  }, [currentUser, logout, onToast]);
 
   return {
     currentUser,

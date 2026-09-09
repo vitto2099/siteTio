@@ -41,30 +41,50 @@ export default function AboutContact() {
           gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
           marginBottom: '4rem'
         }}>
-          {/* Photo Column with Gold Frame */}
-          <div style={{ backgroundColor: 'var(--primary-dark)', position: 'relative', minHeight: '440px' }}>
+          {/* Photo Column with Luxury Framing */}
+          <div style={{ 
+            backgroundColor: 'var(--primary-dark)', 
+            position: 'relative', 
+            minHeight: '480px',
+            overflow: 'hidden'
+          }}>
             <img 
               src="/anderson-kunicki.jpg" 
               alt="Anderson Kunicki Corretor Imobiliário CRECI-SC 60173 F" 
-              style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }}
+              style={{ 
+                width: '100%', 
+                height: '100%', 
+                objectFit: 'cover',
+                objectPosition: 'center 15%',
+                display: 'block'
+              }}
               onError={(e) => { e.target.src = '/banner.jpg'; }}
             />
+            {/* Subtle Gradient Shadow for Badge readability */}
+            <div style={{
+              position: 'absolute',
+              inset: 0,
+              background: 'linear-gradient(to top, rgba(7, 21, 39, 0.85) 0%, rgba(7, 21, 39, 0.2) 30%, transparent 60%)',
+              pointerEvents: 'none'
+            }} />
+            
             {/* Verified Floating Badge */}
             <div style={{
               position: 'absolute',
               bottom: '1.5rem',
               left: '1.5rem',
               right: '1.5rem',
-              backgroundColor: 'rgba(7, 21, 39, 0.9)',
-              backdropFilter: 'blur(10px)',
+              backgroundColor: 'rgba(7, 21, 39, 0.92)',
+              backdropFilter: 'blur(12px)',
               color: '#FFFFFF',
               padding: '0.85rem 1.25rem',
               borderRadius: 'var(--radius-sm)',
-              border: '1px solid rgba(212, 175, 55, 0.4)',
-              boxShadow: 'var(--shadow-lg)',
+              border: '1px solid rgba(212, 175, 55, 0.45)',
+              boxShadow: '0 10px 30px rgba(0, 0, 0, 0.35)',
               display: 'flex',
               alignItems: 'center',
-              gap: '0.75rem'
+              gap: '0.75rem',
+              zIndex: 2
             }}>
               <div style={{
                 width: '36px',

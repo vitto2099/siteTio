@@ -14,7 +14,7 @@ export default function PropertyCard({ property, onSelectProperty }) {
 
   const handleShare = (e) => {
     e.stopPropagation();
-    const shareUrl = `${window.location.origin}${window.location.pathname}#imoveis`;
+    const shareUrl = `${window.location.origin}/?imovel=${encodeURIComponent(refCode)}`;
     navigator.clipboard.writeText(shareUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -158,7 +158,7 @@ export default function PropertyCard({ property, onSelectProperty }) {
           color: '#FFFFFF',
           padding: '0.4rem 0.9rem',
           borderRadius: 'var(--radius-sm)',
-          fontFamily: 'Outfit, sans-serif',
+          fontFamily: 'var(--font-heading)',
           fontWeight: 800,
           fontSize: '1.25rem',
           boxShadow: '0 4px 14px rgba(0,0,0,0.3)',
@@ -232,9 +232,9 @@ export default function PropertyCard({ property, onSelectProperty }) {
               <Bath size={15} style={{ color: 'var(--primary-blue)' }} /> {property.bathrooms} {property.bathrooms === 1 ? 'Ban' : 'Bans'}
             </div>
           )}
-          {property.garages > 0 && (
+          {(property.garages > 0 || property.garage > 0) && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontWeight: 700 }} title="Vagas de Garagem">
-              <Car size={15} style={{ color: 'var(--primary-blue)' }} /> {property.garages} {property.garages === 1 ? 'Vg' : 'Vgs'}
+              <Car size={15} style={{ color: 'var(--primary-blue)' }} /> {property.garages ?? property.garage} {(property.garages || property.garage) === 1 ? 'Vg' : 'Vgs'}
             </div>
           )}
         </div>

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { 
   Building, Star, Tag, Plus, Edit, Trash2, Search, Eye, 
   LogOut, User, Copy, Download, Upload, Link as LinkIcon, CheckSquare, 
-  DollarSign, PlusCircle, KeyRound
+  DollarSign, PlusCircle, KeyRound, Home
 } from 'lucide-react';
 import { formatMoney } from '../../utils/formatters';
 import ChangePasswordModal from './ChangePasswordModal';
@@ -22,7 +22,9 @@ export default function AdminDashboard({
   onSelectProperty, 
   currentUser, 
   onLogout,
-  onUpdatePassword
+  onUpdatePassword,
+  onGoHome,
+  onToast
 }) {
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -78,9 +80,12 @@ export default function AdminDashboard({
   };
 
   const handleCopyLink = (prop) => {
-    const link = `${window.location.origin}${window.location.pathname}#imoveis`;
+    const refCode = prop.code || prop.id;
+    const link = `${window.location.origin}/?imovel=${encodeURIComponent(refCode)}`;
     navigator.clipboard.writeText(link);
-    alert(`Link do anúncio "${prop.title}" copiado para a área de transferência!`);
+    if (onToast) {
+      onToast(`Link do imóvel ${refCode} copiado com sucesso!`);
+    }
   };
 
   const handleImportFileChange = (e) => {
@@ -127,6 +132,17 @@ export default function AdminDashboard({
 
           {/* Top Actions */}
           <div style={{ display: 'flex', gap: '0.65rem', flexWrap: 'wrap', alignItems: 'center' }}>
+            {onGoHome && (
+              <button 
+                className="btn btn-outline btn-sm" 
+                onClick={onGoHome} 
+                title="Ver o site público como visitante"
+                style={{ backgroundColor: '#FFFFFF', fontWeight: 600 }}
+              >
+                <Home size={14} /> Página Inicial
+              </button>
+            )}
+
             <button className="btn btn-outline btn-sm" onClick={onExportBackup} title="Exportar backup completo em arquivo JSON">
               <Download size={14} /> Exportar Backup
             </button>

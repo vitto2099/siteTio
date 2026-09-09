@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MapPin, Mail, Facebook, Instagram, Shield, PlusCircle, Menu, X, User } from 'lucide-react';
+import { MapPin, Mail, Facebook, Instagram, Shield, PlusCircle, Menu, X, User, Home } from 'lucide-react';
 import WhatsAppIcon from '../common/WhatsAppIcon';
 import { SITE_CONFIG, getWhatsAppUrl } from '../../config';
 
@@ -11,7 +11,7 @@ export default function Header({ currentTab, setCurrentTab, onOpenAdminModal, cu
   // For ordinary public visitors, only show public sections.
   // Show Admin link only if admin is logged in or already viewing the /admin route.
   const baseNavItems = [
-    { id: 'home', label: 'Imóveis', path: '/' },
+    { id: 'home', label: 'Página Inicial', path: '/', icon: Home },
     { id: 'about', label: 'Sobre & Contato', path: '/sobre' }
   ];
 
@@ -108,8 +108,9 @@ export default function Header({ currentTab, setCurrentTab, onOpenAdminModal, cu
                         transition: 'var(--transition)'
                       }}
                     >
+                      {item.icon && <item.icon size={15} />}
                       {item.isSpecial && <Shield size={15} />}
-                      {item.label}
+                      <span>{item.label}</span>
                     </a>
                   </li>
                 );
@@ -202,8 +203,9 @@ export default function Header({ currentTab, setCurrentTab, onOpenAdminModal, cu
                   transition: 'var(--transition)'
                 }}
               >
+                {item.icon && <item.icon size={18} />}
                 {item.isSpecial && <Shield size={18} />}
-                {item.label}
+                <span>{item.label}</span>
               </a>
             );
           })}

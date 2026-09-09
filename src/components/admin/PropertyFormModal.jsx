@@ -115,7 +115,7 @@ export default function PropertyFormModal({ isOpen, onClose, onSave, editingProp
         bedrooms: editingProperty.bedrooms || '',
         suites: editingProperty.suites || '',
         bathrooms: editingProperty.bathrooms || '',
-        garages: editingProperty.garages || '',
+        garages: editingProperty.garages ?? editingProperty.garage ?? '',
         address: editingProperty.address || '',
         neighborhood: editingProperty.neighborhood || '',
         city: editingProperty.city || 'Itaiópolis - SC',
@@ -123,7 +123,7 @@ export default function PropertyFormModal({ isOpen, onClose, onSave, editingProp
         condoFee: editingProperty.condoFee || '',
         videoUrl: editingProperty.videoUrl || '',
         description: editingProperty.description || '',
-        features: editingProperty.features ? editingProperty.features.join(', ') : '',
+        features: editingProperty.features ? editingProperty.features.join(', ') : (editingProperty.tags ? editingProperty.tags.join(', ') : ''),
         featured: !!editingProperty.featured
       });
       const initialImages = editingProperty.images && editingProperty.images.length > 0 
@@ -131,10 +131,11 @@ export default function PropertyFormModal({ isOpen, onClose, onSave, editingProp
         : (editingProperty.imageUrl ? [editingProperty.imageUrl] : []);
       setImages(initialImages);
 
-      if (editingProperty.features && Array.isArray(editingProperty.features)) {
+      const propFeatures = editingProperty.features || editingProperty.tags;
+      if (propFeatures && Array.isArray(propFeatures)) {
         let listChanged = false;
         let newList = [...availableAmenities];
-        editingProperty.features.forEach(feat => {
+        propFeatures.forEach(feat => {
           if (feat && !newList.some(a => a.toLowerCase() === feat.toLowerCase())) {
             newList.push(feat);
             listChanged = true;
@@ -259,11 +260,13 @@ export default function PropertyFormModal({ isOpen, onClose, onSave, editingProp
       suites: parseInt(formData.suites, 10) || 0,
       bathrooms: parseInt(formData.bathrooms, 10) || 0,
       garages: parseInt(formData.garages, 10) || 0,
+      garage: parseInt(formData.garages, 10) || 0,
       iptu: parseFloat(formData.iptu) || 0,
       condoFee: parseFloat(formData.condoFee) || 0,
       imageUrl: finalImages[0],
       images: finalImages,
-      features: rawFeatures
+      features: rawFeatures,
+      tags: rawFeatures
     };
 
     onSave(dataToSave, editingProperty ? editingProperty.id : null);

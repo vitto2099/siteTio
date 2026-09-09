@@ -1,2 +1,2 @@
-// Lista inicial de imóveis limpa (pronta para cadastro de imóveis reais pelo Painel Admin)
+// Lista inicial de imóveis (inicia vazia para receber apenas cadastros reais)
 export const INITIAL_PROPERTIES = [];

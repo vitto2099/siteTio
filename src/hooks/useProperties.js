@@ -13,14 +13,25 @@ import {
   writeBatch
 } from 'firebase/firestore';
 
-const STORAGE_KEY = 'anderson_kunicki_react_properties_v1';
+const STORAGE_KEY = 'anderson_kunicki_react_properties_v2';
 const COLLECTION_NAME = 'properties';
 
 export function useProperties(onToast) {
   const [properties, setProperties] = useState(() => {
     try {
+      // Limpa chave antiga de demonstração se existir
+      localStorage.removeItem('anderson_kunicki_react_properties_v1');
+      
       const stored = localStorage.getItem(STORAGE_KEY);
-      return stored ? JSON.parse(stored) : INITIAL_PROPERTIES;
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) {
+          // Filtra quaisquer itens mock antigos
+          const realProps = parsed.filter(p => !p.id?.startsWith('prop-00'));
+          return realProps;
+        }
+      }
+      return INITIAL_PROPERTIES;
     } catch {
       return INITIAL_PROPERTIES;
     }
@@ -264,10 +275,10 @@ export function useProperties(onToast) {
             if (onToast) onToast(`${importedData.length} imóvel(is) importado(s) localmente!`);
           }
         } else {
-          alert('Arquivo JSON inválido. Certifique-se de que é uma lista válida de imóveis.');
+          if (onToast) onToast('Arquivo JSON inválido. Certifique-se de que é uma lista válida de imóveis.');
         }
       } catch (err) {
-        alert('Erro ao ler o arquivo JSON: ' + err.message);
+        if (onToast) onToast('Erro ao ler o arquivo JSON: ' + (err.message || 'Arquivo corrompido.'));
       }
     };
     reader.readAsText(file);

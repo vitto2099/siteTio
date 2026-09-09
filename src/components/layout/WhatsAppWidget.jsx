@@ -3,24 +3,71 @@ import { X, Send, CheckCheck } from 'lucide-react';
 import WhatsAppIcon from '../common/WhatsAppIcon';
 import { SITE_CONFIG, getWhatsAppUrl } from '../../config';
 
+function playNotificationSound() {
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
+    
+    // Pleasant double chime
+    const now = ctx.currentTime;
+    
+    const osc1 = ctx.createOscillator();
+    const gain1 = ctx.createGain();
+    osc1.type = 'sine';
+    osc1.frequency.setValueAtTime(659.25, now); // E5
+    gain1.gain.setValueAtTime(0.12, now);
+    gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+    osc1.connect(gain1);
+    gain1.connect(ctx.destination);
+    osc1.start(now);
+    osc1.stop(now + 0.18);
+
+    const osc2 = ctx.createOscillator();
+    const gain2 = ctx.createGain();
+    osc2.type = 'sine';
+    osc2.frequency.setValueAtTime(880, now + 0.12); // A5
+    gain2.gain.setValueAtTime(0.14, now + 0.12);
+    gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.38);
+    osc2.connect(gain2);
+    gain2.connect(ctx.destination);
+    osc2.start(now + 0.12);
+    osc2.stop(now + 0.38);
+  } catch {
+    // Autoplay restriction fallback
+  }
+}
+
 export default function WhatsAppWidget() {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [showBubble, setShowBubble] = useState(false);
+  const [hasAlerted, setHasAlerted] = useState(false);
 
   useEffect(() => {
+    const isDismissed = sessionStorage.getItem('wa_widget_dismissed');
+    if (isDismissed) return;
+
     const timer = setTimeout(() => {
       setShowBubble(true);
-    }, 3500);
+      setHasAlerted(true);
+      playNotificationSound();
+    }, 4500);
+
     return () => clearTimeout(timer);
   }, []);
+
+  const handleClose = () => {
+    setOpen(false);
+    setShowBubble(false);
+    sessionStorage.setItem('wa_widget_dismissed', 'true');
+  };
 
   const handleSend = (customText) => {
     const textToSend = customText || message || "Olá Anderson! Vim através do site e gostaria de atendimento.";
     window.open(getWhatsAppUrl(textToSend), '_blank');
     setOpen(false);
     setMessage('');
-    setShowBubble(false);
   };
 
   const quickQuestions = [
@@ -112,7 +159,7 @@ export default function WhatsAppWidget() {
               </div>
             </div>
             <button 
-              onClick={() => setOpen(false)} 
+              onClick={handleClose} 
               style={{ color: '#FFFFFF', opacity: 0.85, padding: '0.25rem', borderRadius: '50%', cursor: 'pointer' }}
               aria-label="Fechar conversa"
             >
@@ -206,6 +253,29 @@ export default function WhatsAppWidget() {
 
       {/* Floating Trigger Button with Pulsing Radar Ring */}
       <div style={{ position: 'relative' }}>
+        {!open && (
+          <div style={{
+            position: 'absolute',
+            top: '-4px',
+            right: '-4px',
+            backgroundColor: '#EF4444',
+            color: '#FFFFFF',
+            fontSize: '0.72rem',
+            fontWeight: 800,
+            width: '22px',
+            height: '22px',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '0 2px 8px rgba(239, 68, 68, 0.6)',
+            zIndex: 10,
+            border: '2px solid #FFFFFF',
+            animation: 'pulseGlow 2s infinite'
+          }}>
+            1
+          </div>
+        )}
         <div style={{
           position: 'absolute',
           inset: '-6px',
@@ -216,7 +286,7 @@ export default function WhatsAppWidget() {
           pointerEvents: 'none'
         }} />
         <button 
-          onClick={() => { setOpen(!open); setShowBubble(false); }}
+          onClick={() => setOpen(!open)}
           className="btn btn-whatsapp"
           style={{
             width: '60px',

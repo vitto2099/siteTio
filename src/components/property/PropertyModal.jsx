@@ -15,8 +15,8 @@ export default function PropertyModal({ property, onClose }) {
   const waUrl = getWhatsAppUrl(`Olá Anderson Kunicki! Gostaria de agendar uma visita e tirar dúvidas sobre o imóvel: "${property.title}" (Ref: ${refCode}) - Valor: ${formatMoney(property.price)}.`);
 
   const handleCopyLink = () => {
-    const shareUrl = `${window.location.origin}${window.location.pathname}#imoveis`;
-    navigator.clipboard.writeText(`${shareUrl}\nConfira este imóvel: ${property.title} (Ref: ${refCode}) - ${formatMoney(property.price)}`);
+    const shareUrl = `${window.location.origin}/?imovel=${encodeURIComponent(refCode)}`;
+    navigator.clipboard.writeText(`${property.title} (Ref: ${refCode}) - ${formatMoney(property.price)}\n${shareUrl}`);
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
   };
@@ -132,7 +132,7 @@ export default function PropertyModal({ property, onClose }) {
               </div>
             </div>
 
-            <div style={{ fontFamily: 'Outfit, sans-serif', fontSize: '2.1rem', fontWeight: 800, color: 'var(--accent-red)' }}>
+            <div style={{ fontFamily: 'var(--font-heading)', fontSize: '2.1rem', fontWeight: 800, color: 'var(--accent-red)' }}>
               {formatMoney(property.price)} {property.purpose === 'aluguel' ? <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)', fontWeight: 400 }}>/mês</span> : ''}
             </div>
           </div>
@@ -184,11 +184,11 @@ export default function PropertyModal({ property, onClose }) {
               </div>
             )}
 
-            {property.garages > 0 && (
+            {(property.garages > 0 || property.garage > 0) && (
               <div style={{ backgroundColor: 'var(--bg-subtle)', padding: '0.75rem 1rem', borderRadius: 'var(--radius-sm)', fontSize: '0.875rem', fontWeight: 600 }}>
                 <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Vagas Garagem</div>
                 <div style={{ marginTop: '0.2rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                  <Car size={16} style={{ color: 'var(--primary-blue)' }} /> {property.garages} vg
+                  <Car size={16} style={{ color: 'var(--primary-blue)' }} /> {property.garages ?? property.garage} vg
                 </div>
               </div>
             )}
@@ -237,11 +237,11 @@ export default function PropertyModal({ property, onClose }) {
           )}
 
           {/* Features Tags */}
-          {property.features && property.features.length > 0 && (
+          {((property.features && property.features.length > 0) || (property.tags && property.tags.length > 0)) && (
             <div style={{ marginBottom: '1.75rem' }}>
               <h4 style={{ fontSize: '1rem', color: 'var(--primary-dark)', marginBottom: '0.75rem', fontWeight: 700 }}>Diferenciais & Comodidades</h4>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                {property.features.map((feat, idx) => (
+                {(property.features || property.tags).map((feat, idx) => (
                   <span key={idx} style={{
                     backgroundColor: 'var(--accent-red-subtle)',
                     color: 'var(--accent-red)',

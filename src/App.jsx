@@ -85,21 +85,59 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleOpenPropertyModal = (property) => {
+    setSelectedPropertyModal(property);
+    if (property) {
+      const url = new URL(window.location.href);
+      url.searchParams.set('imovel', property.code || property.id);
+      window.history.replaceState({ tab: currentTab }, '', url.toString());
+    }
+  };
+
+  const handleClosePropertyModal = () => {
+    setSelectedPropertyModal(null);
+    const url = new URL(window.location.href);
+    if (url.searchParams.has('imovel')) {
+      url.searchParams.delete('imovel');
+      window.history.replaceState({ tab: currentTab }, '', url.toString());
+    }
+  };
+
   useEffect(() => {
     const handleNavigation = () => {
       const tab = getTabFromLocation();
       setCurrentTabState(tab);
+      
+      // Checar se há imóvel especificado no parâmetro da URL
+      const searchParams = new URLSearchParams(window.location.search);
+      const imovelParam = searchParams.get('imovel');
+      const hashParam = window.location.hash.replace('#imovel-', '').replace('#', '');
+      const targetParam = imovelParam || (hashParam.startsWith('AK') ? hashParam : null);
+
+      if (targetParam && properties.length > 0) {
+        const found = properties.find(p => 
+          (p.code && p.code.toLowerCase() === targetParam.toLowerCase()) || 
+          (p.id && p.id.toLowerCase() === targetParam.toLowerCase())
+        );
+        if (found) {
+          setSelectedPropertyModal(found);
+        }
+      }
+
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     window.addEventListener('popstate', handleNavigation);
     window.addEventListener('hashchange', handleNavigation);
 
+    // Initial check on load
+    handleNavigation();
+
     return () => {
       window.removeEventListener('popstate', handleNavigation);
       window.removeEventListener('hashchange', handleNavigation);
     };
-  }, []);
+  }, [properties]);
 
   const handleSavePropertyForm = (formData, editId) => {
     saveProperty(formData, editId);
@@ -153,7 +191,7 @@ export default function App() {
                       <PropertyCard 
                         key={prop.id} 
                         property={prop} 
-                        onSelectProperty={(p) => setSelectedPropertyModal(p)} 
+                        onSelectProperty={(p) => handleOpenPropertyModal(p)} 
                       />
                     ))}
                   </div>
@@ -183,45 +221,58 @@ export default function App() {
                   onReset={resetFilters}
                 />
 
-                {/* Properties Grid or Clean Empty State */}
-                {filteredProperties.length === 0 ? (
-                  <div style={{
-                    backgroundColor: '#FFFFFF',
-                    borderRadius: 'var(--radius-md)',
-                    padding: '4rem 2rem',
-                    textAlign: 'center',
-                    border: '1px dashed var(--border-subtle)',
-                    boxShadow: 'var(--shadow-sm)',
-                    maxWidth: '650px',
-                    margin: '2rem auto'
-                  }}>
-                    <Building size={56} style={{ color: '#CBD5E1', marginBottom: '1.25rem' }} />
-                    <h3 style={{ fontSize: '1.35rem', color: 'var(--primary-dark)', fontWeight: 800, marginBottom: '0.4rem' }}>
-                      {properties.length === 0 ? 'Nenhum imóvel disponível no momento' : 'Nenhum imóvel encontrado para estes filtros'}
-                    </h3>
-                    <p style={{ color: 'var(--text-muted)', marginBottom: '1.75rem', fontSize: '0.95rem' }}>
-                      {properties.length === 0 
-                        ? 'Entre em contato diretamente pelo WhatsApp para consultar novidades e captações exclusivas.' 
-                        : 'Tente limpar ou ajustar os filtros de busca para encontrar outras oportunidades.'}
-                    </p>
-                    <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-                      <button className="btn btn-outline" onClick={resetFilters}>
-                        Limpar Filtros de Busca
-                      </button>
-                      <a href={getWhatsAppUrl("Olá Anderson! Gostaria de consultar opções de imóveis disponíveis em Itaiópolis.")} target="_blank" rel="noopener noreferrer" className="btn btn-whatsapp">
-                        <WhatsAppIcon size={18} color="#FFFFFF" /> Consultar Corretor no WhatsApp
-                      </a>
-                    </div>
-                  </div>
-                ) : (
+                {/* Properties Grid Display */}
+                {filteredProperties.length > 0 ? (
                   <div className="grid-properties">
                     {filteredProperties.map(prop => (
                       <PropertyCard 
                         key={prop.id} 
                         property={prop} 
-                        onSelectProperty={(p) => setSelectedPropertyModal(p)} 
+                        onSelectProperty={(p) => handleOpenPropertyModal(p)} 
                       />
                     ))}
+                  </div>
+                ) : (
+                  <div style={{
+                    textAlign: 'center',
+                    padding: '5rem 2rem',
+                    backgroundColor: '#FFFFFF',
+                    borderRadius: 'var(--radius-lg)',
+                    border: '1px dashed var(--border-medium)',
+                    marginTop: '2rem'
+                  }}>
+                    <div style={{
+                      width: '64px',
+                      height: '64px',
+                      borderRadius: '50%',
+                      backgroundColor: 'var(--bg-subtle)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      margin: '0 auto 1.25rem',
+                      color: 'var(--text-muted)'
+                    }}>
+                      <Building size={32} />
+                    </div>
+                    <h3 style={{ fontSize: '1.35rem', marginBottom: '0.5rem', color: 'var(--primary-dark)' }}>
+                      Nenhum imóvel encontrado
+                    </h3>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', maxWidth: '440px', margin: '0 auto 1.5rem' }}>
+                      Não encontramos nenhum imóvel com os filtros selecionados no momento. Tente limpar os filtros ou fale com nosso corretor.
+                    </p>
+                    <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+                      <button className="btn btn-navy btn-sm" onClick={resetFilters}>
+                        Limpar Todos os Filtros
+                      </button>
+                      <a 
+                        href={getWhatsAppUrl("Olá Anderson! Gostaria de consultar opções de imóveis sob encomenda.")} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="btn btn-whatsapp btn-sm"
+                      >
+                        <WhatsAppIcon size={16} color="#FFFFFF" /> Consultar no WhatsApp
+                      </a>
+                    </div>
                   </div>
                 )}
               </div>
@@ -251,10 +302,12 @@ export default function App() {
               onBulkStatusChange={bulkStatusChange}
               onExportBackup={exportBackupJSON}
               onImportBackup={importBackupJSON}
-              onSelectProperty={(p) => setSelectedPropertyModal(p)}
+              onSelectProperty={(p) => handleOpenPropertyModal(p)}
               currentUser={currentUser}
               onLogout={logout}
               onUpdatePassword={updateUserPassword}
+              onGoHome={() => setCurrentTab('home')}
+              onToast={showToast}
             />
           ) : (
             <AdminLogin onLogin={login} />
@@ -266,16 +319,18 @@ export default function App() {
       {selectedPropertyModal && (
         <PropertyModal 
           property={selectedPropertyModal} 
-          onClose={() => setSelectedPropertyModal(null)} 
+          onClose={handleClosePropertyModal} 
         />
       )}
 
-      <PropertyFormModal 
-        isOpen={isFormModalOpen}
-        onClose={() => { setIsFormModalOpen(false); setEditingProperty(null); }}
-        onSave={handleSavePropertyForm}
-        editingProperty={editingProperty}
-      />
+      {isFormModalOpen && (
+        <PropertyFormModal 
+          isOpen={isFormModalOpen}
+          onClose={() => { setIsFormModalOpen(false); setEditingProperty(null); }}
+          onSave={handleSavePropertyForm}
+          editingProperty={editingProperty}
+        />
+      )}
 
       <WhatsAppWidget />
       <Footer setCurrentTab={setCurrentTab} />
