@@ -30,23 +30,17 @@ export default function Header({ currentTab, setCurrentTab, onOpenAdminModal, cu
         boxShadow: 'var(--shadow-xs)'
       }}>
         {/* Top bar info */}
-        <div style={{
-          backgroundColor: 'var(--primary-dark)',
-          color: '#CBD5E1',
-          fontSize: '0.78rem',
-          padding: '0.4rem 0',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.06)'
-        }}>
+        <div className="header-top-bar">
           <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap' }}>
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
                 <MapPin size={12} style={{ color: 'var(--accent-red)' }} /> {SITE_CONFIG.address} - {SITE_CONFIG.cityState}
               </span>
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+              <span className="header-top-bar-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
                 <Mail size={12} style={{ color: 'var(--accent-red)' }} /> {SITE_CONFIG.email}
               </span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
+            <div className="header-top-bar-secondary" style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
               <a href={SITE_CONFIG.instagramUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', color: '#F9A8D4', textDecoration: 'none' }}>
                 <Instagram size={12} /> {SITE_CONFIG.instagramHandle || '@kunickianderson'}
               </a>
@@ -59,20 +53,26 @@ export default function Header({ currentTab, setCurrentTab, onOpenAdminModal, cu
         </div>
 
         {/* Main navigation bar */}
-        <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem 1.5rem' }}>
+        <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem 1.5rem', gap: '1rem' }}>
           {/* Logo & Brand */}
-          <a href="/" onClick={(e) => { e.preventDefault(); setCurrentTab('home'); }} style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', textDecoration: 'none' }}>
+          <a href="/" onClick={(e) => { e.preventDefault(); setCurrentTab('home'); }} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', textDecoration: 'none', flexShrink: 0 }}>
             <img 
-              src="/banner.jpg" 
+              src="/favicon.svg" 
               alt="Anderson Kunicki Corretor Imobiliário" 
-              style={{ height: '46px', width: 'auto', borderRadius: '8px', objectFit: 'contain' }}
-              onError={(e) => { e.target.style.display = 'none'; }}
+              style={{ 
+                height: '42px', 
+                width: '42px', 
+                borderRadius: '10px', 
+                objectFit: 'cover',
+                flexShrink: 0,
+                boxShadow: '0 2px 8px rgba(7, 21, 39, 0.15)'
+              }}
             />
-            <div>
-              <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--primary-dark)', letterSpacing: '-0.02em', lineHeight: 1.1 }}>
+            <div style={{ minWidth: 0 }}>
+              <div className="header-brand-title" style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--primary-dark)', letterSpacing: '-0.02em', lineHeight: 1.1, whiteSpace: 'nowrap' }}>
                 Anderson <span style={{ color: 'var(--accent-red)' }}>Kunicki</span>
               </div>
-              <div style={{ fontSize: '0.68rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              <div className="header-brand-creci" style={{ fontSize: '0.68rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', whiteSpace: 'nowrap' }}>
                 Corretor Imobiliário • {SITE_CONFIG.creci}
               </div>
             </div>
@@ -119,15 +119,15 @@ export default function Header({ currentTab, setCurrentTab, onOpenAdminModal, cu
           </nav>
 
           {/* Header Action Buttons */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', flexShrink: 0 }}>
             {currentTab === 'admin' && currentUser && (
               <button className="btn btn-red btn-sm" onClick={onOpenAdminModal} style={{ fontWeight: 700 }}>
-                <PlusCircle size={15} /> <span>Novo Imóvel</span>
+                <PlusCircle size={15} /> <span className="header-wa-text">Novo Imóvel</span>
               </button>
             )}
 
-            <a href={waUrl} target="_blank" rel="noopener noreferrer" className="btn btn-whatsapp btn-sm" style={{ fontWeight: 700 }}>
-              <WhatsAppIcon size={16} color="#FFFFFF" /> <span>WhatsApp</span>
+            <a href={waUrl} target="_blank" rel="noopener noreferrer" className="btn btn-whatsapp btn-sm header-wa-btn" style={{ fontWeight: 700 }}>
+              <WhatsAppIcon size={16} color="#FFFFFF" /> <span className="header-wa-text">WhatsApp</span>
             </a>
 
             {/* Mobile Menu Hamburger Button */}
@@ -137,7 +137,7 @@ export default function Header({ currentTab, setCurrentTab, onOpenAdminModal, cu
               style={{
                 backgroundColor: 'var(--bg-subtle)',
                 color: 'var(--primary-dark)',
-                border: 'none',
+                border: '1px solid var(--border-subtle)',
                 padding: '0.45rem 0.65rem',
                 borderRadius: 'var(--radius-sm)',
                 alignItems: 'center',

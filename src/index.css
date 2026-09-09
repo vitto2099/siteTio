@@ -486,3 +486,94 @@ input, select, textarea {
     bottom: 1.5rem;
   }
 }
+
+/* ==========================================================================
+   Header Responsivo & Ajustes de Alinhamento
+   ========================================================================== */
+.header-top-bar {
+  background-color: var(--primary-dark);
+  color: #CBD5E1;
+  font-size: 0.76rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+@media (max-width: 768px) {
+  .header-top-bar-secondary {
+    display: none !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .header-top-bar {
+    display: none !important;
+  }
+  .header-brand-title {
+    font-size: 1.05rem !important;
+  }
+  .header-brand-creci {
+    font-size: 0.62rem !important;
+  }
+  .header-wa-text {
+    display: none !important;
+  }
+  .header-wa-btn {
+    padding: 0.45rem 0.6rem !important;
+  }
+}
+
+/* ==========================================================================
+   Footer Colapsável (Minimizado por padrão com botão de expansão)
+   ========================================================================== */
+.footer-collapsible {
+  background-color: var(--primary-dark);
+  color: #FFFFFF;
+  border-top: 3px solid var(--accent-red);
+  position: relative;
+  z-index: 10;
+}
+
+.footer-bar-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.85rem 1.5rem;
+  background: rgba(0, 0, 0, 0.25);
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.footer-expand-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(255, 255, 255, 0.08);
+  color: #E2E8F0;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  padding: 0.42rem 0.95rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.footer-expand-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  color: #FFFFFF;
+  border-color: rgba(255, 255, 255, 0.35);
+  transform: translateY(-1px);
+}
+
+.footer-updated-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  color: #94A3B8;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.25rem 0.65rem;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
