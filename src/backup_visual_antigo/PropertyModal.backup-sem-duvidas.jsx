@@ -1,68 +1,18 @@
 import React, { useState } from 'react';
-import { X, MapPin, Maximize2, Bed, Bath, Car, CheckCircle2, Share2, Check, Video, Home, Layers, MessageSquare, Send } from 'lucide-react';
+import { X, MapPin, Maximize2, Bed, Bath, Car, CheckCircle2, Share2, Check, Video, Home, Layers } from 'lucide-react';
 import WhatsAppIcon from '../common/WhatsAppIcon';
 import { getWhatsAppUrl, SITE_CONFIG } from '../../config';
 import { formatMoney } from '../../utils/formatters';
 import { getEmbedVideoUrl } from '../../utils/video';
 
-function getPredefinedQuestions(property) {
-  const type = (property?.type || '').toLowerCase();
-  if (type === 'terreno') {
-    return [
-      "Possui escritura pública e documentação 100% regular?",
-      "A rua possui água encanada e rede de energia elétrica?",
-      "Tem condição especial para proposta de pagamento à vista?",
-      "Gostaria de agendar uma visita ao local do terreno."
-    ];
-  }
-  if (type === 'sitio') {
-    return [
-      "Possui nascente, poço artesiano ou tanque de peixes?",
-      "Qual a distância aproximada até a estrada principal ou centro?",
-      "O proprietário aceita troca por imóvel urbano em Itaiópolis?",
-      "Gostaria de agendar uma visita à propriedade."
-    ];
-  }
-  if (type === 'comercial') {
-    return [
-      "Possui viabilidade para comércio ou escritório?",
-      "Gostaria de agendar uma visita presencial ao imóvel.",
-      "Qual é a condição ou garantia para locação ou compra?"
-    ];
-  }
-  return [
-    "Este imóvel aceita financiamento bancário pela Caixa?",
-    "O proprietário aceita veículo ou permuta como parte do pagamento?",
-    "Gostaria de agendar uma visita presencial nesta semana.",
-    "Qual o valor aproximado de entrada para este imóvel?"
-  ];
-}
-
 export default function PropertyModal({ property, onClose }) {
   const [selectedImg, setSelectedImg] = useState(property?.imageUrl || (property?.images && property.images[0]));
   const [copied, setCopied] = useState(false);
-  const [customQuestion, setCustomQuestion] = useState('');
 
   if (!property) return null;
 
   const refCode = property.code || property.id;
   const waUrl = getWhatsAppUrl(`Olá Anderson Kunicki! Gostaria de agendar uma visita e tirar dúvidas sobre o imóvel: "${property.title}" (Ref: ${refCode}) - Valor: ${formatMoney(property.price)}.`);
-
-  const predefinedQuestions = getPredefinedQuestions(property);
-
-  const handlePredefinedQuestion = (question) => {
-    const text = `Olá Anderson! Vi no site o imóvel "${property.title}" (Ref: ${refCode}) e gostaria de saber: ${question}`;
-    window.open(getWhatsAppUrl(text), '_blank');
-  };
-
-  const handleCustomQuestionSubmit = (e) => {
-    e.preventDefault();
-    const trimmed = customQuestion.trim();
-    if (!trimmed) return;
-    const text = `Olá Anderson! Vi no site o imóvel "${property.title}" (Ref: ${refCode}) e gostaria de saber: ${trimmed}`;
-    window.open(getWhatsAppUrl(text), '_blank');
-    setCustomQuestion('');
-  };
 
   const handleCopyLink = () => {
     const shareUrl = `${window.location.origin}/?imovel=${encodeURIComponent(refCode)}`;
@@ -319,101 +269,6 @@ export default function PropertyModal({ property, onClose }) {
               <p style={{ color: 'var(--text-body)', lineHeight: 1.7, whiteSpace: 'pre-line', fontSize: '0.95rem' }}>{property.description}</p>
             </div>
           )}
-
-          {/* Caixa de Dúvidas Rápidas & Pergunta Direta no WhatsApp */}
-          <div className="property-inquiry-box" style={{
-            backgroundColor: '#F8FAFC',
-            border: '1px solid #E2E8F0',
-            borderRadius: '12px',
-            padding: '1.35rem 1.5rem',
-            marginBottom: '1.75rem',
-            boxShadow: '0 2px 8px rgba(15, 23, 42, 0.03)'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', marginBottom: '0.4rem' }}>
-              <div style={{ width: '30px', height: '30px', borderRadius: '50%', backgroundColor: '#DCFCE7', color: '#16A34A', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <MessageSquare size={16} />
-              </div>
-              <div>
-                <h4 style={{ fontSize: '0.98rem', fontWeight: 800, color: '#0F172A', margin: 0, lineHeight: 1.2 }}>
-                  Dúvidas sobre este imóvel? Fale direto no WhatsApp
-                </h4>
-                <p style={{ fontSize: '0.78rem', color: '#64748B', margin: '0.15rem 0 0' }}>
-                  Clique em uma pergunta rápida ou digite a sua dúvida específica abaixo:
-                </p>
-              </div>
-            </div>
-
-            {/* Botões de Perguntas Pré-programadas */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginTop: '1rem', marginBottom: '1.25rem' }}>
-              {predefinedQuestions.map((q, idx) => (
-                <button
-                  key={idx}
-                  type="button"
-                  onClick={() => handlePredefinedQuestion(q)}
-                  style={{
-                    backgroundColor: '#FFFFFF',
-                    border: '1px solid #CBD5E1',
-                    borderRadius: '20px',
-                    padding: '0.42rem 0.85rem',
-                    fontSize: '0.8rem',
-                    fontWeight: 600,
-                    color: '#334155',
-                    cursor: 'pointer',
-                    textAlign: 'left',
-                    transition: 'all 0.2s ease',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '0.45rem',
-                    boxShadow: '0 1px 3px rgba(0,0,0,0.03)'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = '#16A34A';
-                    e.currentTarget.style.color = '#15803D';
-                    e.currentTarget.style.backgroundColor = '#F0FDF4';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = '#CBD5E1';
-                    e.currentTarget.style.color = '#334155';
-                    e.currentTarget.style.backgroundColor = '#FFFFFF';
-                  }}
-                >
-                  <WhatsAppIcon size={13} color="#16A34A" />
-                  <span>{q}</span>
-                </button>
-              ))}
-            </div>
-
-            {/* Campo para Escrever Dúvida Personalizada */}
-            <form onSubmit={handleCustomQuestionSubmit} style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-              <input
-                type="text"
-                className="input-field"
-                placeholder="Ou escreva sua pergunta aqui (ex: aceita proposta à vista?)..."
-                value={customQuestion}
-                onChange={(e) => setCustomQuestion(e.target.value)}
-                style={{
-                  flex: '1 1 240px',
-                  backgroundColor: '#FFFFFF',
-                  borderColor: '#CBD5E1',
-                  fontSize: '0.86rem',
-                  padding: '0.65rem 0.95rem'
-                }}
-              />
-              <button
-                type="submit"
-                className="btn btn-whatsapp"
-                style={{
-                  padding: '0.65rem 1.15rem',
-                  fontSize: '0.86rem',
-                  fontWeight: 700,
-                  whiteSpace: 'nowrap',
-                  flexShrink: 0
-                }}
-              >
-                <Send size={14} /> Enviar Dúvida
-              </button>
-            </form>
-          </div>
 
           {/* Broker Contact Box */}
           <div className="modal-broker-box" style={{

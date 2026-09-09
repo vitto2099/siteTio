@@ -600,6 +600,19 @@ input, select, textarea {
     justify-content: center !important;
   }
 
+  /* Caixa de Dúvidas Rápidas */
+  .property-inquiry-box {
+    padding: 1rem !important;
+  }
+  .property-inquiry-box form {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  .property-inquiry-box form button {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
   /* Footer responsivo */
   .footer-bar-summary {
     padding: 1rem !important;
