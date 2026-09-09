@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Save, Upload, Image as ImageIcon, ArrowLeft, ArrowRight, Star, Trash2, Plus, Check, Tag } from 'lucide-react';
 import { formatMoney } from '../../utils/formatters';
+import { getCategoryPrefix } from '../../data/properties';
 
 const DEFAULT_AMENITIES = [
   'Suíte Master',
@@ -147,7 +148,7 @@ export default function PropertyFormModal({ isOpen, onClose, onSave, editingProp
       }
     } else {
       setFormData({
-        code: `AK-${Math.floor(100 + Math.random() * 900)}`,
+        code: `${getCategoryPrefix('casa', 'venda')}-${Math.floor(100 + Math.random() * 900)}`,
         title: '',
         type: 'casa',
         purpose: 'venda',
@@ -250,9 +251,12 @@ export default function PropertyFormModal({ isOpen, onClose, onSave, editingProp
     const defaultImg = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&q=80';
     const finalImages = images.length > 0 ? images : [defaultImg];
 
+    const fallbackPrefix = getCategoryPrefix(formData.type, formData.purpose);
+    const fallbackCode = `${fallbackPrefix}-${Date.now().toString().slice(-3)}`;
+
     const dataToSave = {
       ...formData,
-      code: formData.code.trim() || `AK-${Date.now().toString().slice(-4)}`,
+      code: formData.code.trim() || fallbackCode,
       price: parseFloat(formData.price) || 0,
       area: parseFloat(formData.area) || 0,
       landArea: parseFloat(formData.landArea) || 0,
@@ -308,23 +312,23 @@ export default function PropertyFormModal({ isOpen, onClose, onSave, editingProp
               1. Identificação e Título
             </h4>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 3fr', gap: '1rem', marginBottom: '1rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 150px), 1fr))', gap: '1rem', marginBottom: '1rem' }}>
               <div>
                 <label style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--primary-dark)', marginBottom: '0.3rem', display: 'block' }}>
-                  Código Ref *
+                  Código Ref * <span style={{ fontWeight: 400, color: 'var(--text-muted)' }}>(ex: CA-101, TE-102)</span>
                 </label>
                 <input 
                   type="text" 
                   className="input-field" 
-                  placeholder="Ex: AK-101" 
+                  placeholder="Ex: CA-101, TE-102..." 
                   value={formData.code}
-                  onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value }))}
+                  onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value.toUpperCase() }))}
                   required
-                  style={{ backgroundColor: 'var(--bg-subtle)' }}
+                  style={{ backgroundColor: 'var(--bg-subtle)', fontWeight: 700 }}
                 />
               </div>
 
-              <div>
+              <div style={{ gridColumn: 'span 2' }}>
                 <label style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--primary-dark)', marginBottom: '0.3rem', display: 'block' }}>
                   Título Completo do Anúncio *
                 </label>
@@ -349,15 +353,28 @@ export default function PropertyFormModal({ isOpen, onClose, onSave, editingProp
                 <select 
                   className="input-field" 
                   value={formData.type}
-                  onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value }))}
+                  onChange={(e) => {
+                    const newType = e.target.value;
+                    setFormData(prev => {
+                      const currentCode = (prev.code || '').trim();
+                      const prefixMatch = currentCode.match(/^(CA|TE|SI|AP|CO|AL|AK)-(\d+)$/i);
+                      let newCode = currentCode;
+                      if (prefixMatch) {
+                        const num = prefixMatch[2];
+                        const newPrefix = prev.purpose === 'aluguel' ? 'AL' : getCategoryPrefix(newType, prev.purpose);
+                        newCode = `${newPrefix}-${num}`;
+                      }
+                      return { ...prev, type: newType, code: newCode };
+                    });
+                  }}
                   required
                   style={{ backgroundColor: 'var(--bg-subtle)' }}
                 >
-                  <option value="casa">Casa</option>
-                  <option value="terreno">Terreno</option>
-                  <option value="sitio">Sítio / Chácara</option>
-                  <option value="apartamento">Apartamento</option>
-                  <option value="comercial">Comercial</option>
+                  <option value="casa">Casa (CA)</option>
+                  <option value="terreno">Terreno (TE)</option>
+                  <option value="sitio">Sítio / Chácara (SI)</option>
+                  <option value="apartamento">Apartamento (AP)</option>
+                  <option value="comercial">Comercial (CO)</option>
                 </select>
               </div>
 
@@ -366,14 +383,27 @@ export default function PropertyFormModal({ isOpen, onClose, onSave, editingProp
                   Finalidade *
                 </label>
                 <select 
-                  className="input-field"
+                  className="input-field" 
                   value={formData.purpose}
-                  onChange={(e) => setFormData(prev => ({ ...prev, purpose: e.target.value }))}
+                  onChange={(e) => {
+                    const newPurpose = e.target.value;
+                    setFormData(prev => {
+                      const currentCode = (prev.code || '').trim();
+                      const prefixMatch = currentCode.match(/^(CA|TE|SI|AP|CO|AL|AK)-(\d+)$/i);
+                      let newCode = currentCode;
+                      if (prefixMatch) {
+                        const num = prefixMatch[2];
+                        const newPrefix = getCategoryPrefix(prev.type, newPurpose);
+                        newCode = `${newPrefix}-${num}`;
+                      }
+                      return { ...prev, purpose: newPurpose, code: newCode };
+                    });
+                  }}
                   required
                   style={{ backgroundColor: 'var(--bg-subtle)' }}
                 >
                   <option value="venda">Venda</option>
-                  <option value="aluguel">Aluguel</option>
+                  <option value="aluguel">Aluguel (AL)</option>
                 </select>
               </div>
 

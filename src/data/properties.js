@@ -1,8 +1,21 @@
-// Imóveis reais/amostra selecionados para Itaiópolis e região
+// Helper para gerar prefixo imobiliário padrão por categoria / finalidade
+export function getCategoryPrefix(type = 'casa', purpose = 'venda') {
+  if (purpose === 'aluguel') return 'AL';
+  switch (type) {
+    case 'casa': return 'CA';
+    case 'apartamento': return 'AP';
+    case 'terreno': return 'TE';
+    case 'sitio': return 'SI';
+    case 'comercial': return 'CO';
+    default: return 'IM';
+  }
+}
+
+// Imóveis reais/amostra com códigos setoriais padronizados para Itaiópolis e região
 export const INITIAL_PROPERTIES = [
   {
-    id: "prop-ak-101",
-    code: "AK-101",
+    id: "prop-ca-101",
+    code: "CA-101",
     title: "Casa de Alvenaria no Centro com Edícula",
     purpose: "venda",
     type: "casa",
@@ -29,8 +42,8 @@ export const INITIAL_PROPERTIES = [
     createdAt: "2026-09-01"
   },
   {
-    id: "prop-ak-102",
-    code: "AK-102",
+    id: "prop-si-101",
+    code: "SI-101",
     title: "Chácara com Área Verde e Nascente em Moema",
     purpose: "venda",
     type: "sitio",
@@ -56,8 +69,8 @@ export const INITIAL_PROPERTIES = [
     createdAt: "2026-09-03"
   },
   {
-    id: "prop-ak-103",
-    code: "AK-103",
+    id: "prop-te-101",
+    code: "TE-101",
     title: "Terreno Residencial Pronto para Construir no Lucena",
     purpose: "venda",
     type: "terreno",
@@ -82,8 +95,8 @@ export const INITIAL_PROPERTIES = [
     createdAt: "2026-09-05"
   },
   {
-    id: "prop-ak-104",
-    code: "AK-104",
+    id: "prop-ca-102",
+    code: "CA-102",
     title: "Residência Moderna com Varanda e Garagem Coberta",
     purpose: "venda",
     type: "casa",
@@ -107,5 +120,58 @@ export const INITIAL_PROPERTIES = [
       "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=1000&q=80"
     ],
     createdAt: "2026-09-07"
+  },
+  {
+    id: "prop-ap-101",
+    code: "AP-101",
+    title: "Apartamento Central com 2 Quartos e Sacada com Churrasqueira",
+    purpose: "venda",
+    type: "apartamento",
+    price: 245000,
+    neighborhood: "Centro",
+    city: "Itaiópolis",
+    state: "SC",
+    area: 75,
+    landArea: 0,
+    bedrooms: 2,
+    suites: 1,
+    bathrooms: 2,
+    garage: 1,
+    featured: false,
+    status: "ativo",
+    description: "Apartamento ensolarado no Centro de Itaiópolis com ótima ventilação e acabamento de qualidade. Possui 2 dormitórios (1 suíte), sala integrada com a cozinha, sacada com churrasqueira individual, banheiro social, área de serviço e 1 vaga de garagem coberta. Prédio seguro com interfone e portão eletrônico.",
+    features: ["Sacada com Churrasqueira", "Suíte", "Garagem Coberta", "Portão Eletrônico", "Centro da Cidade", "Aceita Financiamento"],
+    imageUrl: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1000&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=1000&q=80"
+    ],
+    createdAt: "2026-09-08"
+  },
+  {
+    id: "prop-al-101",
+    code: "AL-101",
+    title: "Casa Comercial e Residencial para Locação no Centro",
+    purpose: "aluguel",
+    type: "comercial",
+    price: 2200,
+    neighborhood: "Centro",
+    city: "Itaiópolis",
+    state: "SC",
+    area: 130,
+    landArea: 350,
+    bedrooms: 3,
+    suites: 0,
+    bathrooms: 2,
+    garage: 2,
+    featured: false,
+    status: "ativo",
+    description: "Imóvel versátil para locação comercial ou residencial em localização privilegiada no Centro de Itaiópolis, com grande fluxo de pedestres e veículos. Amplo espaço frontal, recepção/salas, 2 banheiros e estacionamento próprio. Ideal para escritórios, clínicas, consultórios ou moradia com comércio integrado.",
+    features: ["Ponto Comercial Nobre", "Estacionamento Próprio", "Fácil Acesso", "Rua Asfaltada", "Grande Visibilidade"],
+    imageUrl: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1000&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1000&q=80"
+    ],
+    createdAt: "2026-09-09"
   }
 ];

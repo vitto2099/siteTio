@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { INITIAL_PROPERTIES } from '../data/properties';
+import { INITIAL_PROPERTIES, getCategoryPrefix } from '../data/properties';
 import { db, isFirebaseConfigured } from '../lib/firebase';
 import { 
   collection, 
@@ -16,19 +16,30 @@ import {
 const STORAGE_KEY = 'anderson_kunicki_react_properties_v2';
 const COLLECTION_NAME = 'properties';
 
+// Normaliza códigos legados (ex: AK-101 vira CA-101)
+function normalizePropertyCodes(list) {
+  if (!Array.isArray(list)) return [];
+  return list.map(p => {
+    if (p.code && p.code.startsWith('AK-')) {
+      const num = p.code.replace('AK-', '');
+      const prefix = getCategoryPrefix(p.type, p.purpose);
+      return { ...p, code: `${prefix}-${num}` };
+    }
+    return p;
+  });
+}
+
 export function useProperties(onToast) {
   const [properties, setProperties] = useState(() => {
     try {
-      // Limpa chave antiga de demonstração se existir
       localStorage.removeItem('anderson_kunicki_react_properties_v1');
       
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed)) {
-          // Filtra quaisquer itens mock antigos
           const realProps = parsed.filter(p => !p.id?.startsWith('prop-00'));
-          return realProps;
+          return normalizePropertyCodes(realProps);
         }
       }
       return INITIAL_PROPERTIES;
@@ -60,8 +71,9 @@ export function useProperties(onToast) {
           // Ordenar por data de criação decrescente
           fetched.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
 
-          setProperties(fetched);
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(fetched));
+          const normalized = normalizePropertyCodes(fetched);
+          setProperties(normalized);
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized));
         }, (error) => {
           console.warn('⚠️ Erro ao sincronizar com Firestore, operando com cache local:', error);
         });
@@ -74,7 +86,7 @@ export function useProperties(onToast) {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
         try {
-          setProperties(JSON.parse(stored));
+          setProperties(normalizePropertyCodes(JSON.parse(stored)));
         } catch {
           setProperties(INITIAL_PROPERTIES);
         }

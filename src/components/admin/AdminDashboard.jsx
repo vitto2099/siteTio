@@ -250,7 +250,7 @@ export default function AdminDashboard({
             <input 
               type="text" 
               className="input-field" 
-              placeholder="Buscar por código (ex: AK-101), título, rua ou bairro..." 
+              placeholder="Buscar por código (ex: CA-101, TE-102), título, rua ou bairro..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               style={{ border: 'none', background: 'transparent', padding: '0.2rem 0', boxShadow: 'none' }}

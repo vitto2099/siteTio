@@ -112,7 +112,7 @@ export default function App() {
       const searchParams = new URLSearchParams(window.location.search);
       const imovelParam = searchParams.get('imovel');
       const hashParam = window.location.hash.replace('#imovel-', '').replace('#', '');
-      const targetParam = imovelParam || (hashParam.startsWith('AK') ? hashParam : null);
+      const targetParam = imovelParam || (hashParam && hashParam.length >= 3 && !['home', 'sobre', 'contato', 'admin', 'privacidade', 'lgpd', 'termos'].includes(hashParam) ? hashParam : null);
 
       if (targetParam && properties.length > 0) {
         const found = properties.find(p => 
