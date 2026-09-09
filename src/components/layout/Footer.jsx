@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { MapPin, Mail, Facebook, Instagram, ShieldCheck, Github, ChevronUp, ChevronDown, Clock } from 'lucide-react';
 import { SITE_CONFIG } from '../../config';
 
@@ -6,9 +6,25 @@ const SITE_LAST_UPDATED = '09/09/2026';
 
 export default function Footer({ setCurrentTab }) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const footerRef = useRef(null);
+
+  const toggleExpand = () => {
+    if (!isExpanded) {
+      setIsExpanded(true);
+      // Rola suavemente para baixo para exibir o conteúdo expandido dentro da tela
+      setTimeout(() => {
+        footerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      }, 80);
+    } else {
+      setIsExpanded(false);
+      setTimeout(() => {
+        footerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      }, 80);
+    }
+  };
 
   return (
-    <footer className="footer-collapsible">
+    <footer ref={footerRef} className="footer-collapsible">
       {/* Barra de controle e resumo (Sempre visível) */}
       <div className="footer-bar-summary">
         <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem', width: '100%' }}>
@@ -25,7 +41,7 @@ export default function Footer({ setCurrentTab }) {
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             <button 
               className="footer-expand-btn"
-              onClick={() => setIsExpanded(!isExpanded)}
+              onClick={toggleExpand}
               aria-expanded={isExpanded}
             >
               <span>{isExpanded ? 'Recolher rodapé' : 'Expandir rodapé completo'}</span>
@@ -35,9 +51,16 @@ export default function Footer({ setCurrentTab }) {
         </div>
       </div>
 
-      {/* Conteúdo completo expansível */}
-      {isExpanded && (
-        <div className="container animate-fade-in" style={{ padding: '3rem 1.5rem 2rem' }}>
+      {/* Conteúdo completo expansível com sanfona suave */}
+      <div 
+        style={{
+          maxHeight: isExpanded ? '900px' : '0px',
+          opacity: isExpanded ? 1 : 0,
+          overflow: 'hidden',
+          transition: 'max-height 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease'
+        }}
+      >
+        <div className="container" style={{ padding: '2.5rem 1.5rem 2rem' }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2.5rem', marginBottom: '2.5rem' }}>
             
             {/* Brand Info */}
@@ -143,7 +166,7 @@ export default function Footer({ setCurrentTab }) {
             </div>
           </div>
         </div>
-      )}
+      </div>
     </footer>
   );
 }

@@ -8,9 +8,22 @@ export default function Header({ currentTab, setCurrentTab, onOpenAdminModal, cu
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 30);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const currentY = window.scrollY;
+          setIsScrolled(prev => {
+            if (!prev && currentY > 50) return true;
+            if (prev && currentY < 15) return false;
+            return prev;
+          });
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
+
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -40,18 +53,18 @@ export default function Header({ currentTab, setCurrentTab, onOpenAdminModal, cu
         boxShadow: isScrolled ? '0 4px 20px rgba(7, 21, 39, 0.08)' : 'var(--shadow-xs)',
         transition: 'box-shadow 0.25s ease'
       }}>
-        {/* Top bar info (se esconde suavemente ao rolar) */}
+        {/* Top bar info (se esconde suavemente ao rolar sem quebras) */}
         <div className={`header-top-bar ${isScrolled ? 'scrolled' : ''}`}>
-          <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap' }}>
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+          <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.75rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexShrink: 1, minWidth: 0 }}>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', whiteSpace: 'nowrap' }}>
                 <MapPin size={12} style={{ color: 'var(--accent-red)' }} /> {SITE_CONFIG.address} - {SITE_CONFIG.cityState}
               </span>
-              <span className="header-top-bar-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+              <span className="header-top-bar-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', whiteSpace: 'nowrap' }}>
                 <Mail size={12} style={{ color: 'var(--accent-red)' }} /> {SITE_CONFIG.email}
               </span>
             </div>
-            <div className="header-top-bar-secondary" style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
+            <div className="header-top-bar-secondary" style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexShrink: 0 }}>
               <a href={SITE_CONFIG.instagramUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', color: '#F9A8D4', textDecoration: 'none' }}>
                 <Instagram size={12} /> {SITE_CONFIG.instagramHandle || '@kunickianderson'}
               </a>
