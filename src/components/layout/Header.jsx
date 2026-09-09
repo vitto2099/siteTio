@@ -243,6 +243,32 @@ export default function Header({ currentTab, setCurrentTab, onOpenAdminModal, cu
             );
           })}
         </nav>
+
+        {/* Rodapé do Menu Mobile com Contato Direto */}
+        <div style={{ marginTop: 'auto', paddingTop: '1.5rem', borderTop: '1px solid var(--border-subtle)', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+          <a 
+            href={waUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn-whatsapp btn-sm"
+            style={{ justifyContent: 'center', fontWeight: 700, padding: '0.7rem' }}
+          >
+            <WhatsAppIcon size={17} color="#FFFFFF" /> Falar no WhatsApp
+          </a>
+
+          <a 
+            href={`tel:${SITE_CONFIG.phoneRaw}`}
+            className="btn btn-outline btn-sm"
+            style={{ justifyContent: 'center', fontWeight: 600, padding: '0.65rem', borderColor: '#CBD5E1' }}
+          >
+            Ligar: {SITE_CONFIG.phoneFormatted}
+          </a>
+
+          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textAlign: 'center', marginTop: '0.5rem', lineHeight: 1.4 }}>
+            <div>{SITE_CONFIG.address}</div>
+            <div style={{ fontWeight: 700, marginTop: '0.2rem', color: 'var(--primary-dark)' }}>{SITE_CONFIG.creci}</div>
+          </div>
+        </div>
       </aside>
     </>
   );

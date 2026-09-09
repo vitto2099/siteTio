@@ -561,3 +561,110 @@ input, select, textarea {
     bottom: 1.5rem;
   }
 }
+
+/* Otimizações Específicas para Celulares (< 640px) */
+@media (max-width: 640px) {
+  .container {
+    padding: 0 1rem;
+  }
+  .modal-backdrop {
+    padding: 0.5rem !important;
+  }
+  .modal-content {
+    max-height: 94vh !important;
+    border-radius: 14px !important;
+  }
+  .modal-header-container {
+    padding: 0.85rem 1rem !important;
+  }
+  .modal-body-container {
+    padding: 1rem !important;
+  }
+  .modal-share-text {
+    display: none !important;
+  }
+  .modal-specs-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.5rem !important;
+  }
+  .modal-photo-viewer {
+    height: clamp(200px, 35vh, 280px) !important;
+  }
+  .modal-broker-box {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    text-align: center !important;
+  }
+  .modal-broker-box a {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  /* Footer responsivo */
+  .footer-bar-summary {
+    padding: 1rem !important;
+  }
+  .footer-summary-inner {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    gap: 0.85rem !important;
+  }
+  .footer-summary-inner > div {
+    justify-content: center !important;
+  }
+  .footer-expand-btn {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  /* Hero */
+  .hero-search-box {
+    padding: 1.25rem 1rem !important;
+  }
+
+  /* About & Contact */
+  .about-bio-column {
+    padding: 1.75rem 1.25rem !important;
+  }
+  .about-office-card {
+    padding: 1.25rem 1rem !important;
+  }
+
+  /* WhatsApp Widget */
+  .wa-widget-container {
+    bottom: 1.25rem !important;
+    right: 1rem !important;
+  }
+  .wa-widget-popover {
+    width: calc(100vw - 2rem) !important;
+    max-width: 330px !important;
+  }
+  .wa-widget-bubble {
+    max-width: calc(100vw - 3rem) !important;
+    font-size: 0.8rem !important;
+    padding: 0.5rem 0.85rem !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .container {
+    padding: 0 0.85rem;
+  }
+  .header-brand-title {
+    font-size: 0.98rem !important;
+  }
+  .header-brand-creci {
+    font-size: 0.6rem !important;
+  }
+  .modal-specs-grid {
+    grid-template-columns: 1fr !important;
+    gap: 0.4rem !important;
+  }
+  .btn {
+    padding: 0.6rem 0.9rem;
+    font-size: 0.84rem;
+  }
+}
+
+

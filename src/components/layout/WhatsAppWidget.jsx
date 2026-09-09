@@ -77,11 +77,12 @@ export default function WhatsAppWidget() {
   ];
 
   return (
-    <div style={{ position: 'fixed', bottom: '2rem', right: '2rem', zIndex: 1200, display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+    <div className="wa-widget-container" style={{ position: 'fixed', bottom: '2rem', right: '2rem', zIndex: 1200, display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
       
       {/* Floating Greeting Bubble (discreet notification) */}
       {!open && showBubble && (
         <div 
+          className="wa-widget-bubble"
           onClick={() => { setOpen(true); setShowBubble(false); }}
           style={{
             backgroundColor: '#FFFFFF',
@@ -114,8 +115,9 @@ export default function WhatsAppWidget() {
 
       {/* Popover Window */}
       {open && (
-        <div style={{
+        <div className="wa-widget-popover" style={{
           width: '330px',
+          maxWidth: 'calc(100vw - 2rem)',
           backgroundColor: '#FFFFFF',
           borderRadius: '18px',
           overflow: 'hidden',

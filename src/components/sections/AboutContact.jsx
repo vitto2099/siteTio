@@ -31,21 +31,21 @@ export default function AboutContact() {
         </div>
 
         {/* Card Principal de Apresentação */}
-        <div style={{
+        <div className="about-main-card" style={{
           backgroundColor: '#FFFFFF',
           borderRadius: '16px',
           border: '1px solid #E2E8F0',
           overflow: 'hidden',
           boxShadow: '0 4px 20px rgba(15, 23, 42, 0.05)',
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))',
           marginBottom: '3.5rem'
         }}>
           {/* Coluna da Foto do Anderson */}
           <div style={{ 
             backgroundColor: '#0F172A', 
             position: 'relative', 
-            minHeight: '440px',
+            minHeight: 'clamp(280px, 45vh, 440px)',
             overflow: 'hidden'
           }}>
             <img 
@@ -99,11 +99,11 @@ export default function AboutContact() {
           </div>
 
           {/* Coluna do Conteúdo / Biografia */}
-          <div style={{ padding: '2.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+          <div className="about-bio-column" style={{ padding: '2.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
             <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.35rem' }}>
               Atendimento Dedicado
             </span>
-            <h3 style={{ fontSize: '1.65rem', fontWeight: 800, color: '#0F172A', marginBottom: '1.25rem', lineHeight: 1.25 }}>
+            <h3 style={{ fontSize: 'clamp(1.35rem, 3vw, 1.65rem)', fontWeight: 800, color: '#0F172A', marginBottom: '1.25rem', lineHeight: 1.25 }}>
               Segurança e tranquilidade para o seu patrimônio
             </h3>
             
@@ -139,7 +139,7 @@ export default function AboutContact() {
         </div>
 
         {/* Grade de 4 Pilares Profissionais */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem', marginBottom: '3.5rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))', gap: '1.5rem', marginBottom: '3.5rem' }}>
           {services.map((item, idx) => (
             <div 
               key={idx}
@@ -165,14 +165,14 @@ export default function AboutContact() {
         </div>
 
         {/* Localização do Escritório e Informações Práticas */}
-        <div style={{
+        <div className="about-office-card" style={{
           backgroundColor: '#FFFFFF',
           borderRadius: '16px',
           border: '1px solid #E2E8F0',
           padding: '2rem',
           boxShadow: '0 2px 8px rgba(15, 23, 42, 0.04)',
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))',
           gap: '2rem',
           alignItems: 'center'
         }}>

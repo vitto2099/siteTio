@@ -149,7 +149,7 @@ export default function PropertyCard({ property, onSelectProperty }) {
           {property.purpose === 'aluguel' && <span style={{ fontSize: '0.8rem', fontWeight: 500, color: '#64748B' }}> /mês</span>}
         </div>
 
-        {/* Título do Imóvel */}
+        {/* Título do Imóvel com Altura Consistente e Sem Cortes Abruptos */}
         <h3 
           onClick={() => onSelectProperty(property)}
           style={{ 
@@ -158,6 +158,11 @@ export default function PropertyCard({ property, onSelectProperty }) {
             color: '#1E293B', 
             marginBottom: '0.45rem', 
             lineHeight: 1.35,
+            minHeight: '2.7em',
+            display: '-webkit-box',
+            WebkitLineClamp: 3,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
             cursor: 'pointer',
             transition: 'color 0.2s'
           }}
@@ -168,17 +173,18 @@ export default function PropertyCard({ property, onSelectProperty }) {
         </h3>
 
         {/* Localização */}
-        <div style={{ fontSize: '0.85rem', color: '#64748B', display: 'flex', alignItems: 'center', gap: '0.35rem', marginBottom: '1rem' }}>
+        <div style={{ fontSize: '0.85rem', color: '#64748B', display: 'flex', alignItems: 'center', gap: '0.35rem', marginBottom: '1rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
           <MapPin size={14} style={{ color: '#94A3B8', flexShrink: 0 }} />
-          <span>{property.neighborhood ? `${property.neighborhood}, ` : ''}{property.city || 'Itaiópolis'} - SC</span>
+          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{property.neighborhood ? `${property.neighborhood}, ` : ''}{property.city || 'Itaiópolis'} - SC</span>
         </div>
 
-        {/* Informações Técnicas Clássicas */}
+        {/* Informações Técnicas com Palavras Completas */}
         <div style={{
           display: 'flex',
-          justifyContent: 'space-between',
           alignItems: 'center',
-          padding: '0.75rem 0.5rem',
+          gap: '0.65rem 0.85rem',
+          flexWrap: 'wrap',
+          padding: '0.75rem 0.75rem',
           backgroundColor: '#F8FAFC',
           borderRadius: '8px',
           marginBottom: '1.25rem',
@@ -186,24 +192,29 @@ export default function PropertyCard({ property, onSelectProperty }) {
           color: '#334155',
           border: '1px solid #E2E8F0'
         }}>
-          {property.area > 0 && (
+          {(property.area > 0 || property.landArea > 0) && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontWeight: 600 }} title="Área">
-              <Maximize2 size={14} style={{ color: '#64748B' }} /> {property.area} m²
+              <Maximize2 size={14} style={{ color: '#64748B' }} /> {property.area || property.landArea} m²
             </div>
           )}
           {property.bedrooms > 0 && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontWeight: 600 }} title="Quartos">
-              <Bed size={14} style={{ color: '#64748B' }} /> {property.bedrooms} {property.bedrooms === 1 ? 'qto' : 'qtos'}
+              <Bed size={14} style={{ color: '#64748B' }} /> {property.bedrooms} {property.bedrooms === 1 ? 'quarto' : 'quartos'}
             </div>
           )}
           {property.bathrooms > 0 && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontWeight: 600 }} title="Banheiros">
-              <Bath size={14} style={{ color: '#64748B' }} /> {property.bathrooms} ban
+              <Bath size={14} style={{ color: '#64748B' }} /> {property.bathrooms} {property.bathrooms === 1 ? 'banheiro' : 'banheiros'}
             </div>
           )}
           {(property.garages > 0 || property.garage > 0) && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontWeight: 600 }} title="Vagas">
-              <Car size={14} style={{ color: '#64748B' }} /> {property.garages ?? property.garage} vg
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontWeight: 600 }} title="Vagas de Garagem">
+              <Car size={14} style={{ color: '#64748B' }} /> {property.garages ?? property.garage} {(property.garages ?? property.garage) === 1 ? 'vaga' : 'vagas'}
+            </div>
+          )}
+          {(!property.bedrooms || property.bedrooms === 0) && (
+            <div style={{ fontSize: '0.78rem', color: '#64748B', fontWeight: 600 }}>
+              {property.type === 'terreno' ? 'Lote / Terreno' : (property.type === 'comercial' ? 'Imóvel Comercial' : (property.type === 'sitio' ? 'Sítio / Chácara' : 'Lote Residencial'))}
             </div>
           )}
         </div>

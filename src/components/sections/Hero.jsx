@@ -16,23 +16,28 @@ export default function Hero({ filters, setFilters, onSearch }) {
     }}>
       <div className="container" style={{ position: 'relative', zIndex: 2, maxWidth: '1000px', margin: '0 auto', textAlign: 'center' }}>
         
-        {/* Badges de Credibilidade Discreta */}
+        {/* Badges de Credibilidade Discreta e Responsiva */}
         <div style={{
           display: 'inline-flex',
           alignItems: 'center',
-          gap: '0.5rem',
+          justifyContent: 'center',
+          flexWrap: 'wrap',
+          gap: '0.4rem 0.65rem',
           backgroundColor: 'rgba(255, 255, 255, 0.1)',
           backdropFilter: 'blur(8px)',
           border: '1px solid rgba(255, 255, 255, 0.18)',
-          padding: '0.4rem 1.1rem',
+          padding: '0.45rem 1.1rem',
           borderRadius: '20px',
           fontSize: '0.82rem',
           fontWeight: 600,
           color: '#E2E8F0',
-          marginBottom: '1.5rem'
+          marginBottom: '1.5rem',
+          maxWidth: '100%'
         }}>
-          <ShieldCheck size={14} style={{ color: '#60A5FA' }} />
-          <span>{SITE_CONFIG.brokerName}</span>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+            <ShieldCheck size={14} style={{ color: '#60A5FA' }} />
+            {SITE_CONFIG.brokerName}
+          </span>
           <span style={{ opacity: 0.5 }}>•</span>
           <span style={{ color: '#F1F5F9', fontWeight: 700 }}>{SITE_CONFIG.creci}</span>
           <span style={{ opacity: 0.5 }}>•</span>
@@ -41,7 +46,7 @@ export default function Hero({ filters, setFilters, onSearch }) {
 
         {/* Título Principal Humano e Direto */}
         <h1 style={{
-          fontSize: 'clamp(2.1rem, 4.5vw, 3.4rem)',
+          fontSize: 'clamp(1.85rem, 4.5vw, 3.4rem)',
           color: '#FFFFFF',
           marginBottom: '1rem',
           letterSpacing: '-0.025em',
@@ -52,7 +57,7 @@ export default function Hero({ filters, setFilters, onSearch }) {
         </h1>
         
         <p style={{
-          fontSize: 'clamp(1rem, 1.8vw, 1.15rem)',
+          fontSize: 'clamp(0.95rem, 1.8vw, 1.15rem)',
           color: '#CBD5E1',
           marginBottom: '2.5rem',
           fontWeight: 400,
@@ -64,7 +69,7 @@ export default function Hero({ filters, setFilters, onSearch }) {
         </p>
 
         {/* Caixa de Busca Integrada e Limpa (Estilo Boutique) */}
-        <div style={{
+        <div className="hero-search-box" style={{
           backgroundColor: '#FFFFFF',
           borderRadius: '16px',
           padding: '1.75rem',
@@ -74,7 +79,7 @@ export default function Hero({ filters, setFilters, onSearch }) {
         }}>
           
           {/* Abas Comprar / Alugar */}
-          <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.25rem', borderBottom: '1px solid #E2E8F0', paddingBottom: '0.85rem' }}>
+          <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginBottom: '1.25rem', borderBottom: '1px solid #E2E8F0', paddingBottom: '0.85rem' }}>
             {[
               { id: 'todos', label: 'Todos os Imóveis' },
               { id: 'venda', label: 'Comprar' },
@@ -87,12 +92,13 @@ export default function Hero({ filters, setFilters, onSearch }) {
                   type="button"
                   onClick={() => handlePurposeChange(tab.id)}
                   style={{
-                    padding: '0.45rem 1.15rem',
+                    padding: '0.45rem 1rem',
                     borderRadius: '8px',
                     fontWeight: 700,
-                    fontSize: '0.875rem',
-                    backgroundColor: isActive ? '#0B192C' : 'transparent',
-                    color: isActive ? '#FFFFFF' : '#64748B',
+                    fontSize: '0.84rem',
+                    backgroundColor: isActive ? '#0B192C' : '#F1F5F9',
+                    color: isActive ? '#FFFFFF' : '#475569',
+                    border: '1px solid ' + (isActive ? '#0B192C' : '#E2E8F0'),
                     transition: 'all 0.2s ease',
                     cursor: 'pointer'
                   }}
@@ -104,7 +110,7 @@ export default function Hero({ filters, setFilters, onSearch }) {
           </div>
 
           {/* Campos de Filtro em Linha */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', alignItems: 'flex-end' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 190px), 1fr))', gap: '1rem', alignItems: 'flex-end' }}>
             <div>
               <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#334155', textTransform: 'uppercase', marginBottom: '0.35rem', display: 'flex', alignItems: 'center', gap: '0.35rem', letterSpacing: '0.03em' }}>
                 <MapPin size={13} style={{ color: '#0B192C' }} /> Bairro ou Palavra-chave

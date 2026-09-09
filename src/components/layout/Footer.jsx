@@ -27,7 +27,7 @@ export default function Footer({ setCurrentTab }) {
     <footer ref={footerRef} className="footer-collapsible">
       {/* Barra de controle e resumo (Sempre visível) */}
       <div className="footer-bar-summary">
-        <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem', width: '100%' }}>
+        <div className="container footer-summary-inner" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem', width: '100%' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
             <span style={{ fontSize: '0.85rem', color: '#E2E8F0', fontWeight: 600 }}>
               &copy; {new Date().getFullYear()} Anderson Kunicki ({SITE_CONFIG.creci})

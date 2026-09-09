@@ -28,57 +28,58 @@ export default function PropertyModal({ property, onClose }) {
     <div className="modal-backdrop" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ position: 'relative' }}>
         
-        {/* Modal Header */}
-        <div style={{
+        {/* Modal Header Responsivo */}
+        <div className="modal-header-container" style={{
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          padding: '1.25rem 1.75rem',
+          padding: '1.15rem 1.5rem',
           borderBottom: '1px solid var(--border-subtle)',
           position: 'sticky',
           top: 0,
           backgroundColor: '#FFFFFF',
-          zIndex: 10
+          zIndex: 10,
+          gap: '0.75rem'
         }}>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.2rem' }}>
+          <div style={{ minWidth: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.2rem', flexWrap: 'wrap' }}>
               <span className={`badge ${property.purpose === 'venda' ? 'badge-venda' : 'badge-aluguel'}`}>
                 {property.purpose.toUpperCase()}
               </span>
-              <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--accent-red)', backgroundColor: 'var(--accent-red-subtle)', padding: '0.15rem 0.5rem', borderRadius: '4px' }}>
+              <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#0F172A', backgroundColor: '#F1F5F9', padding: '0.15rem 0.5rem', borderRadius: '4px', border: '1px solid #E2E8F0' }}>
                 Ref: {refCode}
               </span>
             </div>
-            <h2 style={{ fontSize: '1.35rem', color: 'var(--primary-dark)', margin: 0, fontWeight: 800 }}>
+            <h2 style={{ fontSize: 'clamp(1.05rem, 3vw, 1.35rem)', color: 'var(--primary-dark)', margin: 0, fontWeight: 800, lineHeight: 1.25 }}>
               {property.title}
             </h2>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
             <button
               onClick={handleCopyLink}
               className="btn btn-outline btn-sm"
               title="Copiar dados para compartilhar"
-              style={{ fontSize: '0.8rem', padding: '0.45rem 0.75rem' }}
+              style={{ fontSize: '0.8rem', padding: '0.45rem 0.75rem', borderColor: '#CBD5E1' }}
             >
               {copied ? <Check size={14} style={{ color: '#16A34A' }} /> : <Share2 size={14} />}
-              {copied ? 'Copiado!' : 'Compartilhar'}
+              <span className="modal-share-text">{copied ? 'Copiado!' : 'Compartilhar'}</span>
             </button>
 
             <button 
               onClick={onClose} 
-              style={{ padding: '0.4rem', borderRadius: '50%', backgroundColor: 'var(--bg-subtle)', color: 'var(--text-muted)', cursor: 'pointer' }}
+              style={{ padding: '0.45rem', borderRadius: '50%', backgroundColor: 'var(--bg-subtle)', color: 'var(--text-muted)', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
               aria-label="Fechar modal"
             >
-              <X size={20} />
+              <X size={18} />
             </button>
           </div>
         </div>
 
         {/* Modal Body */}
-        <div style={{ padding: '1.75rem' }}>
-          {/* Photo Viewer */}
-          <div style={{ height: '390px', borderRadius: 'var(--radius-md)', overflow: 'hidden', marginBottom: '1rem', position: 'relative', backgroundColor: 'var(--bg-subtle)' }}>
+        <div className="modal-body-container" style={{ padding: '1.5rem' }}>
+          {/* Photo Viewer Responsivo */}
+          <div className="modal-photo-viewer" style={{ height: '380px', borderRadius: 'var(--radius-md)', overflow: 'hidden', marginBottom: '1rem', position: 'relative', backgroundColor: 'var(--bg-subtle)' }}>
             <img 
               src={selectedImg || allImages[0]} 
               alt={property.title}
@@ -102,9 +103,10 @@ export default function PropertyModal({ property, onClose }) {
                     borderRadius: 'var(--radius-xs)',
                     objectFit: 'cover',
                     cursor: 'pointer',
-                    border: (selectedImg === img || (!selectedImg && idx === 0)) ? '2.5px solid var(--accent-red)' : '1px solid var(--border-subtle)',
+                    border: (selectedImg === img || (!selectedImg && idx === 0)) ? '2.5px solid #0B192C' : '1px solid var(--border-subtle)',
                     opacity: (selectedImg === img || (!selectedImg && idx === 0)) ? 1 : 0.75,
-                    transition: 'var(--transition)'
+                    transition: 'var(--transition)',
+                    flexShrink: 0
                   }}
                 />
               ))}
@@ -124,7 +126,7 @@ export default function PropertyModal({ property, onClose }) {
           }}>
             <div>
               <div style={{ fontSize: '0.95rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                <MapPin size={16} style={{ color: 'var(--accent-red)' }} />
+                <MapPin size={16} style={{ color: '#0B192C' }} />
                 <span>{property.address ? `${property.address}, ` : ''}{property.neighborhood ? `${property.neighborhood} - ` : ''}{property.city || 'Itaiópolis - SC'}</span>
               </div>
               <div style={{ fontSize: '0.8rem', color: 'var(--text-light)', marginTop: '0.3rem' }}>
@@ -132,13 +134,13 @@ export default function PropertyModal({ property, onClose }) {
               </div>
             </div>
 
-            <div style={{ fontFamily: 'var(--font-heading)', fontSize: '2.1rem', fontWeight: 800, color: 'var(--accent-red)' }}>
+            <div style={{ fontFamily: 'var(--font-heading)', fontSize: 'clamp(1.5rem, 4vw, 2.1rem)', fontWeight: 800, color: '#0F172A', whiteSpace: 'nowrap' }}>
               {formatMoney(property.price)} {property.purpose === 'aluguel' ? <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)', fontWeight: 400 }}>/mês</span> : ''}
             </div>
           </div>
 
           {/* Main Specs Grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '0.75rem', marginBottom: '1.5rem' }}>
+          <div className="modal-specs-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '0.75rem', marginBottom: '1.5rem' }}>
             {property.area > 0 && (
               <div style={{ backgroundColor: 'var(--bg-subtle)', padding: '0.75rem 1rem', borderRadius: 'var(--radius-sm)', fontSize: '0.875rem', fontWeight: 600 }}>
                 <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Área Construída</div>
@@ -179,7 +181,7 @@ export default function PropertyModal({ property, onClose }) {
               <div style={{ backgroundColor: 'var(--bg-subtle)', padding: '0.75rem 1rem', borderRadius: 'var(--radius-sm)', fontSize: '0.875rem', fontWeight: 600 }}>
                 <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Banheiros</div>
                 <div style={{ marginTop: '0.2rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                  <Bath size={16} style={{ color: 'var(--primary-blue)' }} /> {property.bathrooms} banh
+                  <Bath size={16} style={{ color: 'var(--primary-blue)' }} /> {property.bathrooms} {property.bathrooms === 1 ? 'banheiro' : 'banheiros'}
                 </div>
               </div>
             )}
@@ -188,7 +190,7 @@ export default function PropertyModal({ property, onClose }) {
               <div style={{ backgroundColor: 'var(--bg-subtle)', padding: '0.75rem 1rem', borderRadius: 'var(--radius-sm)', fontSize: '0.875rem', fontWeight: 600 }}>
                 <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Vagas Garagem</div>
                 <div style={{ marginTop: '0.2rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                  <Car size={16} style={{ color: 'var(--primary-blue)' }} /> {property.garages ?? property.garage} vg
+                  <Car size={16} style={{ color: 'var(--primary-blue)' }} /> {property.garages ?? property.garage} {(property.garages ?? property.garage) === 1 ? 'vaga' : 'vagas'}
                 </div>
               </div>
             )}
@@ -196,7 +198,7 @@ export default function PropertyModal({ property, onClose }) {
 
           {/* Extra Financial Details */}
           {(property.iptu > 0 || property.condoFee > 0) && (
-            <div style={{ display: 'flex', gap: '1.5rem', padding: '0.85rem 1rem', backgroundColor: '#F8FAFC', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)', marginBottom: '1.5rem', fontSize: '0.85rem' }}>
+            <div style={{ display: 'flex', gap: '1rem 1.5rem', flexWrap: 'wrap', padding: '0.85rem 1rem', backgroundColor: '#F8FAFC', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)', marginBottom: '1.5rem', fontSize: '0.85rem' }}>
               {property.iptu > 0 && (
                 <div>
                   <span style={{ color: 'var(--text-muted)' }}>IPTU Anual: </span>
@@ -269,8 +271,8 @@ export default function PropertyModal({ property, onClose }) {
           )}
 
           {/* Broker Contact Box */}
-          <div style={{
-            backgroundColor: 'var(--primary-dark)',
+          <div className="modal-broker-box" style={{
+            backgroundColor: '#0B192C',
             color: '#FFFFFF',
             padding: '1.5rem 1.75rem',
             borderRadius: 'var(--radius-md)',
@@ -281,7 +283,7 @@ export default function PropertyModal({ property, onClose }) {
             gap: '1rem'
           }}>
             <div>
-              <h4 style={{ color: '#FFFFFF', fontSize: '1.15rem', margin: '0 0 0.2rem' }}>{SITE_CONFIG.brokerName}</h4>
+              <h4 style={{ color: '#FFFFFF', fontSize: '1.15rem', margin: '0 0 0.2rem', fontWeight: 800 }}>{SITE_CONFIG.brokerName}</h4>
               <p style={{ fontSize: '0.85rem', color: '#94A3B8', margin: 0 }}>{SITE_CONFIG.creci} • Atendimento direto via WhatsApp</p>
             </div>
             <a href={waUrl} target="_blank" rel="noopener noreferrer" className="btn btn-whatsapp" style={{ padding: '0.75rem 1.5rem', fontWeight: 700 }}>
