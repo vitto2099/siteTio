@@ -182,16 +182,18 @@ describe('Suite 1: Testes de Usabilidade, Design Editorial e Simplicidade', () =
       assert.equal(getCategoryPrefix('comercial', 'aluguel'), 'AL');
       assert.equal(getCategoryPrefix('outro', 'venda'), 'IM');
 
-      assert.ok(Array.isArray(INITIAL_PROPERTIES) && INITIAL_PROPERTIES.length >= 6);
-      for (const prop of INITIAL_PROPERTIES) {
-        const expectedPrefix = getCategoryPrefix(prop.type, prop.purpose);
-        assert.ok(
-          prop.code.startsWith(`${expectedPrefix}-`),
-          `Imovel ${prop.id} deveria ter codigo iniciando com ${expectedPrefix}-, mas possui ${prop.code}`
-        );
-        assert.ok(Number(prop.price) > 0, `Imovel ${prop.code} deve ter preco positivo`);
-        assert.ok(typeof prop.title === 'string' && prop.title.length > 5, `Imovel ${prop.code} deve ter titulo valido`);
-      }
+      assert.ok(Array.isArray(INITIAL_PROPERTIES) && INITIAL_PROPERTIES.length === 1, 'Deve existir exatamente 1 anuncio inicial completo');
+      const prop = INITIAL_PROPERTIES[0];
+      const expectedPrefix = getCategoryPrefix(prop.type, prop.purpose);
+      assert.ok(
+        prop.code.startsWith(`${expectedPrefix}-`),
+        `Imovel ${prop.id} deveria ter codigo iniciando com ${expectedPrefix}-, mas possui ${prop.code}`
+      );
+      assert.equal(prop.type, 'casa');
+      assert.ok(Number(prop.price) > 0, `Imovel ${prop.code} deve ter preco positivo`);
+      assert.ok(typeof prop.title === 'string' && prop.title.length > 10, `Imovel ${prop.code} deve ter titulo valido`);
+      assert.ok(Array.isArray(prop.images) && prop.images.length >= 6, 'O anuncio unico deve ter galeria completa com pelo menos 6 fotos da casa');
+      assert.ok(Array.isArray(prop.features) && prop.features.length >= 6, 'O anuncio unico deve ter lista completa de comodidades');
     });
   });
 });

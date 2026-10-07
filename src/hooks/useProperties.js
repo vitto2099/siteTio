@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { INITIAL_PROPERTIES, getCategoryPrefix } from '../data/properties';
+import { INITIAL_PROPERTIES, LEGACY_MOCKUP_IDS, getCategoryPrefix } from '../data/properties';
 import { db, isFirebaseConfigured } from '../lib/firebase';
 import { sanitizePropertyPayload } from '../utils/security';
 import { 
@@ -13,33 +13,44 @@ import {
   writeBatch
 } from 'firebase/firestore';
 
-const STORAGE_KEY = 'anderson_kunicki_react_properties_v2';
+const STORAGE_KEY = 'anderson_kunicki_properties_v3';
 const COLLECTION_NAME = 'properties';
 
-// Normaliza codigos legados (ex: AK-101 vira CA-101)
+// Normaliza codigos legados e remove os 5 mockups antigos descartados
 function normalizePropertyCodes(list) {
   if (!Array.isArray(list)) return [];
-  return list.map(p => {
-    if (p.code && p.code.startsWith('AK-')) {
-      const num = p.code.replace('AK-', '');
-      const prefix = getCategoryPrefix(p.type, p.purpose);
-      return { ...p, code: `${prefix}-${num}` };
-    }
-    return p;
-  });
+  const legacySet = new Set(LEGACY_MOCKUP_IDS);
+
+  const cleaned = list
+    .filter(p => p && !p.id?.startsWith('prop-00') && !legacySet.has(p.id))
+    .map(p => {
+      // Se for o CA-101 antigo de 3 fotos, atualiza para o anuncio completo de 6 fotos
+      if (p.id === 'prop-ca-101' && (!Array.isArray(p.images) || p.images.length <= 3) && p.price === 420000) {
+        return { ...INITIAL_PROPERTIES[0] };
+      }
+      if (p.code && p.code.startsWith('AK-')) {
+        const num = p.code.replace('AK-', '');
+        const prefix = getCategoryPrefix(p.type, p.purpose);
+        return { ...p, code: `${prefix}-${num}` };
+      }
+      return p;
+    });
+
+  return cleaned;
 }
 
 export function useProperties(onToast) {
   const [properties, setProperties] = useState(() => {
     try {
       localStorage.removeItem('anderson_kunicki_react_properties_v1');
+      localStorage.removeItem('anderson_kunicki_react_properties_v2');
       
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed)) {
-          const realProps = parsed.filter(p => !p.id?.startsWith('prop-00'));
-          return normalizePropertyCodes(realProps);
+          const normalized = normalizePropertyCodes(parsed);
+          if (normalized.length > 0) return normalized;
         }
       }
       return INITIAL_PROPERTIES;
@@ -72,8 +83,9 @@ export function useProperties(onToast) {
           fetched.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
 
           const normalized = normalizePropertyCodes(fetched);
-          setProperties(normalized);
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized));
+          const finalProps = normalized.length > 0 ? normalized : INITIAL_PROPERTIES;
+          setProperties(finalProps);
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(finalProps));
         }, (error) => {
           console.warn('Erro ao sincronizar com Firestore, operando com cache local:', error);
         });
@@ -86,7 +98,8 @@ export function useProperties(onToast) {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
         try {
-          setProperties(normalizePropertyCodes(JSON.parse(stored)));
+          const normalized = normalizePropertyCodes(JSON.parse(stored));
+          setProperties(normalized.length > 0 ? normalized : INITIAL_PROPERTIES);
         } catch {
           setProperties(INITIAL_PROPERTIES);
         }
