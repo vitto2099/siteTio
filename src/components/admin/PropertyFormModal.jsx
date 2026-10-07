@@ -100,21 +100,35 @@ export default function PropertyFormModal({ isOpen, onClose, onSave, editingProp
   });
 
   const [newAmenityInput, setNewAmenityInput] = useState('');
+  const [confirmDeleteAmenity, setConfirmDeleteAmenity] = useState(null);
   const [images, setImages] = useState([]);
   const [customUrl, setCustomUrl] = useState('');
   const [isCompressing, setIsCompressing] = useState(false);
 
   const saveAmenitiesList = (newList) => {
     setAvailableAmenities(newList);
-    try {
-      localStorage.setItem(AMENITIES_STORAGE_KEY, JSON.stringify(newList));
-    } catch {
-      // Ignorar erro de storage
+    try { localStorage.setItem(AMENITIES_STORAGE_KEY, JSON.stringify(newList)); } catch {}
+  };
+
+  const removeAmenityOption = (amenityToRemove) => {
+    const updatedList = availableAmenities.filter(a => a.toLowerCase() !== amenityToRemove.toLowerCase());
+    saveAmenitiesList(updatedList);
+    setSelectedAmenities(prev => prev.filter(a => a.toLowerCase() !== amenityToRemove.toLowerCase()));
+    setConfirmDeleteAmenity(null);
+  };
+
+  const handleAmenityDeleteClick = (e, amenity) => {
+    e.stopPropagation();
+    if (confirmDeleteAmenity === amenity) {
+      removeAmenityOption(amenity);
+    } else {
+      setConfirmDeleteAmenity(amenity);
     }
   };
 
   useEffect(() => {
     if (!isOpen) return;
+    setConfirmDeleteAmenity(null);
 
     if (editingProperty) {
       const existingFeatures = Array.isArray(editingProperty.features)
@@ -163,10 +177,7 @@ export default function PropertyFormModal({ isOpen, onClose, onSave, editingProp
         if (changed) saveAmenitiesList(updated);
       }
     } else {
-      setFormData({
-        ...EMPTY_FORM_STATE,
-        code: generateNextCode('casa', 'venda', properties)
-      });
+      setFormData({ ...EMPTY_FORM_STATE, code: generateNextCode('casa', 'venda', properties) });
       setSelectedAmenities([]);
       setImages([]);
     }
@@ -180,9 +191,7 @@ export default function PropertyFormModal({ isOpen, onClose, onSave, editingProp
     setFormData(prev => {
       const currentCode = (prev.code || '').trim();
       const isStandardCode = /^(CA|TE|SI|AP|CO|AL|AK|IM)-\d+$/i.test(currentCode);
-      const nextCode = (!editingProperty || isStandardCode)
-        ? generateNextCode(newType, prev.purpose, properties)
-        : currentCode;
+      const nextCode = (!editingProperty || isStandardCode) ? generateNextCode(newType, prev.purpose, properties) : currentCode;
       return { ...prev, type: newType, code: nextCode };
     });
   };
@@ -191,26 +200,22 @@ export default function PropertyFormModal({ isOpen, onClose, onSave, editingProp
     setFormData(prev => {
       const currentCode = (prev.code || '').trim();
       const isStandardCode = /^(CA|TE|SI|AP|CO|AL|AK|IM)-\d+$/i.test(currentCode);
-      const nextCode = (!editingProperty || isStandardCode)
-        ? generateNextCode(prev.type, newPurpose, properties)
-        : currentCode;
+      const nextCode = (!editingProperty || isStandardCode) ? generateNextCode(prev.type, newPurpose, properties) : currentCode;
       return { ...prev, purpose: newPurpose, code: nextCode };
     });
   };
 
   const toggleAmenity = (amenity) => {
+    setConfirmDeleteAmenity(null);
     setSelectedAmenities(prev => {
       const exists = prev.some(item => item.toLowerCase() === amenity.toLowerCase());
-      return exists
-        ? prev.filter(item => item.toLowerCase() !== amenity.toLowerCase())
-        : [...prev, amenity];
+      return exists ? prev.filter(item => item.toLowerCase() !== amenity.toLowerCase()) : [...prev, amenity];
     });
   };
 
   const handleAddCustomAmenity = () => {
     const trimmed = newAmenityInput.trim();
     if (!trimmed) return;
-
     if (!availableAmenities.some(a => a.toLowerCase() === trimmed.toLowerCase())) {
       saveAmenitiesList([...availableAmenities, trimmed]);
     }
@@ -441,35 +446,12 @@ export default function PropertyFormModal({ isOpen, onClose, onSave, editingProp
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(105px, 1fr))', gap: '0.75rem', marginBottom: '1rem' }}>
-              <div>
-                <label style={labelStyle}>Área Const. (m²)</label>
-                <input type="number" className="input-field" placeholder="160" value={formData.area} onChange={(e) => setFormData(prev => ({ ...prev, area: e.target.value }))} />
-              </div>
-
-              <div>
-                <label style={labelStyle}>Terreno (m²)</label>
-                <input type="number" className="input-field" placeholder="450" value={formData.landArea} onChange={(e) => setFormData(prev => ({ ...prev, landArea: e.target.value }))} />
-              </div>
-
-              <div>
-                <label style={labelStyle}>Quartos</label>
-                <input type="number" className="input-field" placeholder="3" value={formData.bedrooms} onChange={(e) => setFormData(prev => ({ ...prev, bedrooms: e.target.value }))} />
-              </div>
-
-              <div>
-                <label style={labelStyle}>Suítes</label>
-                <input type="number" className="input-field" placeholder="1" value={formData.suites} onChange={(e) => setFormData(prev => ({ ...prev, suites: e.target.value }))} />
-              </div>
-
-              <div>
-                <label style={labelStyle}>Banheiros</label>
-                <input type="number" className="input-field" placeholder="2" value={formData.bathrooms} onChange={(e) => setFormData(prev => ({ ...prev, bathrooms: e.target.value }))} />
-              </div>
-
-              <div>
-                <label style={labelStyle}>Vagas</label>
-                <input type="number" className="input-field" placeholder="2" value={formData.garages} onChange={(e) => setFormData(prev => ({ ...prev, garages: e.target.value }))} />
-              </div>
+              <div><label style={labelStyle}>Área Const. (m²)</label><input type="number" className="input-field" placeholder="160" value={formData.area} onChange={(e) => setFormData(prev => ({ ...prev, area: e.target.value }))} /></div>
+              <div><label style={labelStyle}>Terreno (m²)</label><input type="number" className="input-field" placeholder="450" value={formData.landArea} onChange={(e) => setFormData(prev => ({ ...prev, landArea: e.target.value }))} /></div>
+              <div><label style={labelStyle}>Quartos</label><input type="number" className="input-field" placeholder="3" value={formData.bedrooms} onChange={(e) => setFormData(prev => ({ ...prev, bedrooms: e.target.value }))} /></div>
+              <div><label style={labelStyle}>Suítes</label><input type="number" className="input-field" placeholder="1" value={formData.suites} onChange={(e) => setFormData(prev => ({ ...prev, suites: e.target.value }))} /></div>
+              <div><label style={labelStyle}>Banheiros</label><input type="number" className="input-field" placeholder="2" value={formData.bathrooms} onChange={(e) => setFormData(prev => ({ ...prev, bathrooms: e.target.value }))} /></div>
+              <div><label style={labelStyle}>Vagas</label><input type="number" className="input-field" placeholder="2" value={formData.garages} onChange={(e) => setFormData(prev => ({ ...prev, garages: e.target.value }))} /></div>
             </div>
 
             <div style={{ marginBottom: '1rem' }}>
@@ -481,27 +463,65 @@ export default function PropertyFormModal({ isOpen, onClose, onSave, editingProp
               />
             </div>
 
-            {/* Comodidades em Chips Simples de 1 Clique */}
+            {/* Comodidades em Chips Simples de 1 Clique + Exclusão em 2 Cliques no X */}
             <div>
-              <label style={labelStyle}>Comodidades (clique para selecionar)</label>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+                <label style={{ ...labelStyle, marginBottom: 0 }}>
+                  Comodidades <span style={{ fontWeight: 500, color: 'var(--text-muted)' }}>(clique para marcar · clique 2x no × para excluir da lista)</span>
+                </label>
+                <button
+                  type="button"
+                  onClick={() => { saveAmenitiesList(DEFAULT_AMENITIES); setConfirmDeleteAmenity(null); }}
+                  style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textDecoration: 'underline', cursor: 'pointer', background: 'none', border: 'none' }}
+                >
+                  Restaurar lista padrão
+                </button>
+              </div>
+
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', marginBottom: '0.75rem' }}>
                 {availableAmenities.map(amenity => {
                   const active = selectedAmenities.some(item => item.toLowerCase() === amenity.toLowerCase());
+                  const isConfirming = confirmDeleteAmenity === amenity;
                   return (
-                    <button
-                      key={amenity} type="button" onClick={() => toggleAmenity(amenity)}
+                    <div
+                      key={amenity}
                       style={{
-                        display: 'inline-flex', alignItems: 'center', gap: '0.3rem',
-                        padding: '0.32rem 0.7rem', borderRadius: '20px', fontSize: '0.78rem',
-                        fontWeight: 600, cursor: 'pointer',
-                        border: active ? '1px solid var(--primary-dark)' : '1px solid var(--border-subtle)',
-                        backgroundColor: active ? 'var(--primary-dark)' : 'var(--bg-subtle)',
-                        color: active ? '#FFFFFF' : 'var(--text-body)'
+                        display: 'inline-flex', alignItems: 'center', borderRadius: '20px', overflow: 'hidden',
+                        border: isConfirming ? '1px solid #DC2626' : (active ? '1px solid var(--primary-dark)' : '1px solid var(--border-subtle)'),
+                        backgroundColor: active ? 'var(--primary-dark)' : 'var(--bg-subtle)'
                       }}
                     >
-                      {active && <Check size={12} />}
-                      <span>{amenity}</span>
-                    </button>
+                      <button
+                        type="button"
+                        onClick={() => toggleAmenity(amenity)}
+                        onDoubleClick={() => removeAmenityOption(amenity)}
+                        title="Clique para selecionar ou dê duplo clique para remover da lista"
+                        style={{
+                          display: 'inline-flex', alignItems: 'center', gap: '0.3rem',
+                          padding: '0.32rem 0.45rem 0.32rem 0.7rem', fontSize: '0.78rem',
+                          fontWeight: 600, cursor: 'pointer', background: 'none', border: 'none',
+                          color: active ? '#FFFFFF' : 'var(--text-body)'
+                        }}
+                      >
+                        {active && <Check size={12} />}
+                        <span>{amenity}</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={(e) => handleAmenityDeleteClick(e, amenity)}
+                        title={isConfirming ? 'Clique novamente para excluir esta comodidade da lista' : 'Excluir comodidade (clique 2x)'}
+                        style={{
+                          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                          padding: isConfirming ? '0.28rem 0.5rem' : '0.32rem 0.48rem',
+                          fontSize: '0.7rem', fontWeight: 700, cursor: 'pointer', border: 'none',
+                          backgroundColor: isConfirming ? '#DC2626' : 'transparent',
+                          color: isConfirming ? '#FFFFFF' : (active ? 'rgba(255,255,255,0.65)' : '#94A3B8'),
+                          borderLeft: isConfirming ? 'none' : '1px solid rgba(148,163,184,0.2)'
+                        }}
+                      >
+                        {isConfirming ? 'Excluir?' : <X size={11} />}
+                      </button>
+                    </div>
                   );
                 })}
               </div>
