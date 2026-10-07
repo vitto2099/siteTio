@@ -103,10 +103,12 @@ describe('Suite 1: Testes de Usabilidade, Design Editorial e Simplicidade', () =
       assert.ok(formModalContent.includes("canvas.toDataURL('image/jpeg'"), 'Conversao JPEG via canvas.toDataURL ausente');
     });
 
-    it('deve oferecer geracao automatica de codigo, previa de preco em BRL e unificar comodidades sem campo duplicado de tags', () => {
+    it('deve oferecer geracao automatica de codigo, previa de preco em BRL e unificar comodidades com exclusao em 2 cliques', () => {
       assert.ok(formModalContent.includes('generateNextCode'), 'Geracao automatica de codigo ausente');
       assert.ok(formModalContent.includes('formatMoney(formData.price)'), 'Previa formatada de valor em R$ ausente');
       assert.ok(!formModalContent.includes('tagsInput'), 'Nao deve existir estado duplicado tagsInput separado de comodidades');
+      assert.ok(formModalContent.includes('removeAmenityOption'), 'Funcao de remover comodidade da lista ausente');
+      assert.ok(formModalContent.includes('handleAmenityDeleteClick'), 'Confirmacao de 2 cliques no botao X de comodidade ausente');
     });
 
     it('deve manter AdminDashboard.jsx enxuto (abaixo de 650 linhas) com confirmacao inline de exclusao e filtros claros', () => {

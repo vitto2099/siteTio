@@ -136,43 +136,26 @@ export default function PropertyFormModal({ isOpen, onClose, onSave, editingProp
         : Array.isArray(editingProperty.tags) ? editingProperty.tags : [];
 
       setFormData({
-        code: editingProperty.code || editingProperty.id || '',
-        title: editingProperty.title || '',
-        type: editingProperty.type || 'casa',
-        purpose: editingProperty.purpose || 'venda',
-        status: editingProperty.status || 'ativo',
-        price: editingProperty.price ?? '',
-        area: editingProperty.area ?? '',
-        landArea: editingProperty.landArea ?? '',
-        bedrooms: editingProperty.bedrooms ?? '',
-        suites: editingProperty.suites ?? '',
-        bathrooms: editingProperty.bathrooms ?? '',
-        garages: editingProperty.garages ?? editingProperty.garage ?? '',
-        address: editingProperty.address || '',
-        neighborhood: editingProperty.neighborhood || '',
-        city: editingProperty.city || 'Itaiópolis - SC',
-        iptu: editingProperty.iptu ?? '',
-        condoFee: editingProperty.condoFee ?? '',
-        videoUrl: editingProperty.videoUrl || '',
-        description: editingProperty.description || '',
-        featured: Boolean(editingProperty.featured)
+        code: editingProperty.code || editingProperty.id || '', title: editingProperty.title || '',
+        type: editingProperty.type || 'casa', purpose: editingProperty.purpose || 'venda',
+        status: editingProperty.status || 'ativo', price: editingProperty.price ?? '',
+        area: editingProperty.area ?? '', landArea: editingProperty.landArea ?? '',
+        bedrooms: editingProperty.bedrooms ?? '', suites: editingProperty.suites ?? '',
+        bathrooms: editingProperty.bathrooms ?? '', garages: editingProperty.garages ?? editingProperty.garage ?? '',
+        address: editingProperty.address || '', neighborhood: editingProperty.neighborhood || '',
+        city: editingProperty.city || 'Itaiópolis - SC', iptu: editingProperty.iptu ?? '',
+        condoFee: editingProperty.condoFee ?? '', videoUrl: editingProperty.videoUrl || '',
+        description: editingProperty.description || '', featured: Boolean(editingProperty.featured)
       });
-
       setSelectedAmenities(existingFeatures);
-
       const initialImages = Array.isArray(editingProperty.images) && editingProperty.images.length > 0
-        ? editingProperty.images
-        : (editingProperty.imageUrl ? [editingProperty.imageUrl] : []);
+        ? editingProperty.images : (editingProperty.imageUrl ? [editingProperty.imageUrl] : []);
       setImages(initialImages);
-
       if (existingFeatures.length > 0) {
         let updated = [...availableAmenities];
         let changed = false;
         existingFeatures.forEach(feat => {
-          if (feat && !updated.some(a => a.toLowerCase() === feat.toLowerCase())) {
-            updated.push(feat);
-            changed = true;
-          }
+          if (feat && !updated.some(a => a.toLowerCase() === feat.toLowerCase())) { updated.push(feat); changed = true; }
         });
         if (changed) saveAmenitiesList(updated);
       }
