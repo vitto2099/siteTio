@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MapPin, Mail, Facebook, Instagram, Shield, PlusCircle, Menu, X, User, Home } from 'lucide-react';
+import { PlusCircle, Menu, X, User } from 'lucide-react';
 import WhatsAppIcon from '../common/WhatsAppIcon';
 import { SITE_CONFIG, getWhatsAppUrl } from '../../config';
 
@@ -8,142 +8,138 @@ export default function Header({ currentTab, setCurrentTab, onOpenAdminModal, cu
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
-    let ticking = false;
     const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const currentY = window.scrollY;
-          setIsScrolled(prev => {
-            if (!prev && currentY > 50) return true;
-            if (prev && currentY < 15) return false;
-            return prev;
-          });
-          ticking = false;
-        });
-        ticking = true;
-      }
+      setIsScrolled(window.scrollY > 24);
     };
-
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const waUrl = getWhatsAppUrl("Olá Anderson! Gostaria de informações sobre os imóveis disponíveis.");
 
-  // For ordinary public visitors, only show public sections.
-  // Show Admin link only if admin is logged in or already viewing the /admin route.
   const baseNavItems = [
-    { id: 'home', label: 'Página Inicial', path: '/', icon: Home },
-    { id: 'about', label: 'Sobre & Contato', path: '/sobre' }
+    { id: 'home', label: 'Imóveis', path: '/' },
+    { id: 'about', label: 'Sobre e Contato', path: '/sobre' }
   ];
 
   const navItems = (currentTab === 'admin' || currentUser)
-    ? [...baseNavItems, { id: 'admin', label: currentUser ? `Painel Admin` : 'Painel Admin', path: '/admin', isSpecial: true }]
+    ? [...baseNavItems, { id: 'admin', label: 'Painel', path: '/admin', isSpecial: true }]
     : baseNavItems;
 
   return (
     <>
-      <header style={{
-        position: 'sticky',
-        top: 0,
-        zIndex: 1000,
-        backgroundColor: 'rgba(255, 255, 255, 0.98)',
-        backdropFilter: 'blur(10px)',
-        borderBottom: '1px solid var(--border-subtle)',
-        boxShadow: isScrolled ? '0 4px 20px rgba(7, 21, 39, 0.08)' : 'var(--shadow-xs)',
-        transition: 'box-shadow 0.25s ease'
-      }}>
-        {/* Top bar info (se esconde suavemente ao rolar sem quebras) */}
-        <div className={`header-top-bar ${isScrolled ? 'scrolled' : ''}`}>
-          <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.75rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexShrink: 1, minWidth: 0 }}>
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', whiteSpace: 'nowrap' }}>
-                <MapPin size={12} style={{ color: 'var(--accent-red)' }} /> {SITE_CONFIG.address} - {SITE_CONFIG.cityState}
-              </span>
-              <span className="header-top-bar-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', whiteSpace: 'nowrap' }}>
-                <Mail size={12} style={{ color: 'var(--accent-red)' }} /> {SITE_CONFIG.email}
-              </span>
-            </div>
-            <div className="header-top-bar-secondary" style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexShrink: 0 }}>
-              <a href={SITE_CONFIG.instagramUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', color: '#F9A8D4', textDecoration: 'none' }}>
-                <Instagram size={12} /> {SITE_CONFIG.instagramHandle || '@kunickianderson'}
-              </a>
-              <a href={SITE_CONFIG.facebookUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', color: '#93C5FD', textDecoration: 'none' }}>
-                <Facebook size={12} /> /anderson.kunicki.9
-              </a>
-              <span style={{ color: 'var(--gold-primary)', fontWeight: 700 }}>{SITE_CONFIG.creci}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Main navigation bar (3 colunas: Marca à esquerda, Menu centralizado, Ações à direita) */}
-        <div className="container header-main-nav" style={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center', 
-          padding: isScrolled ? '0.55rem 1.5rem' : '0.85rem 1.5rem', 
-          gap: '1rem' 
-        }}>
-          {/* Coluna Esquerda: Logo & Marca */}
-          <div className="header-col-left">
-            <a href="/" onClick={(e) => { e.preventDefault(); setCurrentTab('home'); }} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', textDecoration: 'none' }}>
-              <img 
-                src="/favicon.svg" 
-                alt="Anderson Kunicki Corretor Imobiliário" 
-                style={{ 
-                  height: isScrolled ? '38px' : '42px', 
-                  width: isScrolled ? '38px' : '42px', 
-                  borderRadius: '10px', 
-                  objectFit: 'cover',
-                  flexShrink: 0,
-                  boxShadow: '0 2px 8px rgba(7, 21, 39, 0.15)',
-                  transition: 'height 0.2s ease, width 0.2s ease'
+      <header
+        style={{
+          position: 'sticky',
+          top: 0,
+          zIndex: 1000,
+          backgroundColor: 'rgba(255, 255, 255, 0.94)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          borderBottom: '1px solid var(--border-subtle)',
+          boxShadow: isScrolled ? '0 4px 18px rgba(15, 23, 42, 0.04)' : 'none',
+          transition: 'box-shadow 0.25s ease'
+        }}
+      >
+        <div
+          className="container"
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            height: isScrolled ? '68px' : '76px',
+            transition: 'height 0.22s ease',
+            gap: '1.25rem'
+          }}
+        >
+          {/* Marca Tipográfica Editorial */}
+          <a
+            href="/"
+            onClick={(e) => {
+              e.preventDefault();
+              setCurrentTab('home');
+            }}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.75rem',
+              textDecoration: 'none',
+              minWidth: 0
+            }}
+          >
+            <img
+              src="/favicon.svg"
+              alt="Anderson Kunicki"
+              style={{
+                width: '36px',
+                height: '36px',
+                borderRadius: '8px',
+                objectFit: 'cover',
+                flexShrink: 0,
+                border: '1px solid var(--border-subtle)'
+              }}
+            />
+            <div style={{ minWidth: 0 }}>
+              <div
+                style={{
+                  fontFamily: 'var(--font-heading)',
+                  fontSize: '1.12rem',
+                  fontWeight: 700,
+                  color: 'var(--text-dark)',
+                  letterSpacing: '-0.02em',
+                  lineHeight: 1.15,
+                  whiteSpace: 'nowrap'
                 }}
-              />
-              <div style={{ minWidth: 0 }}>
-                <div className="header-brand-title" style={{ fontSize: isScrolled ? '1.15rem' : '1.2rem', fontWeight: 800, color: 'var(--primary-dark)', letterSpacing: '-0.02em', lineHeight: 1.1, whiteSpace: 'nowrap', transition: 'font-size 0.2s ease' }}>
-                  Anderson <span style={{ color: 'var(--accent-red)' }}>Kunicki</span>
-                </div>
-                <div className="header-brand-creci" style={{ fontSize: '0.68rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', whiteSpace: 'nowrap' }}>
-                  Corretor Imobiliário • {SITE_CONFIG.creci}
-                </div>
+              >
+                Anderson <span style={{ color: 'var(--accent-red)' }}>Kunicki</span>
               </div>
-            </a>
-          </div>
+              <div
+                style={{
+                  fontSize: '0.7rem',
+                  fontWeight: 500,
+                  color: 'var(--text-muted)',
+                  letterSpacing: '0.02em',
+                  whiteSpace: 'nowrap',
+                  marginTop: '0.1rem'
+                }}
+              >
+                Corretor de Imóveis · {SITE_CONFIG.creci}
+              </div>
+            </div>
+          </a>
 
-          {/* Coluna Central: Menu de Navegação Centralizado */}
-          <nav className="desktop-nav header-col-center">
-            <ul style={{ display: 'flex', gap: '1.75rem', listStyle: 'none', margin: 0, padding: 0, alignItems: 'center' }}>
-              {navItems.map(item => {
+          {/* Navegação Principal */}
+          <nav className="desktop-nav" aria-label="Navegação principal">
+            <ul
+              style={{
+                display: 'flex',
+                gap: '2rem',
+                listStyle: 'none',
+                margin: 0,
+                padding: 0,
+                alignItems: 'center'
+              }}
+            >
+              {navItems.map((item) => {
                 const isActive = currentTab === item.id;
                 return (
-                  <li key={item.id} style={{ margin: 0, padding: 0 }}>
-                    <a 
+                  <li key={item.id}>
+                    <a
                       href={item.path}
                       onClick={(e) => {
                         e.preventDefault();
                         setCurrentTab(item.id);
                       }}
-                      style={{ 
-                        fontWeight: item.isSpecial ? 700 : (isActive ? 700 : 500), 
-                        color: isActive 
-                          ? 'var(--accent-red)' 
-                          : (item.isSpecial ? 'var(--primary-blue)' : 'var(--text-body)'), 
-                        fontSize: '0.95rem', 
-                        textDecoration: 'none',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '0.35rem',
-                        backgroundColor: item.isSpecial && isActive ? 'var(--accent-red-subtle)' : 'transparent',
-                        padding: item.isSpecial ? '0.4rem 0.85rem' : '0.4rem 0.2rem',
-                        borderRadius: 'var(--radius-sm)',
-                        borderBottom: !item.isSpecial && isActive ? '2px solid var(--accent-red)' : '2px solid transparent',
+                      style={{
+                        fontSize: '0.92rem',
+                        fontWeight: isActive ? 600 : 500,
+                        color: isActive ? 'var(--text-dark)' : 'var(--text-body)',
+                        padding: '0.35rem 0',
+                        borderBottom: isActive ? '2px solid var(--accent-red)' : '2px solid transparent',
                         transition: 'var(--transition)'
                       }}
                     >
-                      {item.icon && <item.icon size={15} />}
-                      {item.isSpecial && <Shield size={15} />}
-                      <span>{item.label}</span>
+                      {item.label}
                     </a>
                   </li>
                 );
@@ -151,70 +147,110 @@ export default function Header({ currentTab, setCurrentTab, onOpenAdminModal, cu
             </ul>
           </nav>
 
-          {/* Coluna Direita: Botões de Ação */}
-          <div className="header-col-right">
+          {/* Ações à Direita */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
             {currentTab === 'admin' && currentUser && (
-              <button className="btn btn-red btn-sm" onClick={onOpenAdminModal} style={{ fontWeight: 700 }}>
-                <PlusCircle size={15} /> <span className="header-wa-text">Novo Imóvel</span>
+              <button
+                type="button"
+                className="btn btn-red btn-sm"
+                onClick={onOpenAdminModal}
+              >
+                <PlusCircle size={15} />
+                <span className="header-wa-text">Novo Imóvel</span>
               </button>
             )}
 
-            <a href={waUrl} target="_blank" rel="noopener noreferrer" className="btn btn-whatsapp btn-sm header-wa-btn" style={{ fontWeight: 700 }}>
-              <WhatsAppIcon size={16} color="#FFFFFF" /> <span className="header-wa-text">WhatsApp</span>
+            <a
+              href={waUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-navy btn-sm"
+              style={{
+                padding: '0.5rem 1rem',
+                fontWeight: 600,
+                borderRadius: 'var(--radius-sm)'
+              }}
+            >
+              <WhatsAppIcon size={15} color="#FFFFFF" />
+              <span className="header-wa-text">Atendimento WhatsApp</span>
             </a>
 
-            {/* Mobile Menu Hamburger Button */}
-            <button 
+            <button
+              type="button"
               className="mobile-toggle-btn"
               onClick={() => setMobileOpen(!mobileOpen)}
               style={{
-                backgroundColor: 'var(--bg-subtle)',
-                color: 'var(--primary-dark)',
+                backgroundColor: '#FFFFFF',
+                color: 'var(--text-dark)',
                 border: '1px solid var(--border-subtle)',
-                padding: '0.45rem 0.65rem',
+                padding: '0.45rem 0.6rem',
                 borderRadius: 'var(--radius-sm)',
                 alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer'
+                justifyContent: 'center'
               }}
-              aria-label="Abrir Menu Mobile"
+              aria-label="Abrir menu de navegação"
             >
-              {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+              {mobileOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
           </div>
         </div>
       </header>
 
-      {/* Mobile Drawer Overlay */}
-      <div 
+      {/* Overlay Mobile */}
+      <div
         className={`mobile-nav-overlay ${mobileOpen ? 'open' : ''}`}
         onClick={() => setMobileOpen(false)}
       />
 
-      {/* Mobile Drawer Navigation Sidebar */}
+      {/* Gaveta de Navegação Mobile */}
       <aside className={`mobile-nav-drawer ${mobileOpen ? 'open' : ''}`}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', paddingBottom: '1rem', borderBottom: '1px solid var(--border-subtle)' }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'flex-start',
+            marginBottom: '1.5rem',
+            paddingBottom: '1rem',
+            borderBottom: '1px solid var(--border-subtle)'
+          }}
+        >
           <div>
-            <div style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--primary-dark)' }}>
+            <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.08rem', fontWeight: 700, color: 'var(--text-dark)' }}>
               Anderson <span style={{ color: 'var(--accent-red)' }}>Kunicki</span>
             </div>
-            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 600 }}>{SITE_CONFIG.creci}</div>
+            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>
+              Corretor de Imóveis · {SITE_CONFIG.creci}
+            </div>
             {currentUser && (
-              <div style={{ fontSize: '0.75rem', color: 'var(--primary-blue)', fontWeight: 700, marginTop: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                <User size={12} /> Conectado: <strong>{currentUser}</strong>
+              <div
+                style={{
+                  fontSize: '0.74rem',
+                  color: 'var(--text-body)',
+                  marginTop: '0.4rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.3rem'
+                }}
+              >
+                <User size={12} /> Sessão: <strong>{currentUser}</strong>
               </div>
             )}
           </div>
-          <button onClick={() => setMobileOpen(false)} style={{ border: 0, backgroundColor: 'transparent', color: 'var(--text-muted)', cursor: 'pointer' }}>
-            <X size={24} />
+          <button
+            type="button"
+            onClick={() => setMobileOpen(false)}
+            style={{ color: 'var(--text-muted)', padding: '0.2rem' }}
+            aria-label="Fechar menu"
+          >
+            <X size={20} />
           </button>
         </div>
 
-        <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-          {navItems.map(item => {
+        <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+          {navItems.map((item) => {
             const isActive = currentTab === item.id;
             return (
-              <a 
+              <a
                 key={item.id}
                 href={item.path}
                 onClick={(e) => {
@@ -223,50 +259,49 @@ export default function Header({ currentTab, setCurrentTab, onOpenAdminModal, cu
                   setMobileOpen(false);
                 }}
                 style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.65rem',
-                  padding: '0.75rem 1rem',
+                  padding: '0.75rem 0.9rem',
                   borderRadius: 'var(--radius-sm)',
-                  textDecoration: 'none',
-                  fontWeight: 600,
+                  fontWeight: isActive ? 600 : 500,
                   fontSize: '0.95rem',
-                  backgroundColor: isActive ? 'var(--accent-red)' : 'transparent',
-                  color: isActive ? '#FFFFFF' : 'var(--primary-dark)',
-                  transition: 'var(--transition)'
+                  backgroundColor: isActive ? 'var(--bg-main)' : 'transparent',
+                  color: isActive ? 'var(--accent-red)' : 'var(--text-dark)',
+                  borderLeft: isActive ? '3px solid var(--accent-red)' : '3px solid transparent'
                 }}
               >
-                {item.icon && <item.icon size={18} />}
-                {item.isSpecial && <Shield size={18} />}
-                <span>{item.label}</span>
+                {item.label}
               </a>
             );
           })}
         </nav>
 
-        {/* Rodapé do Menu Mobile com Contato Direto */}
-        <div style={{ marginTop: 'auto', paddingTop: '1.5rem', borderTop: '1px solid var(--border-subtle)', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-          <a 
+        <div
+          style={{
+            marginTop: 'auto',
+            paddingTop: '1.25rem',
+            borderTop: '1px solid var(--border-subtle)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '0.65rem'
+          }}
+        >
+          <a
             href={waUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="btn btn-whatsapp btn-sm"
-            style={{ justifyContent: 'center', fontWeight: 700, padding: '0.7rem' }}
+            className="btn btn-navy"
+            style={{ width: '100%', justifyContent: 'center' }}
           >
-            <WhatsAppIcon size={17} color="#FFFFFF" /> Falar no WhatsApp
+            <WhatsAppIcon size={16} color="#FFFFFF" /> Conversar no WhatsApp
           </a>
-
-          <a 
+          <a
             href={`tel:${SITE_CONFIG.phoneRaw}`}
-            className="btn btn-outline btn-sm"
-            style={{ justifyContent: 'center', fontWeight: 600, padding: '0.65rem', borderColor: '#CBD5E1' }}
+            className="btn btn-outline"
+            style={{ width: '100%', justifyContent: 'center' }}
           >
-            Ligar: {SITE_CONFIG.phoneFormatted}
+            {SITE_CONFIG.phoneFormatted}
           </a>
-
-          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textAlign: 'center', marginTop: '0.5rem', lineHeight: 1.4 }}>
-            <div>{SITE_CONFIG.address}</div>
-            <div style={{ fontWeight: 700, marginTop: '0.2rem', color: 'var(--primary-dark)' }}>{SITE_CONFIG.creci}</div>
+          <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)', textAlign: 'center', marginTop: '0.35rem' }}>
+            {SITE_CONFIG.address} · {SITE_CONFIG.cityState}
           </div>
         </div>
       </aside>

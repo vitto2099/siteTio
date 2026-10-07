@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { INITIAL_PROPERTIES, getCategoryPrefix } from '../data/properties';
 import { db, isFirebaseConfigured } from '../lib/firebase';
+import { sanitizePropertyPayload } from '../utils/security';
 import { 
   collection, 
   onSnapshot, 
@@ -9,14 +10,13 @@ import {
   updateDoc, 
   deleteDoc, 
   query, 
-  orderBy,
   writeBatch
 } from 'firebase/firestore';
 
 const STORAGE_KEY = 'anderson_kunicki_react_properties_v2';
 const COLLECTION_NAME = 'properties';
 
-// Normaliza códigos legados (ex: AK-101 vira CA-101)
+// Normaliza codigos legados (ex: AK-101 vira CA-101)
 function normalizePropertyCodes(list) {
   if (!Array.isArray(list)) return [];
   return list.map(p => {
@@ -57,7 +57,7 @@ export function useProperties(onToast) {
     sortBy: 'recente'
   });
 
-  // Listener em tempo real do Firestore (ou sincronização local)
+  // Listener em tempo real do Firestore (ou sincronizacao local)
   useEffect(() => {
     if (isFirebaseConfigured && db) {
       try {
@@ -68,19 +68,19 @@ export function useProperties(onToast) {
             fetched.push({ id: docSnap.id, ...docSnap.data() });
           });
           
-          // Ordenar por data de criação decrescente
+          // Ordenar por data de criacao decrescente
           fetched.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
 
           const normalized = normalizePropertyCodes(fetched);
           setProperties(normalized);
           localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized));
         }, (error) => {
-          console.warn('⚠️ Erro ao sincronizar com Firestore, operando com cache local:', error);
+          console.warn('Erro ao sincronizar com Firestore, operando com cache local:', error);
         });
 
         return () => unsubscribe();
       } catch (err) {
-        console.warn('⚠️ Falha ao inicializar listener do Firestore:', err);
+        console.warn('Falha ao inicializar listener do Firestore:', err);
       }
     } else {
       const stored = localStorage.getItem(STORAGE_KEY);
@@ -99,17 +99,18 @@ export function useProperties(onToast) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedProps));
   }, []);
 
-  // CRUD — Integrado com Firestore + Contingência Local
+  // CRUD integrado com Firestore + Contingencia Local e Higienizacao de Payload
   const saveProperty = useCallback(async (formData, editId) => {
     const targetId = editId || `prop-${Date.now()}`;
+    const sanitized = sanitizePropertyPayload(formData);
     const payload = {
-      ...formData,
-      status: formData.status || 'ativo',
+      ...sanitized,
+      status: sanitized.status || 'ativo',
       updatedAt: new Date().toISOString()
     };
 
     if (!editId) {
-      payload.createdAt = new Date().toISOString().split('T')[0];
+      payload.createdAt = formData?.createdAt || new Date().toISOString().split('T')[0];
     }
 
     if (isFirebaseConfigured && db) {
@@ -136,8 +137,10 @@ export function useProperties(onToast) {
     }
   }, [properties, saveLocalBackup, onToast]);
 
-  const deleteProperty = useCallback(async (id) => {
-    if (!window.confirm('Tem certeza de que deseja excluir este anúncio permanentemente?')) return;
+  const deleteProperty = useCallback(async (id, skipConfirm = false) => {
+    if (!skipConfirm && typeof window !== 'undefined' && typeof window.confirm === 'function') {
+      if (!window.confirm('Tem certeza de que deseja excluir este anúncio permanentemente?')) return;
+    }
 
     if (isFirebaseConfigured && db) {
       try {
@@ -176,12 +179,16 @@ export function useProperties(onToast) {
 
   const duplicateProperty = useCallback(async (prop) => {
     const newId = `prop-${Date.now()}`;
-    const duplicated = {
+    const sanitized = sanitizePropertyPayload({
       ...prop,
-      id: newId,
       code: `${prop.code || prop.id}-COPIA`,
-      title: `${prop.title} (Cópia)`,
-      createdAt: new Date().toISOString().split('T')[0]
+      title: `${prop.title} (Cópia)`
+    });
+    const duplicated = {
+      ...sanitized,
+      id: newId,
+      createdAt: new Date().toISOString().split('T')[0],
+      updatedAt: new Date().toISOString()
     };
 
     if (isFirebaseConfigured && db) {
@@ -214,8 +221,11 @@ export function useProperties(onToast) {
     if (onToast) onToast(`Status atualizado para: ${newStatus.toUpperCase()}`);
   }, [properties, saveLocalBackup, onToast]);
 
-  const bulkDelete = useCallback(async (ids) => {
-    if (!window.confirm(`Tem certeza de que deseja excluir ${ids.length} imóvel(is) selecionado(s)?`)) return;
+  const bulkDelete = useCallback(async (ids, skipConfirm = false) => {
+    if (!Array.isArray(ids) || ids.length === 0) return;
+    if (!skipConfirm && typeof window !== 'undefined' && typeof window.confirm === 'function') {
+      if (!window.confirm(`Tem certeza de que deseja excluir ${ids.length} imóvel(is) selecionado(s)?`)) return;
+    }
 
     if (isFirebaseConfigured && db) {
       try {
@@ -274,17 +284,27 @@ export function useProperties(onToast) {
       try {
         const importedData = JSON.parse(event.target.result);
         if (Array.isArray(importedData)) {
+          const sanitizedList = importedData.map((prop, index) => {
+            const clean = sanitizePropertyPayload(prop);
+            const docId = prop.id ? String(prop.id).trim() : `prop-${Date.now()}-${index}`;
+            return {
+              ...clean,
+              id: docId,
+              createdAt: prop.createdAt || new Date().toISOString().split('T')[0],
+              updatedAt: new Date().toISOString()
+            };
+          });
+
           if (isFirebaseConfigured && db) {
             const batch = writeBatch(db);
-            importedData.forEach(prop => {
-              const docId = prop.id || `prop-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
-              batch.set(doc(db, COLLECTION_NAME, docId), prop, { merge: true });
+            sanitizedList.forEach(prop => {
+              batch.set(doc(db, COLLECTION_NAME, prop.id), prop, { merge: true });
             });
             await batch.commit();
-            if (onToast) onToast(`${importedData.length} imóvel(is) importado(s) para o Firebase!`);
+            if (onToast) onToast(`${sanitizedList.length} imóvel(is) importado(s) para o Firebase!`);
           } else {
-            saveLocalBackup(importedData);
-            if (onToast) onToast(`${importedData.length} imóvel(is) importado(s) localmente!`);
+            saveLocalBackup(sanitizedList);
+            if (onToast) onToast(`${sanitizedList.length} imóvel(is) importado(s) localmente!`);
           }
         } else {
           if (onToast) onToast('Arquivo JSON inválido. Certifique-se de que é uma lista válida de imóveis.');
@@ -338,8 +358,15 @@ export function useProperties(onToast) {
       }
       return true;
     }).sort((a, b) => {
-      if (filters.sortBy === 'preco-asc') return a.price - b.price;
-      if (filters.sortBy === 'preco-desc') return b.price - a.price;
+      if (filters.sortBy === 'preco-asc' || filters.sortBy === 'menor-preco') {
+        return (Number(a.price) || 0) - (Number(b.price) || 0);
+      }
+      if (filters.sortBy === 'preco-desc' || filters.sortBy === 'maior-preco') {
+        return (Number(b.price) || 0) - (Number(a.price) || 0);
+      }
+      if (Boolean(b.featured) !== Boolean(a.featured)) {
+        return Boolean(b.featured) ? 1 : -1;
+      }
       return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
     });
   }, [activeProperties, filters]);

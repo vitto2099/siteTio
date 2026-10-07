@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { KeyRound, Lock, Eye, EyeOff, X, CheckCircle, AlertCircle } from 'lucide-react';
+import { KeyRound, Eye, EyeOff, X, AlertCircle } from 'lucide-react';
 
 export default function ChangePasswordModal({ isOpen, onClose, onUpdatePassword }) {
   const [currentPass, setCurrentPass] = useState('');
@@ -16,12 +16,12 @@ export default function ChangePasswordModal({ isOpen, onClose, onUpdatePassword 
     setError('');
 
     if (!currentPass) {
-      setError('Por favor, informe a senha atual.');
+      setError('Informe a senha atual.');
       return;
     }
 
     if (newPass.length < 6) {
-      setError('A nova senha deve possuir pelo menos 6 caracteres.');
+      setError('A nova senha deve ter pelo menos 6 caracteres.');
       return;
     }
 
@@ -40,7 +40,7 @@ export default function ChangePasswordModal({ isOpen, onClose, onUpdatePassword 
         onClose();
       }
     } catch (err) {
-      setError(err.message || 'Erro ao alterar a senha. Verifique a senha atual digitada.');
+      setError(err.message || 'Erro ao alterar a senha. Verifique a senha atual.');
     } finally {
       setIsLoading(false);
     }
@@ -48,105 +48,98 @@ export default function ChangePasswordModal({ isOpen, onClose, onUpdatePassword 
 
   return (
     <div className="modal-backdrop" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
-      <div className="modal-content" style={{ maxWidth: '440px', padding: '2rem' }}>
+      <div className="modal-content" style={{ maxWidth: '420px', padding: 0, overflow: 'hidden' }}>
         
-        {/* Header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', paddingBottom: '1rem', borderBottom: '1px solid var(--border-subtle)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
-            <div style={{ width: '38px', height: '38px', borderRadius: 'var(--radius-sm)', backgroundColor: 'var(--accent-red-subtle)', color: 'var(--accent-red)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <KeyRound size={20} />
-            </div>
+        {/* Cabeçalho Sóbrio */}
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center', 
+          padding: '1.15rem 1.5rem', 
+          backgroundColor: 'var(--primary-dark)',
+          color: '#FFFFFF'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+            <KeyRound size={18} style={{ color: '#94A3B8' }} />
             <div>
-              <h3 style={{ fontSize: '1.2rem', color: 'var(--primary-dark)', fontWeight: 800, margin: 0 }}>
+              <h3 style={{ fontSize: '1.1rem', color: '#FFFFFF', fontWeight: 800, margin: 0 }}>
                 Alterar Senha
               </h3>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Defina uma nova senha de acesso ao painel</span>
             </div>
           </div>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '0.2rem' }}>
-            <X size={20} />
+          <button 
+            type="button"
+            onClick={onClose} 
+            style={{ background: 'none', border: 'none', color: '#CBD5E1', cursor: 'pointer', padding: '0.2rem' }}
+          >
+            <X size={19} />
           </button>
         </div>
 
-        {/* Error Alert */}
-        {error && (
-          <div style={{
-            backgroundColor: '#FEF2F2',
-            border: '1px solid #FCA5A5',
-            color: '#DC2626',
-            padding: '0.75rem 1rem',
-            borderRadius: 'var(--radius-sm)',
-            fontSize: '0.85rem',
-            marginBottom: '1.25rem',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem'
-          }}>
-            <AlertCircle size={16} style={{ flexShrink: 0 }} />
-            <span>{error}</span>
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
+        <form onSubmit={handleSubmit} style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           
-          {/* Current Password */}
+          {error && (
+            <div style={{
+              backgroundColor: '#FEF2F2',
+              border: '1px solid #FECACA',
+              color: '#991B1B',
+              padding: '0.7rem 0.9rem',
+              borderRadius: 'var(--radius-xs)',
+              fontSize: '0.84rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem'
+            }}>
+              <AlertCircle size={16} style={{ flexShrink: 0 }} />
+              <span>{error}</span>
+            </div>
+          )}
+
           <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: 'var(--primary-dark)', marginBottom: '0.35rem' }}>
+            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: 'var(--primary-dark)', marginBottom: '0.3rem' }}>
               Senha Atual
             </label>
-            <div style={{ position: 'relative' }}>
-              <input 
-                type={showPass ? "text" : "password"} 
-                className="input-field"
-                placeholder="Digite a senha atual"
-                value={currentPass}
-                onChange={(e) => setCurrentPass(e.target.value)}
-                required
-                style={{ paddingRight: '2.5rem' }}
-              />
-            </div>
+            <input 
+              type={showPass ? 'text' : 'password'} 
+              className="input-field"
+              placeholder="Digite a senha atual"
+              value={currentPass}
+              onChange={(e) => setCurrentPass(e.target.value)}
+              required
+            />
           </div>
 
-          {/* New Password */}
           <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: 'var(--primary-dark)', marginBottom: '0.35rem' }}>
+            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: 'var(--primary-dark)', marginBottom: '0.3rem' }}>
               Nova Senha (mínimo 6 caracteres)
             </label>
-            <div style={{ position: 'relative' }}>
-              <input 
-                type={showPass ? "text" : "password"} 
-                className="input-field"
-                placeholder="Digite a nova senha"
-                value={newPass}
-                onChange={(e) => setNewPass(e.target.value)}
-                required
-                minLength={6}
-                style={{ paddingRight: '2.5rem' }}
-              />
-            </div>
+            <input 
+              type={showPass ? 'text' : 'password'} 
+              className="input-field"
+              placeholder="Digite a nova senha"
+              value={newPass}
+              onChange={(e) => setNewPass(e.target.value)}
+              required
+              minLength={6}
+            />
           </div>
 
-          {/* Confirm New Password */}
           <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: 'var(--primary-dark)', marginBottom: '0.35rem' }}>
+            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: 'var(--primary-dark)', marginBottom: '0.3rem' }}>
               Confirmar Nova Senha
             </label>
-            <div style={{ position: 'relative' }}>
-              <input 
-                type={showPass ? "text" : "password"} 
-                className="input-field"
-                placeholder="Repita a nova senha"
-                value={confirmPass}
-                onChange={(e) => setConfirmPass(e.target.value)}
-                required
-                minLength={6}
-                style={{ paddingRight: '2.5rem' }}
-              />
-            </div>
+            <input 
+              type={showPass ? 'text' : 'password'} 
+              className="input-field"
+              placeholder="Repita a nova senha"
+              value={confirmPass}
+              onChange={(e) => setConfirmPass(e.target.value)}
+              required
+              minLength={6}
+            />
           </div>
 
-          {/* Show/Hide password toggle */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div>
             <button
               type="button"
               onClick={() => setShowPass(!showPass)}
@@ -154,7 +147,8 @@ export default function ChangePasswordModal({ isOpen, onClose, onUpdatePassword 
                 background: 'none',
                 border: 'none',
                 color: 'var(--text-muted)',
-                fontSize: '0.8rem',
+                fontSize: '0.78rem',
+                fontWeight: 600,
                 cursor: 'pointer',
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -163,12 +157,11 @@ export default function ChangePasswordModal({ isOpen, onClose, onUpdatePassword 
               }}
             >
               {showPass ? <EyeOff size={14} /> : <Eye size={14} />}
-              <span>{showPass ? 'Ocultar senhas' : 'Exibir senhas'}</span>
+              <span>{showPass ? 'Ocultar senhas' : 'Mostrar senhas'}</span>
             </button>
           </div>
 
-          {/* Actions */}
-          <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.75rem' }}>
+          <div style={{ display: 'flex', gap: '0.65rem', marginTop: '0.35rem' }}>
             <button 
               type="button" 
               className="btn btn-outline" 
@@ -180,11 +173,11 @@ export default function ChangePasswordModal({ isOpen, onClose, onUpdatePassword 
             </button>
             <button 
               type="submit" 
-              className="btn btn-red" 
-              style={{ flex: 1.5, fontWeight: 700 }}
+              className="btn btn-navy" 
+              style={{ flex: 1.4, fontWeight: 700 }}
               disabled={isLoading}
             >
-              {isLoading ? 'Salvando...' : 'Salvar Nova Senha'}
+              {isLoading ? 'Salvando...' : 'Salvar Senha'}
             </button>
           </div>
 

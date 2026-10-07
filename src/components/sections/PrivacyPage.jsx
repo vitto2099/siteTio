@@ -1,148 +1,179 @@
 import React from 'react';
-import { ShieldCheck, Lock, Eye, FileText, Mail, ArrowLeft } from 'lucide-react';
+import { ShieldCheck, ArrowLeft, Mail } from 'lucide-react';
 import WhatsAppIcon from '../common/WhatsAppIcon';
 import { SITE_CONFIG, getWhatsAppUrl } from '../../config';
 
 export default function PrivacyPage({ onBackToCatalog }) {
-  const waUrl = getWhatsAppUrl("Olá Anderson! Tenho uma dúvida sobre privacidade e tratamento de dados.");
+  const waUrl = getWhatsAppUrl(
+    'Olá Anderson! Tenho uma dúvida sobre privacidade e tratamento de dados.'
+  );
 
   return (
-    <section style={{ padding: '4.5rem 0 6rem', backgroundColor: 'var(--bg-main)' }} id="privacidade">
-      <div className="container" style={{ maxWidth: '880px' }}>
-        
-        {/* Back Button */}
-        <div style={{ marginBottom: '2rem' }}>
-          <button 
-            className="btn btn-outline btn-sm" 
+    <section style={{ padding: '4rem 0 5rem', backgroundColor: 'var(--bg-main)' }} id="privacidade">
+      <div className="container" style={{ maxWidth: '840px' }}>
+        {/* Voltar */}
+        <div style={{ marginBottom: '1.75rem' }}>
+          <button
+            type="button"
+            className="btn btn-outline btn-sm"
             onClick={onBackToCatalog}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', fontWeight: 600 }}
           >
-            <ArrowLeft size={16} /> Voltar ao Catálogo de Imóveis
+            <ArrowLeft size={15} />
+            <span>Voltar ao catálogo</span>
           </button>
         </div>
 
-        {/* Main Privacy Card */}
-        <div style={{
-          backgroundColor: '#FFFFFF',
-          borderRadius: 'var(--radius-lg)',
-          border: '1px solid var(--border-subtle)',
-          boxShadow: 'var(--shadow-md)',
-          padding: '3rem 2.5rem',
-          lineHeight: 1.7
-        }}>
-          
-          {/* Header */}
-          <div style={{ borderBottom: '1px solid var(--border-subtle)', paddingBottom: '1.75rem', marginBottom: '2rem' }}>
-            <div style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.4rem',
-              backgroundColor: 'rgba(34, 197, 94, 0.1)',
-              color: '#16A34A',
-              fontWeight: 700,
-              fontSize: '0.8rem',
-              padding: '0.35rem 0.85rem',
-              borderRadius: 'var(--radius-xs)',
-              marginBottom: '0.85rem'
-            }}>
-              <ShieldCheck size={16} /> Conformidade com a LGPD (Lei nº 13.709/2018)
-            </div>
-            <h1 style={{ fontSize: '2.2rem', color: 'var(--primary-dark)', fontWeight: 800, margin: '0 0 0.5rem 0' }}>
-              Política de Privacidade & Termos de Uso
-            </h1>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.925rem', margin: 0 }}>
-              Última atualização: {new Date().toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })} • {SITE_CONFIG.brokerName} ({SITE_CONFIG.creci})
-            </p>
-          </div>
-
-          {/* Intro */}
-          <div style={{ marginBottom: '2.5rem' }}>
-            <p style={{ fontSize: '1.025rem', color: 'var(--text-body)' }}>
-              A presente <strong>Política de Privacidade</strong> tem como compromisso proteger a privacidade dos usuários e clientes que acessam o site do corretor imobiliário <strong>{SITE_CONFIG.brokerName}</strong>, inscrito no {SITE_CONFIG.creci}, em consonância com a Lei Geral de Proteção de Dados Pessoais (LGPD - Lei nº 13.709/2018).
-            </p>
-          </div>
-
-          {/* Section 1 */}
-          <div style={{ marginBottom: '2.5rem' }}>
-            <h3 style={{ fontSize: '1.25rem', color: 'var(--primary-dark)', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.75rem' }}>
-              <FileText size={20} style={{ color: 'var(--accent-red)' }} /> 1. Informações que Coletamos
-            </h3>
-            <p style={{ color: 'var(--text-body)', fontSize: '0.95rem' }}>
-              Nosso site opera com o princípio da <em>minimização de dados</em>. Não realizamos cadastros invasivos nem rastreamento de dados sensíveis. Os dados coletados podem incluir:
-            </p>
-            <ul style={{ paddingLeft: '1.4rem', color: 'var(--text-body)', fontSize: '0.95rem', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-              <li><strong>Dados de contato voluntários:</strong> Nome, número de telefone/WhatsApp e preferências de imóveis que você nos fornece diretamente ao clicar em links de contato ou simulações.</li>
-              <li><strong>Dados anônimos de navegação:</strong> Informações de desempenho estritamente necessárias para a estabilidade do site (endereço IP resumido, tipo de navegador, resolução de tela).</li>
-            </ul>
-          </div>
-
-          {/* Section 2 */}
-          <div style={{ marginBottom: '2.5rem' }}>
-            <h3 style={{ fontSize: '1.25rem', color: 'var(--primary-dark)', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.75rem' }}>
-              <Eye size={20} style={{ color: 'var(--primary-blue)' }} /> 2. Finalidade do Uso dos Dados
-            </h3>
-            <p style={{ color: 'var(--text-body)', fontSize: '0.95rem' }}>
-              As informações fornecidas voluntariamente têm propósitos exclusivos de:
-            </p>
-            <ul style={{ paddingLeft: '1.4rem', color: 'var(--text-body)', fontSize: '0.95rem', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-              <li>Atendimento personalizado para intermediação e consultoria imobiliária (compra, venda ou locação).</li>
-              <li>Agendamento de visitas presenciais a imóveis de interesse.</li>
-              <li>Envio de simulações de financiamento solicitadas pelo cliente.</li>
-              <li>Cumprimento de obrigações legais pertinentes ao Conselho Regional de Corretores de Imóveis (CRECI/COFECI).</li>
-            </ul>
-          </div>
-
-          {/* Section 3 */}
-          <div style={{ marginBottom: '2.5rem' }}>
-            <h3 style={{ fontSize: '1.25rem', color: 'var(--primary-dark)', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.75rem' }}>
-              <Lock size={20} style={{ color: '#16A34A' }} /> 3. Segurança e Sigilo
-            </h3>
-            <p style={{ color: 'var(--text-body)', fontSize: '0.95rem' }}>
-              Garantimos que <strong>nunca vendemos, alugamos ou comercializamos seus dados</strong> com terceiros para fins de marketing. O acesso às informações de negociação é restrito ao corretor responsável, protegido por padrões modernos de criptografia e segurança de rede.
-            </p>
-          </div>
-
-          {/* Section 4 */}
-          <div style={{ marginBottom: '2.5rem' }}>
-            <h3 style={{ fontSize: '1.25rem', color: 'var(--primary-dark)', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.75rem' }}>
-              <ShieldCheck size={20} style={{ color: 'var(--gold-primary)' }} /> 4. Seus Direitos como Titular de Dados
-            </h3>
-            <p style={{ color: 'var(--text-body)', fontSize: '0.95rem' }}>
-              De acordo com a LGPD, você possui total direito de:
-            </p>
-            <ul style={{ paddingLeft: '1.4rem', color: 'var(--text-body)', fontSize: '0.95rem', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-              <li>Confirmar a existência de tratamento de dados pessoais.</li>
-              <li>Solicitar a correção de dados incompletos, inexatos ou desatualizados.</li>
-              <li>Solicitar a exclusão definitiva dos seus dados de contato dos nossos canais de atendimento a qualquer momento.</li>
-            </ul>
-          </div>
-
-          {/* Contact Encarregado */}
-          <div style={{
-            backgroundColor: 'var(--bg-subtle)',
-            borderRadius: 'var(--radius-md)',
-            padding: '1.75rem',
+        {/* Documento Editorial */}
+        <div
+          style={{
+            backgroundColor: '#FFFFFF',
+            borderRadius: 'var(--radius-lg)',
             border: '1px solid var(--border-subtle)',
-            marginTop: '2rem'
-          }}>
-            <h4 style={{ fontSize: '1.05rem', color: 'var(--primary-dark)', fontWeight: 800, marginBottom: '0.5rem' }}>
-              Canal de Atendimento do Titular (DPO / Responsável)
-            </h4>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.25rem' }}>
-              Para exercer qualquer dos seus direitos ou esclarecer dúvidas sobre nossa política de privacidade, entre em contato direto:
+            boxShadow: 'var(--shadow-sm)',
+            padding: 'clamp(1.75rem, 4vw, 3rem)',
+            lineHeight: 1.75
+          }}
+        >
+          <div
+            style={{
+              borderBottom: '1px solid var(--border-subtle)',
+              paddingBottom: '1.5rem',
+              marginBottom: '2rem'
+            }}
+          >
+            <div
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                fontSize: '0.76rem',
+                fontWeight: 600,
+                color: 'var(--accent-red)',
+                textTransform: 'uppercase',
+                letterSpacing: '0.04em',
+                marginBottom: '0.6rem'
+              }}
+            >
+              <ShieldCheck size={15} />
+              <span>Conformidade com a LGPD (Lei nº 13.709/2018)</span>
+            </div>
+            <h1
+              style={{
+                fontSize: 'clamp(1.6rem, 3vw, 2.1rem)',
+                color: 'var(--text-dark)',
+                fontWeight: 700,
+                marginBottom: '0.4rem'
+              }}
+            >
+              Política de Privacidade e Termos de Uso
+            </h1>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', margin: 0 }}>
+              {SITE_CONFIG.brokerName} · {SITE_CONFIG.creci} · Itaiópolis/SC
             </p>
-            <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
-              <a href={`mailto:${SITE_CONFIG.email}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', color: 'var(--accent-red)', fontWeight: 700, fontSize: '0.9rem', textDecoration: 'none' }}>
-                <Mail size={16} /> {SITE_CONFIG.email}
-              </a>
-              <a href={waUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', color: '#16A34A', fontWeight: 700, fontSize: '0.9rem', textDecoration: 'none' }}>
-                <WhatsAppIcon size={16} color="#16A34A" /> WhatsApp: {SITE_CONFIG.phoneFormatted}
-              </a>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem', color: 'var(--text-body)', fontSize: '0.95rem' }}>
+            <p>
+              Esta Política de Privacidade descreve como as informações são tratadas no site de{' '}
+              <strong style={{ color: 'var(--text-dark)' }}>{SITE_CONFIG.brokerName}</strong> ({SITE_CONFIG.creci}),
+              em conformidade com a Lei Geral de Proteção de Dados Pessoais (Lei nº 13.709/2018).
+            </p>
+
+            <div>
+              <h2 style={{ fontSize: '1.1rem', color: 'var(--text-dark)', fontWeight: 700, marginBottom: '0.5rem' }}>
+                1. Coleta e Minimização de Dados
+              </h2>
+              <p style={{ marginBottom: '0.5rem' }}>
+                Operamos sob o princípio da necessidade e minimização de dados. Não exigimos cadastro prévio para consulta ao catálogo de imóveis. As informações tratadas limitam-se a:
+              </p>
+              <ul style={{ paddingLeft: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+                <li>
+                  <strong style={{ color: 'var(--text-dark)' }}>Contato voluntário:</strong> Nome, telefone e mensagem compartilhados voluntariamente pelo usuário ao iniciar atendimento via WhatsApp ou e-mail.
+                </li>
+                <li>
+                  <strong style={{ color: 'var(--text-dark)' }}>Dados técnicos essenciais:</strong> Registros básicos de conexão necessários para o funcionamento seguro da aplicação.
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h2 style={{ fontSize: '1.1rem', color: 'var(--text-dark)', fontWeight: 700, marginBottom: '0.5rem' }}>
+                2. Finalidade do Atendimento
+              </h2>
+              <p>
+                Os dados fornecidos pelo interessado são utilizados exclusivamente para retorno de atendimento imobiliário, agendamento de visitas técnicas, esclarecimento de dúvidas documentais e intermediação de compra, venda ou locação.
+              </p>
+            </div>
+
+            <div>
+              <h2 style={{ fontSize: '1.1rem', color: 'var(--text-dark)', fontWeight: 700, marginBottom: '0.5rem' }}>
+                3. Sigilo e Compartilhamento
+              </h2>
+              <p>
+                Não comercializamos nem cedemos dados pessoais a terceiros para fins publicitários. As informações de negociação permanecem restritas ao corretor responsável e, quando aplicável, às partes contratantes e cartórios competentes.
+              </p>
+            </div>
+
+            <div>
+              <h2 style={{ fontSize: '1.1rem', color: 'var(--text-dark)', fontWeight: 700, marginBottom: '0.5rem' }}>
+                4. Direitos do Titular
+              </h2>
+              <p>
+                A qualquer momento, o titular pode solicitar confirmação de tratamento, atualização ou exclusão de seus dados de contato diretamente pelos canais oficiais abaixo.
+              </p>
             </div>
           </div>
 
+          {/* Canal de Contato do Encarregado */}
+          <div
+            style={{
+              backgroundColor: 'var(--bg-main)',
+              borderRadius: 'var(--radius-md)',
+              padding: '1.35rem 1.5rem',
+              border: '1px solid var(--border-subtle)',
+              marginTop: '2.25rem'
+            }}
+          >
+            <h3 style={{ fontSize: '0.95rem', color: 'var(--text-dark)', fontWeight: 700, marginBottom: '0.35rem' }}>
+              Contato Direto do Responsável
+            </h3>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.86rem', marginBottom: '1rem' }}>
+              Para dúvidas sobre privacidade ou solicitações relativas aos seus dados:
+            </p>
+            <div style={{ display: 'flex', gap: '1.25rem', flexWrap: 'wrap' }}>
+              <a
+                href={`mailto:${SITE_CONFIG.email}`}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                  color: 'var(--text-dark)',
+                  fontWeight: 600,
+                  fontSize: '0.88rem'
+                }}
+              >
+                <Mail size={15} />
+                <span>{SITE_CONFIG.email}</span>
+              </a>
+              <a
+                href={waUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                  color: '#15803D',
+                  fontWeight: 600,
+                  fontSize: '0.88rem'
+                }}
+              >
+                <WhatsAppIcon size={15} color="#15803D" />
+                <span>{SITE_CONFIG.phoneFormatted}</span>
+              </a>
+            </div>
+          </div>
         </div>
-
       </div>
     </section>
   );

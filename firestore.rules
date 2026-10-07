@@ -1,13 +1,26 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Coleção de imóveis do site
+    // Colecao de imoveis do site
     match /properties/{propertyId} {
-      // Qualquer visitante pode ver os imóveis no catálogo público
+      // Qualquer visitante pode ver os imoveis no catalogo publico
       allow read: if true;
-      
-      // Apenas o corretor/administrador autenticado pode criar, editar ou excluir
-      allow write: if request.auth != null;
+
+      // Apenas o corretor/administrador autenticado pode criar ou atualizar com estrutura valida
+      allow create, update: if request.auth != null
+        && request.resource.data.title is string
+        && request.resource.data.title.size() > 0
+        && request.resource.data.title.size() <= 200
+        && request.resource.data.price is number
+        && request.resource.data.price >= 0;
+
+      // Apenas o corretor/administrador autenticado pode excluir
+      allow delete: if request.auth != null;
+    }
+
+    // Bloqueio padrao para demais colecoes
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }

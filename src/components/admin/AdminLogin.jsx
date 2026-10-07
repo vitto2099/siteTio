@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Lock, User, KeyRound, ShieldAlert, Eye, EyeOff, LogIn, Clock, ShieldCheck } from 'lucide-react';
+import { Lock, User, KeyRound, ShieldAlert, Eye, EyeOff, LogIn, Clock } from 'lucide-react';
 
 export default function AdminLogin({ onLogin }) {
   const [username, setUsername] = useState('');
@@ -42,13 +42,13 @@ export default function AdminLogin({ onLogin }) {
 
         if (nextAttempts >= 5) {
           setLockoutTime(60);
-          setErrorMsg('Múltiplas tentativas incorretas. Acesso temporariamente bloqueado por segurança (60s).');
+          setErrorMsg('Múltiplas tentativas incorretas. Acesso temporariamente bloqueado por 60 segundos.');
         } else {
           setErrorMsg(`Usuário ou senha incorretos. Tentativa ${nextAttempts} de 5.`);
         }
       }
-    } catch (err) {
-      setErrorMsg('Erro de autenticação de segurança. Tente novamente.');
+    } catch {
+      setErrorMsg('Erro de autenticação. Tente novamente.');
     } finally {
       setIsLoading(false);
     }
@@ -56,211 +56,194 @@ export default function AdminLogin({ onLogin }) {
 
   return (
     <div style={{
-      minHeight: '80vh',
+      minHeight: '78vh',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      padding: '3rem 1rem',
+      padding: '2.5rem 1rem',
       backgroundColor: 'var(--bg-main)'
     }}>
       <div style={{
         width: '100%',
-        maxWidth: '440px',
+        maxWidth: '410px',
         backgroundColor: '#FFFFFF',
-        borderRadius: 'var(--radius-lg)',
-        boxShadow: 'var(--shadow-lg)',
+        borderRadius: 'var(--radius-md)',
+        boxShadow: 'var(--shadow-md)',
         border: '1px solid var(--border-subtle)',
         overflow: 'hidden'
       }}>
         
-        {/* Header Banner */}
+        {/* Cabeçalho Sóbrio */}
         <div style={{
           backgroundColor: 'var(--primary-dark)',
-          padding: '2.5rem 2rem 2rem',
-          textAlign: 'center',
-          color: '#FFFFFF',
-          position: 'relative'
+          padding: '2rem 1.75rem 1.65rem',
+          color: '#FFFFFF'
         }}>
           <div style={{
-            width: '60px',
-            height: '60px',
-            margin: '0 auto 1rem',
-            borderRadius: '50%',
-            backgroundColor: 'rgba(200, 29, 37, 0.15)',
-            border: '2px solid var(--accent-red)',
-            display: 'flex',
+            display: 'inline-flex',
             alignItems: 'center',
-            justifyContent: 'center',
-            color: 'var(--accent-red)'
+            gap: '0.45rem',
+            fontSize: '0.72rem',
+            fontWeight: 700,
+            color: '#94A3B8',
+            textTransform: 'uppercase',
+            letterSpacing: '0.06em',
+            marginBottom: '0.4rem'
           }}>
-            <Lock size={28} />
+            <Lock size={13} /> Área do Corretor
           </div>
 
-          <span style={{
-            fontSize: '0.75rem',
-            fontWeight: 800,
-            color: 'var(--gold-primary)',
-            textTransform: 'uppercase',
-            letterSpacing: '0.08em'
-          }}>
-            Acesso Restrito Seguro
-          </span>
-
           <h2 style={{
-            fontSize: '1.6rem',
+            fontSize: '1.45rem',
             fontWeight: 800,
-            margin: '0.35rem 0 0.25rem',
+            margin: '0 0 0.25rem',
             color: '#FFFFFF'
           }}>
-            Painel Administrativo
+            Painel de Imóveis
           </h2>
 
           <p style={{
-            fontSize: '0.85rem',
-            color: '#94A3B8',
+            fontSize: '0.82rem',
+            color: '#CBD5E1',
             margin: 0
           }}>
-            Anderson Kunicki Corretor Imobiliário
+            Anderson Kunicki · CRECI-SC 60173 F
           </p>
         </div>
 
-        {/* Form Container */}
-        <form onSubmit={handleSubmit} style={{ padding: '2rem' }}>
+        {/* Formulário */}
+        <form onSubmit={handleSubmit} style={{ padding: '1.75rem' }}>
           
           {errorMsg && (
             <div style={{
               backgroundColor: lockoutTime > 0 ? '#FFFBEB' : '#FEF2F2',
-              border: lockoutTime > 0 ? '1px solid #FCD34D' : '1px solid #FCA5A5',
-              color: lockoutTime > 0 ? '#B45309' : '#991B1B',
-              padding: '0.85rem 1rem',
-              borderRadius: 'var(--radius-sm)',
-              marginBottom: '1.5rem',
-              fontSize: '0.875rem',
+              border: lockoutTime > 0 ? '1px solid #FDE68A' : '1px solid #FECACA',
+              color: lockoutTime > 0 ? '#92400E' : '#991B1B',
+              padding: '0.75rem 0.9rem',
+              borderRadius: 'var(--radius-xs)',
+              marginBottom: '1.25rem',
+              fontSize: '0.84rem',
               display: 'flex',
-              alignItems: 'center',
-              gap: '0.65rem'
+              alignItems: 'flex-start',
+              gap: '0.6rem'
             }}>
-              {lockoutTime > 0 ? <Clock size={20} style={{ flexShrink: 0 }} /> : <ShieldAlert size={18} style={{ flexShrink: 0 }} />}
+              {lockoutTime > 0 ? (
+                <Clock size={17} style={{ flexShrink: 0, marginTop: '0.1rem' }} />
+              ) : (
+                <ShieldAlert size={17} style={{ flexShrink: 0, marginTop: '0.1rem' }} />
+              )}
               <div>
-                <span>{errorMsg}</span>
+                <div>{errorMsg}</div>
                 {lockoutTime > 0 && (
-                  <div style={{ fontWeight: 800, marginTop: '0.25rem', fontSize: '0.9rem' }}>
-                    Aguarde {lockoutTime} segundo(s)...
+                  <div style={{ fontWeight: 800, marginTop: '0.2rem' }}>
+                    Aguarde {lockoutTime}s para tentar novamente.
                   </div>
                 )}
               </div>
             </div>
           )}
 
-          {/* Username Field */}
-          <div style={{ marginBottom: '1.25rem' }}>
+          {/* Usuário */}
+          <div style={{ marginBottom: '1.1rem' }}>
             <label style={{
               display: 'block',
-              fontSize: '0.825rem',
+              fontSize: '0.8rem',
               fontWeight: 700,
               color: 'var(--primary-dark)',
-              marginBottom: '0.4rem'
+              marginBottom: '0.35rem'
             }}>
-              Usuário / Login
+              Usuário
             </label>
             <div style={{ position: 'relative' }}>
               <div style={{
                 position: 'absolute',
-                left: '1rem',
+                left: '0.85rem',
                 top: '50%',
                 transform: 'translateY(-50%)',
                 color: 'var(--text-muted)',
                 display: 'flex',
                 alignItems: 'center'
               }}>
-                <User size={18} />
+                <User size={16} />
               </div>
               <input
                 type="text"
                 className="input-field"
-                placeholder="Informe seu usuário de acesso"
+                placeholder="Digite seu usuário"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
                 disabled={lockoutTime > 0}
                 autoFocus
-                style={{
-                  paddingLeft: '2.75rem',
-                  backgroundColor: 'var(--bg-subtle)'
-                }}
+                style={{ paddingLeft: '2.5rem' }}
               />
             </div>
           </div>
 
-          {/* Password Field */}
-          <div style={{ marginBottom: '1.75rem' }}>
+          {/* Senha */}
+          <div style={{ marginBottom: '1.5rem' }}>
             <label style={{
               display: 'block',
-              fontSize: '0.825rem',
+              fontSize: '0.8rem',
               fontWeight: 700,
               color: 'var(--primary-dark)',
-              marginBottom: '0.4rem'
+              marginBottom: '0.35rem'
             }}>
-              Senha de Acesso
+              Senha
             </label>
             <div style={{ position: 'relative' }}>
               <div style={{
                 position: 'absolute',
-                left: '1rem',
+                left: '0.85rem',
                 top: '50%',
                 transform: 'translateY(-50%)',
                 color: 'var(--text-muted)',
                 display: 'flex',
                 alignItems: 'center'
               }}>
-                <KeyRound size={18} />
+                <KeyRound size={16} />
               </div>
               <input
                 type={showPassword ? 'text' : 'password'}
                 className="input-field"
-                placeholder="Digite sua senha de acesso"
+                placeholder="Digite sua senha"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 disabled={lockoutTime > 0}
-                style={{
-                  paddingLeft: '2.75rem',
-                  paddingRight: '2.75rem',
-                  backgroundColor: 'var(--bg-subtle)'
-                }}
+                style={{ paddingLeft: '2.5rem', paddingRight: '2.5rem' }}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 style={{
                   position: 'absolute',
-                  right: '0.75rem',
+                  right: '0.7rem',
                   top: '50%',
                   transform: 'translateY(-50%)',
                   background: 'none',
                   border: 'none',
                   color: 'var(--text-muted)',
                   cursor: 'pointer',
-                  padding: '0.25rem',
+                  padding: '0.2rem',
                   display: 'flex',
                   alignItems: 'center'
                 }}
-                title={showPassword ? 'Ocultar senha' : 'Exibir senha'}
+                title={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
               >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
           </div>
 
-          {/* Submit Button */}
           <button
             type="submit"
-            className="btn btn-red"
+            className="btn btn-navy"
             disabled={isLoading || lockoutTime > 0}
             style={{
               width: '100%',
-              padding: '0.85rem 1rem',
-              fontSize: '1rem',
+              padding: '0.8rem 1rem',
+              fontSize: '0.92rem',
               fontWeight: 700,
               justifyContent: 'center',
               opacity: lockoutTime > 0 ? 0.6 : 1
@@ -269,30 +252,14 @@ export default function AdminLogin({ onLogin }) {
             {isLoading ? (
               <span>Autenticando...</span>
             ) : lockoutTime > 0 ? (
-              <span>Bloqueado ({lockoutTime}s)</span>
+              <span>Acesso Bloqueado ({lockoutTime}s)</span>
             ) : (
               <>
-                <LogIn size={18} />
+                <LogIn size={17} />
                 <span>Entrar no Painel</span>
               </>
             )}
           </button>
-
-          <div style={{
-            marginTop: '1.5rem',
-            paddingTop: '1rem',
-            borderTop: '1px solid var(--border-subtle)',
-            textAlign: 'center',
-            fontSize: '0.78rem',
-            color: 'var(--text-muted)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '0.35rem'
-          }}>
-            <ShieldCheck size={14} style={{ color: '#16A34A' }} />
-            <span>Conexão Segura e Criptografada</span>
-          </div>
 
         </form>
 

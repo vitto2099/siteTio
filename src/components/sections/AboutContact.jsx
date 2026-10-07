@@ -1,324 +1,355 @@
 import React from 'react';
-import { MapPin, Mail, Facebook, Instagram, ShieldCheck, CheckCircle2, Phone, Clock, Navigation, Compass } from 'lucide-react';
+import {
+  MapPin,
+  Mail,
+  ShieldCheck,
+  Phone,
+  Clock,
+  Navigation,
+  Compass
+} from 'lucide-react';
 import WhatsAppIcon from '../common/WhatsAppIcon';
 import { SITE_CONFIG, getWhatsAppUrl } from '../../config';
 
 export default function AboutContact() {
-  const waUrl = getWhatsAppUrl("Olá Anderson! Vim pelo site e gostaria de agendar uma consultoria imobiliária.");
+  const waUrl = getWhatsAppUrl(
+    'Olá Anderson! Vim pelo site e gostaria de agendar uma consultoria imobiliária.'
+  );
 
-  const services = [
-    { title: "Segurança Jurídica", desc: "Análise minuciosa de matrículas, certidões negativas e histórico do imóvel para uma compra 100% segura." },
-    { title: "Avaliação Justa de Mercado", desc: "Precificação precisa alinhada à realidade de compra e venda em Itaiópolis e cidades vizinhas." },
-    { title: "Apoio em Financiamentos", desc: "Orientação e assessoria completa nos processos de crédito habitacional (Caixa Econômica, BB e bancos privados)." },
-    { title: "Atendimento Personalizado", desc: "Negociação direta com o corretor responsável, com transparência e ética do início à entrega das chaves." }
+  const pillars = [
+    {
+      title: 'Rigor Documental e Jurídico',
+      desc: 'Análise prévia de matrículas, certidões e histórico registral para garantir negociações seguras e sem imprevistos.'
+    },
+    {
+      title: 'Avaliação Técnica de Mercado',
+      desc: 'Precificação fundamentada na realidade de liquidez de Itaiópolis e do Planalto Norte Catarinense.'
+    },
+    {
+      title: 'Assessoria em Financiamentos',
+      desc: 'Acompanhamento completo em processos de crédito imobiliário junto à Caixa, Banco do Brasil e instituições privadas.'
+    },
+    {
+      title: 'Atendimento Direto',
+      desc: 'Trato direto com o corretor responsável em todas as etapas, da visita técnica à assinatura da escritura.'
+    }
   ];
 
   return (
-    <section style={{ padding: '5rem 0', backgroundColor: '#F8FAFC' }} id="sobre">
+    <section style={{ padding: '4rem 0 5rem', backgroundColor: 'var(--bg-main)' }} id="sobre">
       <div className="container">
-        
-        {/* Cabeçalho da Seção */}
-        <div style={{ textAlign: 'center', maxWidth: '720px', margin: '0 auto 3.5rem' }}>
-          <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#0B192C', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-            Sobre o Profissional
+        {/* Cabeçalho Editorial */}
+        <div style={{ maxWidth: '680px', marginBottom: '2.75rem' }}>
+          <span
+            style={{
+              fontSize: '0.75rem',
+              fontWeight: 600,
+              color: 'var(--accent-red)',
+              textTransform: 'uppercase',
+              letterSpacing: '0.06em',
+              display: 'block',
+              marginBottom: '0.4rem'
+            }}
+          >
+            Sobre e Contato
           </span>
-          <h2 style={{ fontSize: '2.25rem', margin: '0.5rem 0', fontWeight: 800, color: '#0F172A', letterSpacing: '-0.02em' }}>
-            Anderson Kunicki Corretor Imobiliário
-          </h2>
-          <p style={{ color: '#64748B', fontSize: '1.05rem', lineHeight: 1.6 }}>
-            Compromisso, ética e conhecimento prático do mercado imobiliário de Itaiópolis e Planalto Norte Catarinense.
+          <h1
+            style={{
+              fontSize: 'clamp(1.75rem, 3.2vw, 2.35rem)',
+              fontWeight: 700,
+              color: 'var(--text-dark)',
+              letterSpacing: '-0.02em',
+              marginBottom: '0.65rem'
+            }}
+          >
+            Anderson Kunicki · Consultoria Imobiliária
+          </h1>
+          <p style={{ color: 'var(--text-body)', fontSize: '1rem', lineHeight: 1.65 }}>
+            Atuação ética, transparente e próxima da realidade urbana e rural de Itaiópolis e região.
           </p>
         </div>
 
-        {/* Card Principal de Apresentação */}
-        <div className="about-main-card" style={{
-          backgroundColor: '#FFFFFF',
-          borderRadius: '16px',
-          border: '1px solid #E2E8F0',
-          overflow: 'hidden',
-          boxShadow: '0 4px 20px rgba(15, 23, 42, 0.05)',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))',
-          marginBottom: '3.5rem'
-        }}>
-          {/* Coluna da Foto do Anderson */}
-          <div style={{ 
-            backgroundColor: '#0F172A', 
-            position: 'relative', 
-            minHeight: 'clamp(280px, 45vh, 440px)',
-            overflow: 'hidden'
-          }}>
-            <img 
-              src="/anderson-kunicki.jpg" 
-              alt="Anderson Kunicki Corretor Imobiliário CRECI-SC 60173 F" 
-              style={{ 
-                width: '100%', 
-                height: '100%', 
-                objectFit: 'cover', 
+        {/* Bloco Principal: Retrato + Biografia */}
+        <div
+          style={{
+            backgroundColor: '#FFFFFF',
+            borderRadius: 'var(--radius-lg)',
+            border: '1px solid var(--border-subtle)',
+            overflow: 'hidden',
+            boxShadow: 'var(--shadow-sm)',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))',
+            marginBottom: '2.75rem'
+          }}
+        >
+          {/* Coluna da Foto */}
+          <div
+            style={{
+              backgroundColor: 'var(--primary-dark)',
+              position: 'relative',
+              minHeight: 'clamp(300px, 42vh, 440px)',
+              overflow: 'hidden'
+            }}
+          >
+            <img
+              src="/anderson-kunicki.jpg"
+              alt="Anderson Kunicki — Corretor de Imóveis CRECI-SC 60173 F"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
                 objectPosition: 'center 15%',
                 display: 'block'
               }}
-              onError={(e) => { e.target.src = '/banner.jpg'; }}
+              onError={(e) => {
+                e.target.src = '/banner.jpg';
+              }}
             />
-            
-            {/* Selo do CRECI no pé da foto */}
-            <div style={{
-              position: 'absolute',
-              bottom: '1.25rem',
-              left: '1.25rem',
-              right: '1.25rem',
-              backgroundColor: 'rgba(15, 23, 42, 0.9)',
-              backdropFilter: 'blur(8px)',
-              color: '#FFFFFF',
-              padding: '0.75rem 1.15rem',
-              borderRadius: '8px',
-              border: '1px solid rgba(255, 255, 255, 0.15)',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.75rem',
-              zIndex: 2
-            }}>
-              <div style={{
-                width: '32px',
-                height: '32px',
-                borderRadius: '50%',
-                backgroundColor: '#1E293B',
-                color: '#60A5FA',
+
+            {/* Assinatura CRECI */}
+            <div
+              style={{
+                position: 'absolute',
+                bottom: '1.25rem',
+                left: '1.25rem',
+                right: '1.25rem',
+                backgroundColor: 'rgba(15, 23, 42, 0.92)',
+                backdropFilter: 'blur(8px)',
+                color: '#FFFFFF',
+                padding: '0.75rem 1rem',
+                borderRadius: 'var(--radius-sm)',
+                border: '1px solid rgba(255, 255, 255, 0.14)',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
-                flexShrink: 0
-              }}>
-                <ShieldCheck size={18} />
-              </div>
+                gap: '0.75rem'
+              }}
+            >
+              <ShieldCheck size={18} style={{ color: '#E2E8F0', flexShrink: 0 }} />
               <div>
-                <div style={{ fontSize: '0.85rem', fontWeight: 800 }}>Corretor Credenciado</div>
-                <div style={{ fontSize: '0.75rem', color: '#94A3B8' }}>{SITE_CONFIG.creci} • Santa Catarina</div>
+                <div style={{ fontSize: '0.84rem', fontWeight: 600 }}>Corretor Credenciado</div>
+                <div style={{ fontSize: '0.74rem', color: '#94A3B8' }}>
+                  {SITE_CONFIG.creci} · Santa Catarina
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Coluna do Conteúdo / Biografia */}
-          <div className="about-bio-column" style={{ padding: '2.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-            <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.35rem' }}>
-              Atendimento Dedicado
+          {/* Coluna Biográfica */}
+          <div
+            style={{
+              padding: 'clamp(1.75rem, 3.5vw, 2.75rem)',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center'
+            }}
+          >
+            <span
+              style={{
+                fontSize: '0.74rem',
+                fontWeight: 600,
+                color: 'var(--text-muted)',
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em',
+                marginBottom: '0.35rem'
+              }}
+            >
+              Experiência Local
             </span>
-            <h3 style={{ fontSize: 'clamp(1.35rem, 3vw, 1.65rem)', fontWeight: 800, color: '#0F172A', marginBottom: '1.25rem', lineHeight: 1.25 }}>
-              Segurança e tranquilidade para o seu patrimônio
-            </h3>
-            
-            <p style={{ color: '#475569', fontSize: '0.975rem', lineHeight: 1.7, marginBottom: '1.25rem' }}>
-              Atuando no mercado imobiliário de Itaiópolis e região, Anderson Kunicki oferece assessoria completa na compra, venda e locação de casas, terrenos urbanos e propriedades rurais.
+            <h2
+              style={{
+                fontSize: 'clamp(1.3rem, 2.5vw, 1.6rem)',
+                fontWeight: 700,
+                color: 'var(--text-dark)',
+                marginBottom: '1.15rem',
+                lineHeight: 1.28
+              }}
+            >
+              Segurança patrimonial em cada etapa da negociação
+            </h2>
+
+            <p
+              style={{
+                color: 'var(--text-body)',
+                fontSize: '0.95rem',
+                lineHeight: 1.75,
+                marginBottom: '1rem'
+              }}
+            >
+              Com foco em Itaiópolis e municípios vizinhos, Anderson Kunicki presta consultoria completa na compra, venda e locação de residências, lotes urbanos, áreas comerciais e propriedades rurais.
             </p>
 
-            <p style={{ color: '#475569', fontSize: '0.975rem', lineHeight: 1.7, marginBottom: '2rem' }}>
-              Cada negociação é conduzida com atenção rigorosa à documentação, histórico cartorário e viabilidade financeira, assegurando que você faça o melhor negócio com total clareza e respaldo técnico.
+            <p
+              style={{
+                color: 'var(--text-body)',
+                fontSize: '0.95rem',
+                lineHeight: 1.75,
+                marginBottom: '1.75rem'
+              }}
+            >
+              Cada imóvel passa por verificação criteriosa de documentação, divisas e viabilidade financeira, proporcionando tranquilidade tanto para quem vende quanto para quem adquire ou aluga.
             </p>
 
-            {/* Ações de Contato Direto */}
-            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-              <a 
-                href={waUrl} 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="btn btn-whatsapp" 
-                style={{ padding: '0.85rem 1.6rem', fontSize: '0.95rem', borderRadius: '10px' }}
+            <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+              <a
+                href={waUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-whatsapp"
               >
-                <WhatsAppIcon size={18} color="#FFFFFF" /> Falar no WhatsApp
+                <WhatsAppIcon size={17} color="#FFFFFF" />
+                <span>Conversar pelo WhatsApp</span>
               </a>
 
-              <a 
-                href={`tel:${SITE_CONFIG.phoneRaw}`} 
-                className="btn btn-outline" 
-                style={{ padding: '0.85rem 1.4rem', fontSize: '0.95rem', borderRadius: '10px', borderColor: '#CBD5E1' }}
-              >
-                <Phone size={16} /> {SITE_CONFIG.phoneFormatted}
+              <a href={`tel:${SITE_CONFIG.phoneRaw}`} className="btn btn-outline">
+                <Phone size={15} />
+                <span>{SITE_CONFIG.phoneFormatted}</span>
               </a>
             </div>
           </div>
         </div>
 
-        {/* Grade de 4 Pilares Profissionais */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))', gap: '1.5rem', marginBottom: '3.5rem' }}>
-          {services.map((item, idx) => (
-            <div 
+        {/* Grade dos 4 Pilares de Trabalho */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))',
+            gap: '1.25rem',
+            marginBottom: '2.75rem'
+          }}
+        >
+          {pillars.map((item, idx) => (
+            <div
               key={idx}
               style={{
                 backgroundColor: '#FFFFFF',
-                borderRadius: '12px',
-                padding: '1.5rem',
-                border: '1px solid #E2E8F0',
-                boxShadow: '0 2px 6px rgba(15, 23, 42, 0.03)'
+                borderRadius: 'var(--radius-md)',
+                padding: '1.4rem',
+                border: '1px solid var(--border-subtle)',
+                boxShadow: 'var(--shadow-xs)'
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
-                <CheckCircle2 size={18} style={{ color: '#16A34A', flexShrink: 0 }} />
-                <h4 style={{ fontSize: '1rem', fontWeight: 700, color: '#0F172A', margin: 0 }}>
-                  {item.title}
-                </h4>
+              <div
+                style={{
+                  fontSize: '0.72rem',
+                  fontWeight: 700,
+                  color: 'var(--accent-red)',
+                  marginBottom: '0.4rem',
+                  letterSpacing: '0.04em'
+                }}
+              >
+                0{idx + 1}
               </div>
-              <p style={{ fontSize: '0.875rem', color: '#64748B', lineHeight: 1.6, margin: 0 }}>
+              <h3 style={{ fontSize: '0.98rem', fontWeight: 700, color: 'var(--text-dark)', marginBottom: '0.45rem' }}>
+                {item.title}
+              </h3>
+              <p style={{ fontSize: '0.86rem', color: 'var(--text-body)', lineHeight: 1.6, margin: 0 }}>
                 {item.desc}
               </p>
             </div>
           ))}
         </div>
 
-        {/* Localização do Escritório e Informações Práticas */}
-        <div className="about-office-card" style={{
-          backgroundColor: '#FFFFFF',
-          borderRadius: '16px',
-          border: '1px solid #E2E8F0',
-          padding: '2rem',
-          boxShadow: '0 2px 8px rgba(15, 23, 42, 0.04)',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))',
-          gap: '2rem',
-          alignItems: 'center'
-        }}>
+        {/* Escritório e Mapa */}
+        <div
+          style={{
+            backgroundColor: '#FFFFFF',
+            borderRadius: 'var(--radius-lg)',
+            border: '1px solid var(--border-subtle)',
+            padding: 'clamp(1.5rem, 3vw, 2.25rem)',
+            boxShadow: 'var(--shadow-sm)',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))',
+            gap: '2rem',
+            alignItems: 'center'
+          }}
+        >
           <div>
-            <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#0B192C', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-              Endereço do Escritório
+            <span
+              style={{
+                fontSize: '0.74rem',
+                fontWeight: 600,
+                color: 'var(--accent-red)',
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em'
+              }}
+            >
+              Atendimento Presencial
             </span>
-            <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#0F172A', margin: '0.4rem 0 1rem' }}>
-              Venha tomar um café conosco
+            <h3 style={{ fontSize: '1.3rem', fontWeight: 700, color: 'var(--text-dark)', margin: '0.35rem 0 1rem' }}>
+              Escritório em Itaiópolis
             </h3>
-            
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.925rem', color: '#475569' }}>
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
-                <MapPin size={18} style={{ color: '#0B192C', flexShrink: 0, marginTop: '2px' }} />
+
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0.75rem',
+                fontSize: '0.92rem',
+                color: 'var(--text-body)'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.55rem' }}>
+                <MapPin size={17} style={{ color: 'var(--primary-dark)', flexShrink: 0, marginTop: '2px' }} />
                 <span>{SITE_CONFIG.fullAddress}</span>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <Mail size={18} style={{ color: '#0B192C', flexShrink: 0 }} />
-                <a href={`mailto:${SITE_CONFIG.email}`} style={{ color: '#0B192C', fontWeight: 600 }}>{SITE_CONFIG.email}</a>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem' }}>
+                <Mail size={17} style={{ color: 'var(--primary-dark)', flexShrink: 0 }} />
+                <a href={`mailto:${SITE_CONFIG.email}`} style={{ color: 'var(--text-dark)', fontWeight: 600 }}>
+                  {SITE_CONFIG.email}
+                </a>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <Clock size={18} style={{ color: '#0B192C', flexShrink: 0 }} />
-                <span>Segunda a Sexta: 08:30 às 18:00 • Sábados: 08:30 às 12:00</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem' }}>
+                <Clock size={17} style={{ color: 'var(--primary-dark)', flexShrink: 0 }} />
+                <span>Segunda a Sexta: 08:30 às 18:00 · Sábados: 08:30 às 12:00</span>
               </div>
             </div>
 
-            {/* Botões de Ação Direta para o GPS */}
-            <div style={{ display: 'flex', gap: '0.65rem', flexWrap: 'wrap', marginTop: '1.25rem' }}>
-              <a 
+            <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap', marginTop: '1.35rem' }}>
+              <a
                 href="https://www.google.com/maps/dir/?api=1&destination=-26.332491,-49.906809"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn btn-outline btn-sm"
-                style={{
-                  fontSize: '0.82rem',
-                  fontWeight: 700,
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.4rem',
-                  borderColor: '#0B192C',
-                  color: '#0B192C',
-                  padding: '0.5rem 0.85rem'
-                }}
-                title="Traçar rota no Google Maps até o escritório"
               >
-                <Navigation size={14} style={{ color: '#2563EB' }} />
-                <span>Traçar Rota no Google Maps</span>
+                <Navigation size={14} />
+                <span>Rota no Google Maps</span>
               </a>
 
-              <a 
+              <a
                 href="https://waze.com/ul?ll=-26.332491,-49.906809&navigate=yes"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn btn-outline btn-sm"
-                style={{
-                  fontSize: '0.82rem',
-                  fontWeight: 700,
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.4rem',
-                  borderColor: '#CBD5E1',
-                  color: '#334155',
-                  padding: '0.5rem 0.85rem'
-                }}
-                title="Abrir navegação no Waze"
               >
-                <Compass size={14} style={{ color: '#0284C7' }} />
+                <Compass size={14} />
                 <span>Abrir no Waze</span>
               </a>
             </div>
           </div>
 
-          {/* Mapa do Google Maps com Ponto Exato Fixado por Coordenadas */}
-          <div style={{ position: 'relative', borderRadius: '12px', overflow: 'hidden', height: '260px', border: '1px solid #E2E8F0', boxShadow: '0 2px 8px rgba(15, 23, 42, 0.05)' }}>
-            
-            {/* Faixa superior de confirmação de endereço exato */}
-            <div style={{
-              position: 'absolute',
-              top: '0.75rem',
-              left: '0.75rem',
-              right: '0.75rem',
-              backgroundColor: 'rgba(11, 25, 44, 0.92)',
-              backdropFilter: 'blur(6px)',
-              color: '#FFFFFF',
-              padding: '0.4rem 0.75rem',
-              borderRadius: '6px',
-              fontSize: '0.74rem',
-              fontWeight: 600,
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              zIndex: 2,
-              pointerEvents: 'none'
-            }}>
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
-                <MapPin size={13} style={{ color: '#4ADE80' }} /> Ponto Exato: Rua Francisco Mielzkovski, 173
-              </span>
-              <span style={{ fontSize: '0.7rem', color: '#94A3B8' }}>Centro, Itaiópolis</span>
-            </div>
-
-            {/* Iframe com latitude e longitude exatas para nunca perder o ponto */}
+          {/* Mapa */}
+          <div
+            style={{
+              position: 'relative',
+              borderRadius: 'var(--radius-md)',
+              overflow: 'hidden',
+              height: '260px',
+              border: '1px solid var(--border-subtle)'
+            }}
+          >
             <iframe
-              title="Localização Exata do Escritório Anderson Kunicki em Itaiópolis"
+              title="Localização do Escritório Anderson Kunicki em Itaiópolis"
               width="100%"
               height="100%"
               frameBorder="0"
               scrolling="no"
-              marginHeight="0"
-              marginWidth="0"
               src="https://maps.google.com/maps?q=-26.332491,-49.906809+(Anderson+Kunicki+Corretor+Imobiliario)&t=&z=17&ie=UTF8&iwloc=&output=embed"
               style={{ border: 0 }}
               allowFullScreen=""
               loading="lazy"
             />
-
-            {/* Botão flutuante 'Como Chegar (GPS)' sobre o mapa */}
-            <a 
-              href="https://www.google.com/maps/dir/?api=1&destination=-26.332491,-49.906809"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                position: 'absolute',
-                bottom: '0.75rem',
-                right: '0.75rem',
-                backgroundColor: '#0B192C',
-                color: '#FFFFFF',
-                padding: '0.45rem 0.85rem',
-                borderRadius: '6px',
-                fontSize: '0.78rem',
-                fontWeight: 700,
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.35rem',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
-                textDecoration: 'none',
-                zIndex: 2,
-                transition: 'all 0.2s'
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#1E293B'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#0B192C'; }}
-            >
-              <Navigation size={13} style={{ color: '#60A5FA' }} /> Como Chegar (GPS)
-            </a>
           </div>
         </div>
-
       </div>
     </section>
   );

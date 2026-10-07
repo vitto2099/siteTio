@@ -1,144 +1,142 @@
-# Anderson Kunicki — Corretor Imobiliário (CRECI-SC 60173 F)
+# Anderson Kunicki - Corretor Imobiliario (CRECI-SC 60173 F)
 
-Aplicação web moderna, responsiva e de alto padrão desenvolvida em **React 18** com **Vite 5**, arquitetada sob o padrão **Clean Architecture / Modular Components**, projetada para a imobiliária **Anderson Kunicki - Corretor Imobiliário** em Itaiópolis - SC.
+Plataforma web imobiliaria desenvolvida em **React 18** e **Vite 5**, projetada especificamente para o escritorio **Anderson Kunicki - Corretor de Imoveis** em Itaiopolis/SC. O sistema combina uma vitrine com **Design Editorial Arquitetonico** e um painel de gestao em tempo real integrado ao **Google Firebase (Firestore & Auth)**.
 
----
-
-## Identidade Visual e Design System
-
-O design do projeto utiliza um estilo corporativo, clean e refinado:
-- **Azul Marinho Imperial** (`#071527` / `#0B2240`): Solidez, segurança e credibilidade imobiliária.
-- **Vermelho Carmim Imobiliário** (`#C81D25`): Destaques, chamadas para ação (CTA) e elementos visuais nobres.
-- **Dourado Champagne** (`#D4AF37`): Identificação de imóveis em destaque na vitrine.
-- **Tipografia Nobre**: Google Fonts (*Outfit* para títulos e *Inter* para dados e leitura técnica).
+Para detalhes completos sobre as decisoes de produto, requisitos e diretrizes visuais, consulte o documento [ARCHITECTURE.md](./ARCHITECTURE.md).
 
 ---
 
-## Funcionalidades
+## Diretrizes do Design System Editorial
 
-1. **Catálogo Reativo de Imóveis**:
-   - Busca em tempo real por código, título, bairro e rua.
-   - Filtros instantâneos por finalidade (*Venda* ou *Aluguel*), tipo (*Casa, Terreno, Sítio, Apartamento, Comercial*), dormitórios e preço máximo.
-   - Cards com visualização de m², quartos, suítes, banheiros, vagas e preço formatado em Reais (R$).
-
-2. **Modal de Detalhes Completo**:
-   - Galeria com seletor de miniaturas.
-   - Exibição de Tour Virtual em vídeo embutido (YouTube / Vimeo).
-   - Dados detalhados de área construída, terreno, suítes, IPTU e condomínio.
-   - Botão direto para o WhatsApp preenchendo o imóvel e referência exata de interesse.
-
-3. **Painel de Gestão de Anúncios (Admin)**:
-   - Autenticação com **Firebase Auth** ou criptografia **SHA-256**, rate-limiting e auto-logout por inatividade (30 min).
-   - **Módulo de Troca de Senha** integrado diretamente no painel.
-   - Métricas de carteira em tempo real (Total de Imóveis, Em Destaque, Venda/Aluguel, VGV Total).
-   - **Upload de fotos locais** (Base64) e links externos com reordenação e definição de capa.
-   - **Gerenciamento dinâmico de tags e comodidades**.
-   - Ações em lote, duplicação rápida e exportação/importação de backups em formato JSON.
-
-4. **Persistência em Nuvem (Firebase Firestore)**:
-   - Sincronização em tempo real entre todos os dispositivos (celular, tablet, computador do escritório).
-   - Modo de contingência e cache local resiliente a falhas de conexão.
-
-5. **Widget Flutuante do WhatsApp**:
-   - Popover interativo no canto inferior direito para contato direto e captação de leads com mensagens pré-configuradas.
-
-6. **Conformidade com a LGPD**:
-   - Página dedicada de Política de Privacidade e Proteção de Dados com canais de encarregado.
-
-7. **Seção Institucional e Redes Sociais**:
-   - Informações institucionais do corretor Anderson Kunicki (CRECI-SC 60173 F).
-   - Links oficiais para WhatsApp, Instagram (`@kunickianderson`) e Facebook.
-   - Google Maps interativo da sede na **Rua Francisco Mielzkovski, 173 - Itaiópolis - SC**.
+- **Sobriedade Arquitetonica:** Paleta baseada em tons de pedra quente (`#F8F7F4`), branco puro (`#FFFFFF`), carvao escuro (`#18181B`), azul marinho profundo (`#0F172A`) e carmim sobrio (`#991B1B`).
+- **Politica de Zero Emojis:** Toda a comunicacao visual utiliza exclusivamente tipografia estruturada (*Outfit* e *Inter*) e iconografia vetorial linear (*Lucide*), garantindo seriedade institucional.
+- **Foco na Fotografia e Conversao:** Interface limpa, livre de poluicao visual, popups intrusivos ou efeitos sonoros automaticos.
 
 ---
 
-## Estrutura de Arquivos Modular
+## As 5 Funcoes Centrais do Sistema
+
+1. **Vitrine Editorial e Busca Unificada:**
+   - Barra unica de pesquisa e filtragem instantanea por finalidade (Venda/Aluguel), categoria (Casa, Terreno, Sitio/Rural, Apartamento, Comercial), ordenacao e busca textual por codigo, rua ou bairro.
+   - Cards com hierarquia clara destacando fotografia, localizacao, metragem, dormitorios e valor em Reais (R$).
+
+2. **Ficha Tecnica Imersiva sem Ruido Visual:**
+   - Modal detalhado com galeria fotografica interativa, quadro completo de especificacoes construtivas (area total, area construida, suites, banheiros, vagas, IPTU/condominio) e suporte a video demonstrativo (YouTube/Vimeo).
+
+3. **Conversao Direta e Contextual via WhatsApp:**
+   - Acionamento direto do WhatsApp do corretor preenchendo automaticamente os dados do imovel de interesse (titulo, codigo de referencia e valor).
+   - Botao flutuante silencioso e discreto para atendimento rapido.
+
+4. **Dashboard Simplificado do Corretor:**
+   - Indicadores objetivos de carteira (Total, Disponiveis, Destaques e VGV).
+   - Operacao em 1 clique diretamente na listagem para destacar imovel ou alterar status (Disponivel, Vendido, Reservado).
+   - Formulario enxuto com upload e compressao automatica de fotos no navegador, reordenacao de galeria e exportacao/importacao de backups JSON.
+
+5. **Sincronizacao Cloud Firebase e Seguranca Blindada:**
+   - Persistencia em tempo real via **Firebase Firestore** com fallback resiliente em cache local (`localStorage`).
+   - Autenticacao via **Firebase Auth** ou criptografia **SHA-256** com salt, rate-limiting contra tentativas de forca bruta e encerramento automatico de sessao por inatividade (30 minutos).
+   - Pagina dedicada de conformidade com a **LGPD** (Politica de Privacidade).
+
+---
+
+## Estrutura de Diretorios
 
 ```text
-andersonkunicki/
+siteTio/
 ├── public/
-│   ├── .htaccess                     # Regras de segurança e cache Apache (Hostinger)
-│   ├── favicon.svg                   # Favicon vetorial oficial
-│   ├── manifest.json                 # Manifesto PWA
-│   ├── robots.txt                    # Regras para motores de busca
-│   ├── sitemap.xml                   # Mapa XML para indexação de motores de busca
-│   └── anderson-kunicki.jpg          # Foto institucional do corretor
+│   ├── .htaccess                     # Regras de roteamento e seguranca Apache (Hostinger)
+│   ├── favicon.svg                   # Identidade vetorial oficial
+│   ├── manifest.json                 # Manifesto Web App
+│   ├── robots.txt                    # Diretrizes de indexacao
+│   ├── sitemap.xml                   # Mapa XML para motores de busca
+│   └── anderson-kunicki.jpg          # Retrato institucional do corretor
 ├── src/
 │   ├── components/
-│   │   ├── admin/                    # Área Administrativa
-│   │   │   ├── AdminDashboard.jsx    # Painel de gestão e métricas
-│   │   │   ├── AdminLogin.jsx        # Tela de login
-│   │   │   ├── ChangePasswordModal.jsx # Modal de alteração de senha
-│   │   │   └── PropertyFormModal.jsx # Formulário de cadastro/edição
-│   │   ├── common/                   # Componentes Compartilhados
-│   │   │   ├── Toast.jsx             # Notificações flutuantes animadas
-│   │   │   └── WhatsAppIcon.jsx      # Ícone oficial vetorial do WhatsApp
-│   │   ├── layout/                   # Estrutura e Navegação
-│   │   │   ├── Header.jsx            # Cabeçalho com redes e menu responsivo
-│   │   │   ├── Footer.jsx            # Rodapé institucional
-│   │   │   └── WhatsAppWidget.jsx    # Widget flutuante de atendimento
-│   │   ├── property/                 # Domínio de Imóveis
-│   │   │   ├── PropertyCard.jsx      # Card minimalista de imóvel
-│   │   │   ├── PropertyFilters.jsx   # Filtros e ordenação
-│   │   │   └── PropertyModal.jsx     # Modal de detalhes, galeria e vídeo
-│   │   └── sections/                 # Seções de Conteúdo
-│   │       ├── AboutContact.jsx      # Sobre, contato e mapa
-│   │       ├── Hero.jsx              # Banner de busca rápida
-│   │       └── PrivacyPage.jsx       # Política de Privacidade (LGPD)
+│   │   ├── admin/                    # Painel Administrativo do Corretor
+│   │   │   ├── AdminDashboard.jsx    # Listagem gerencial e acoes em 1 clique
+│   │   │   ├── AdminLogin.jsx        # Autenticacao segura com rate-limit
+│   │   │   ├── ChangePasswordModal.jsx # Alteracao de credenciais de acesso
+│   │   │   └── PropertyFormModal.jsx # Cadastro e edicao simplificada de imoveis
+│   │   ├── common/                   # Componentes Base
+│   │   │   ├── Toast.jsx             # Notificacoes discretas de sistema
+│   │   │   └── WhatsAppIcon.jsx      # Icone vetorial oficial do WhatsApp
+│   │   ├── layout/                   # Estrutura da Pagina
+│   │   │   ├── Header.jsx            # Cabecalho institucional responsivo
+│   │   │   ├── Footer.jsx            # Rodape com dados do CRECI-SC e links uteis
+│   │   │   └── WhatsAppWidget.jsx    # Atendimento flutuante silencioso
+│   │   ├── property/                 # Dominio da Vitrine Imobiliaria
+│   │   │   ├── PropertyCard.jsx      # Card editorial de imovel
+│   │   │   ├── PropertyFilters.jsx   # Barra unificada de busca e filtros
+│   │   │   └── PropertyModal.jsx     # Ficha tecnica completa e galeria
+│   │   └── sections/                 # Secoes Institucionais
+│   │       ├── AboutContact.jsx      # Apresentacao do corretor, endereco e mapa
+│   │       ├── Hero.jsx              # Abertura editorial e chamada principal
+│   │       └── PrivacyPage.jsx       # Politica de Privacidade e LGPD
 │   ├── config/
-│   │   └── site.config.js            # Configurações de contato, redes e WhatsApp
+│   │   └── site.config.js            # Parametros institucionais, telefone e endereco
 │   ├── data/
-│   │   └── properties.js             # Base inicial de imóveis
-│   ├── hooks/                        # Custom React Hooks
-│   │   ├── useAuth.js                # Autenticação e sessão (Firebase / Local)
-│   │   ├── useProperties.js          # Firestore Real-Time CRUD, filtros e backups
-│   │   └── useToast.js               # Notificações temporizadas
+│   │   └── properties.js             # Catalogo semente inicial
+│   ├── hooks/                        # Hooks de Estado e Sincronizacao
+│   │   ├── useAuth.js                # Controle de sessao e seguranca
+│   │   ├── useProperties.js          # CRUD em tempo real no Firestore e filtros
+│   │   └── useToast.js               # Gerenciamento de feedbacks visuais
 │   ├── lib/
-│   │   └── firebase.js               # Inicialização do Firebase Firestore & Auth
-│   ├── utils/                        # Funções Utilitárias
-│   │   ├── formatters.js             # Formatação de moeda, números e telefones
-│   │   ├── security.js               # Criptografia SHA-256
-│   │   └── video.js                  # Embed de YouTube/Vimeo
-│   ├── App.jsx                       # Componente Raiz Desacoplado
-│   ├── index.css                     # Design System Ultra-Clean
-│   └── main.jsx                      # Ponto de entrada React
-├── .env.example                      # Modelo de variáveis de ambiente
-├── HOSTINGER_DEPLOY.md               # Guia passo a passo de deploy na Hostinger
-├── index.html                        # HTML principal com meta tags SEO
-├── package.json                      # Dependências e scripts
-└── vite.config.js                    # Configurações do Vite
+│   │   └── firebase.js               # Inicializacao do Firebase Firestore e Auth
+│   ├── utils/                        # Utilitarios de Dominio
+│   │   ├── formatters.js             # Formatacao monetaria (BRL) e numerica
+│   │   ├── imageCompressor.js        # Otimizacao client-side de fotografias
+│   │   ├── security.js               # Hashing SHA-256, sanitizacao e validadores
+│   │   └── video.js                  # Tratamento seguro de embeds de video
+│   ├── App.jsx                       # Orquestracao principal de rotas e modais
+│   ├── index.css                     # Tokens e estilos do Design System Editorial
+│   └── main.jsx                      # Inicializacao da arvore React
+├── .env.example                      # Modelo de variaveis de ambiente do Firebase
+├── ARCHITECTURE.md                   # Documentacao de Arquitetura, UX e Requisitos
+├── HOSTINGER_DEPLOY.md               # Guia de publicacao em servidor Apache/Hostinger
+├── vercel.json                       # Regras de rewrite SPA para deploy na Vercel
+├── package.json                      # Dependencias e scripts NPM
+└── vite.config.js                    # Configuracao de bundler Vite
 ```
 
 ---
 
 ## Como Executar Localmente
 
-### 1. Instalar as dependências:
+### 1. Instalar as dependencias
 ```bash
 npm install
 ```
 
-### 2. Configurar o Firebase (Opcional para testes locais):
-Copie o arquivo `.env.example` para `.env.local` e insira suas credenciais do Firebase Console.
+### 2. Configurar variaveis de ambiente (Firebase)
+Copie o arquivo `.env.example` para `.env.local` e preencha com as credenciais do projeto no Firebase Console:
+```bash
+cp .env.example .env.local
+```
 
-### 3. Iniciar o servidor de desenvolvimento:
+### 3. Iniciar o servidor de desenvolvimento
 ```bash
 npm run dev
 ```
 
-### 4. Gerar build de produção:
+### 4. Gerar build otimizado de producao
 ```bash
 npm run build
 ```
 
+### 5. Pre-visualizar o build de producao localmente
+```bash
+npm run preview
+```
+
 ---
 
-## Deploy na Hostinger
+## Deploy em Producao (Vercel e Hostinger)
 
-Consulte o guia completo e detalhado em [HOSTINGER_DEPLOY.md](./HOSTINGER_DEPLOY.md).
+### Deploy na Vercel (Recomendado)
+O projeto ja inclui o arquivo `vercel.json` configurado para Single Page Application (SPA):
+1. Conecte o repositorio na **Vercel** ou execute `npx vercel --prod` na raiz do projeto.
+2. Em **Project Settings > Environment Variables**, adicione as variaveis `VITE_FIREBASE_*` definidas em `.env.example`.
+3. A Vercel executara automaticamente `npm run build` e publicara o diretorio `dist`.
 
----
-
-## Acesso Administrativo
-
-As credenciais de primeiro acesso são configuradas no momento da entrega do projeto. A senha pode ser alterada a qualquer momento através do botão **"Alterar Senha"** presente no cabeçalho do Painel Admin.
+### Deploy na Hostinger
+Para hospedagem compartilhada via Apache, utilize o conteudo gerado na pasta `dist/` apos rodar `npm run build`. O arquivo `public/.htaccess` e copiado automaticamente para garantir roteamento e cache adequados. Consulte [HOSTINGER_DEPLOY.md](./HOSTINGER_DEPLOY.md) para o passo a passo completo.

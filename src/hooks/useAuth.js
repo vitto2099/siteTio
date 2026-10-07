@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { hashPassword } from '../utils/security';
+import { hashPassword, sanitizeText } from '../utils/security';
 import { auth, isFirebaseConfigured } from '../lib/firebase';
 import { 
   signInWithEmailAndPassword, 
@@ -19,13 +19,15 @@ export function useAuth(onToast) {
   const [firebaseUser, setFirebaseUser] = useState(null);
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
 
-  // Monitorar estado de autenticação do Firebase (se configurado)
+  // Monitorar estado de autenticacao do Firebase (se configurado)
   useEffect(() => {
     if (isFirebaseConfigured && auth) {
       const unsubscribe = onAuthStateChanged(auth, (user) => {
         if (user) {
+          const rawName = user.displayName || user.email?.split('@')[0] || 'andersonkunicki';
+          const safeName = sanitizeText(rawName, 60) || 'andersonkunicki';
           setFirebaseUser(user);
-          setCurrentUser(user.displayName || user.email?.split('@')[0] || 'andersonkunicki');
+          setCurrentUser(safeName);
         } else {
           setFirebaseUser(null);
           setCurrentUser(null);
@@ -39,7 +41,11 @@ export function useAuth(onToast) {
   }, []);
 
   const login = useCallback(async (usernameOrEmail, passwordInput) => {
-    const cleanUser = usernameOrEmail.trim();
+    const cleanUser = sanitizeText(usernameOrEmail || '', 120).trim();
+    if (!cleanUser || !passwordInput) {
+      if (onToast) onToast('Usuário ou senha inválidos.');
+      return false;
+    }
 
     // 1. Tentar Login via Firebase Auth se estiver configurado
     if (isFirebaseConfigured && auth) {
@@ -54,17 +60,18 @@ export function useAuth(onToast) {
         }
         const userCredential = await signInWithEmailAndPassword(auth, email, passwordInput);
         const user = userCredential.user;
-        const name = user.displayName || user.email?.split('@')[0] || 'andersonkunicki';
+        const rawName = user.displayName || user.email?.split('@')[0] || 'andersonkunicki';
+        const name = sanitizeText(rawName, 60) || 'andersonkunicki';
         setFirebaseUser(user);
         setCurrentUser(name);
         if (onToast) onToast(`Bem-vindo, ${name}! Autenticado com sucesso.`);
         return true;
       } catch (err) {
-        console.warn('Firebase Auth não autenticou (ou usuário não criado na nuvem), usando validação de segurança local.');
+        console.warn('Firebase Auth nao autenticou (ou usuario nao criado na nuvem), usando validacao de seguranca local.');
       }
     }
 
-    // 2. Fallback de Segurança Criptográfica (SHA-256)
+    // 2. Fallback de Seguranca Criptografica (SHA-256)
     const hashedInput = await hashPassword(passwordInput);
     const customHash = localStorage.getItem(CUSTOM_PASS_STORAGE_KEY);
 
@@ -81,7 +88,8 @@ export function useAuth(onToast) {
     const userMatch = cleanUser.toLowerCase() === 'andersonkunicki' || cleanUser.toLowerCase() === 'admin' || cleanUser.includes('@');
 
     if (isValid && userMatch) {
-      const loggedName = cleanUser.includes('@') ? cleanUser.split('@')[0] : cleanUser;
+      const rawLoggedName = cleanUser.includes('@') ? cleanUser.split('@')[0] : cleanUser;
+      const loggedName = sanitizeText(rawLoggedName, 60) || 'andersonkunicki';
       setCurrentUser(loggedName);
       if (onToast) onToast(`Bem-vindo, ${loggedName}. Sessão iniciada.`);
       return true;
@@ -107,7 +115,7 @@ export function useAuth(onToast) {
     if (onToast) onToast('Sessão encerrada com sucesso.');
   }, [onToast]);
 
-  // Alterar Senha (suporta Firebase Auth e Armazenamento Criptográfico Local)
+  // Alterar Senha (suporta Firebase Auth e Armazenamento Criptografico Local)
   const updateUserPassword = useCallback(async (currentPass, newPass) => {
     // 1. Alterar no Firebase Auth se logado
     if (firebaseUser && auth.currentUser) {
@@ -123,7 +131,7 @@ export function useAuth(onToast) {
       }
     }
 
-    // 2. Alterar no modo de segurança local (SHA-256)
+    // 2. Alterar no modo de seguranca local (SHA-256)
     const currentHashed = await hashPassword(currentPass);
     const storedCustom = localStorage.getItem(CUSTOM_PASS_STORAGE_KEY);
     const defaultHashes = [
@@ -145,7 +153,7 @@ export function useAuth(onToast) {
     return true;
   }, [firebaseUser, onToast]);
 
-  // Timeout de inatividade automática (30 minutos)
+  // Timeout de inatividade automatica (30 minutos)
   useEffect(() => {
     if (!currentUser) return;
 
