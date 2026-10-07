@@ -93,14 +93,19 @@ export default function App() {
   const handleOpenPropertyModal = (property) => {
     setSelectedPropertyModal(property);
     if (property) {
+      const refCode = property.code || property.id;
+      document.title = `${property.title} (Ref. ${refCode}) | Anderson Kunicki`;
       const url = new URL(window.location.href);
-      url.searchParams.set('imovel', property.code || property.id);
-      window.history.replaceState({ tab: currentTab }, '', url.toString());
+      if (url.searchParams.get('imovel') !== String(refCode)) {
+        url.searchParams.set('imovel', refCode);
+        window.history.pushState({ tab: currentTab, imovel: refCode }, '', url.toString());
+      }
     }
   };
 
   const handleClosePropertyModal = () => {
     setSelectedPropertyModal(null);
+    document.title = 'Anderson Kunicki | Corretor de Imóveis em Itaiópolis - SC (CRECI 60173F)';
     const url = new URL(window.location.href);
     if (url.searchParams.has('imovel')) {
       url.searchParams.delete('imovel');
@@ -132,10 +137,12 @@ export default function App() {
         );
         if (found) {
           setSelectedPropertyModal(found);
+          document.title = `${found.title} (Ref. ${found.code || found.id}) | Anderson Kunicki`;
         }
+      } else {
+        setSelectedPropertyModal(null);
+        document.title = 'Anderson Kunicki | Corretor de Imóveis em Itaiópolis - SC (CRECI 60173F)';
       }
-
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     window.addEventListener('popstate', handleNavigation);
@@ -374,6 +381,7 @@ export default function App() {
           }}
           onSave={handleSavePropertyForm}
           editingProperty={editingProperty}
+          properties={properties}
         />
       )}
 

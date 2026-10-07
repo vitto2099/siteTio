@@ -11,7 +11,8 @@ const DEFAULT_AMENITIES = [
 ];
 
 const AMENITIES_STORAGE_KEY = 'anderson_kunicki_custom_amenities_v1';
-const PROPERTIES_STORAGE_KEY = 'anderson_kunicki_react_properties_v2';
+const PROPERTIES_STORAGE_KEY = 'anderson_kunicki_properties_v3';
+const MAX_IMAGES = 12;
 const DEFAULT_FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&q=80';
 
 const EMPTY_FORM_STATE = {
@@ -32,9 +33,7 @@ function generateNextCode(type, purpose, propertiesList = []) {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed)) list = parsed;
       }
-    } catch {
-      // Ignorar falha de leitura local
-    }
+    } catch {}
   }
 
   const regex = new RegExp(`^${prefix}-(\\d+)$`, 'i');
@@ -51,13 +50,13 @@ function generateNextCode(type, purpose, propertiesList = []) {
   return `${prefix}-${maxNum + 1}`;
 }
 
-function compressImageFile(file, maxDimension = 1280, quality = 0.78) {
+function compressImageFile(file, maxDimension = 1080, quality = 0.72) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onerror = () => reject(new Error('Erro ao ler imagem'));
     reader.onload = (event) => {
       const img = new Image();
-      img.onerror = () => resolve(event.target.result);
+      img.onerror = () => resolve(DEFAULT_FALLBACK_IMAGE);
       img.onload = () => {
         let { width, height } = img;
         if (width > maxDimension || height > maxDimension) {
@@ -74,7 +73,10 @@ function compressImageFile(file, maxDimension = 1280, quality = 0.78) {
         canvas.height = height;
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0, width, height);
-        const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+        let compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+        if (compressedDataUrl.length > 95000) {
+          compressedDataUrl = canvas.toDataURL('image/jpeg', 0.55);
+        }
         resolve(compressedDataUrl);
       };
       img.src = event.target.result;
@@ -209,15 +211,15 @@ export default function PropertyFormModal({ isOpen, onClose, onSave, editingProp
   };
 
   const handleFileUpload = async (e) => {
-    const files = Array.from(e.target.files || []);
+    const files = Array.from(e.target.files || []).slice(0, Math.max(0, MAX_IMAGES - images.length));
     if (!files.length) return;
 
     setIsCompressing(true);
     try {
       const compressedList = await Promise.all(
-        files.map(file => compressImageFile(file, 1280, 0.78))
+        files.map(file => compressImageFile(file, 1080, 0.72))
       );
-      setImages(prev => [...prev, ...compressedList]);
+      setImages(prev => [...prev, ...compressedList].slice(0, MAX_IMAGES));
     } catch (err) {
       console.error('Erro ao comprimir imagens:', err);
     } finally {
@@ -228,8 +230,8 @@ export default function PropertyFormModal({ isOpen, onClose, onSave, editingProp
 
   const handleAddCustomUrl = () => {
     const trimmed = customUrl.trim();
-    if (!trimmed) return;
-    setImages(prev => [...prev, trimmed]);
+    if (!trimmed || images.length >= MAX_IMAGES) return;
+    setImages(prev => [...prev, trimmed].slice(0, MAX_IMAGES));
     setCustomUrl('');
   };
 
@@ -368,7 +370,7 @@ export default function PropertyFormModal({ isOpen, onClose, onSave, editingProp
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '0.85rem', marginBottom: '0.9rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.85rem', marginBottom: '0.9rem' }}>
               <div>
                 <label style={labelStyle}>Título do Anúncio *</label>
                 <input 
@@ -525,7 +527,7 @@ export default function PropertyFormModal({ isOpen, onClose, onSave, editingProp
 
           {/* BLOCO 3 — FOTOS E VÍDEO */}
           <div style={{ ...blockBoxStyle, marginBottom: '1rem' }}>
-            <h4 style={blockTitleStyle}>3. Fotos e Vídeo ({images.length} foto{images.length === 1 ? '' : 's'})</h4>
+            <h4 style={blockTitleStyle}>3. Fotos e Vídeo ({images.length}/{MAX_IMAGES} fotos)</h4>
 
             <div style={{ display: 'flex', gap: '0.65rem', flexWrap: 'wrap', alignItems: 'center', marginBottom: '1rem' }}>
               <label className="btn btn-navy btn-sm" style={{ cursor: 'pointer', padding: '0.5rem 0.95rem' }}>
@@ -606,7 +608,7 @@ export default function PropertyFormModal({ isOpen, onClose, onSave, editingProp
               </div>
             )}
 
-            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '0.85rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '0.85rem' }}>
               <div>
                 <label style={labelStyle}>Vídeo YouTube / Vimeo (opcional)</label>
                 <input type="url" className="input-field" placeholder="https://www.youtube.com/watch?v=..." value={formData.videoUrl} onChange={(e) => setFormData(prev => ({ ...prev, videoUrl: e.target.value }))} />

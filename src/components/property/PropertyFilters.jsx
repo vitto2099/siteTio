@@ -60,7 +60,7 @@ export default function PropertyFilters({ filters, setFilters, totalCount, onRes
                 type="button"
                 role="tab"
                 aria-selected={isActive}
-                onClick={() => setFilters((prev) => ({ ...prev, purpose: item.id }))}
+                onClick={() => setFilters((prev) => ({ ...prev, purpose: item.id, maxPrice: 'Infinity' }))}
                 style={{
                   padding: '0.42rem 1rem',
                   borderRadius: 'var(--radius-xs)',
@@ -193,12 +193,23 @@ export default function PropertyFilters({ filters, setFilters, totalCount, onRes
             }}
           >
             <option value="Infinity">Qualquer valor</option>
-            <option value="150000">Até R$ 150.000</option>
-            <option value="300000">Até R$ 300.000</option>
-            <option value="500000">Até R$ 500.000</option>
-            <option value="800000">Até R$ 800.000</option>
-            <option value="1200000">Até R$ 1.200.000</option>
-            <option value="2000000">Até R$ 2.000.000</option>
+            {filters.purpose === 'aluguel' ? (
+              <>
+                <option value="1200">Até R$ 1.200 /mês</option>
+                <option value="2000">Até R$ 2.000 /mês</option>
+                <option value="3500">Até R$ 3.500 /mês</option>
+                <option value="5000">Até R$ 5.000 /mês</option>
+              </>
+            ) : (
+              <>
+                <option value="150000">Até R$ 150.000</option>
+                <option value="300000">Até R$ 300.000</option>
+                <option value="500000">Até R$ 500.000</option>
+                <option value="800000">Até R$ 800.000</option>
+                <option value="1200000">Até R$ 1.200.000</option>
+                <option value="2000000">Até R$ 2.000.000</option>
+              </>
+            )}
           </select>
         </div>
 

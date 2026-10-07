@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { 
   Plus, Edit, Trash2, Search, Eye, LogOut, 
   Download, Upload, Link as LinkIcon, KeyRound, 
-  ExternalLink, Star, Building, Check, X
+  ExternalLink, Star, Building, Check, X, Copy
 } from 'lucide-react';
 import { formatMoney } from '../../utils/formatters';
 import ChangePasswordModal from './ChangePasswordModal';
@@ -583,6 +583,18 @@ export default function AdminDashboard({
                             >
                               <LinkIcon size={13} /> Copiar Link
                             </button>
+
+                            {onDuplicateProperty && (
+                              <button
+                                type="button"
+                                className="btn btn-outline btn-sm"
+                                onClick={() => onDuplicateProperty(prop)}
+                                title="Duplicar cadastro deste imóvel"
+                                style={{ padding: '0.35rem 0.55rem', fontSize: '0.78rem' }}
+                              >
+                                <Copy size={13} /> Duplicar
+                              </button>
+                            )}
 
                             <button 
                               type="button"

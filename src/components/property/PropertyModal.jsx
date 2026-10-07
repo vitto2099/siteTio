@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   X,
   MapPin,
@@ -6,7 +6,8 @@ import {
   Check,
   Video,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Phone
 } from 'lucide-react';
 import WhatsAppIcon from '../common/WhatsAppIcon';
 import { getWhatsAppUrl, SITE_CONFIG } from '../../config';
@@ -47,6 +48,32 @@ export default function PropertyModal({ property, onClose }) {
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    setActiveIndex(0);
+  }, [property?.id, property?.code]);
+
+  useEffect(() => {
+    if (!property) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') onClose();
+      if (e.key === 'ArrowLeft' && allImages.length > 1) {
+        setActiveIndex((prev) => (prev === 0 ? allImages.length - 1 : prev - 1));
+      }
+      if (e.key === 'ArrowRight' && allImages.length > 1) {
+        setActiveIndex((prev) => (prev === allImages.length - 1 ? 0 : prev + 1));
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [property, allImages.length, onClose]);
 
   if (!property) return null;
 
@@ -185,6 +212,7 @@ export default function PropertyModal({ property, onClose }) {
                 }}
               >
                 <MapPin size={13} />
+                {property.address ? `${property.address} — ` : ''}
                 {property.neighborhood ? `${property.neighborhood}, ` : ''}
                 {property.city || 'Itaiópolis - SC'}
               </span>
@@ -553,27 +581,36 @@ export default function PropertyModal({ property, onClose }) {
                   {SITE_CONFIG.brokerName}
                 </div>
                 <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
-                  Corretor de Imóveis · {SITE_CONFIG.creci} · Atendimento direto
+                  Corretor de Imóveis · {SITE_CONFIG.creci} · {SITE_CONFIG.phoneDisplay}
                 </div>
               </div>
 
-              <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', gap: '0.55rem', flexWrap: 'wrap' }}>
                 <button
                   type="button"
                   onClick={handleCopyLink}
                   className="btn btn-outline"
-                  style={{ padding: '0.68rem 1rem', fontSize: '0.85rem' }}
+                  style={{ padding: '0.65rem 0.9rem', fontSize: '0.84rem' }}
                 >
                   {copied ? <Check size={15} style={{ color: '#15803D' }} /> : <Share2 size={15} />}
                   <span>{copied ? 'Link copiado' : 'Copiar link'}</span>
                 </button>
 
                 <a
+                  href={`tel:+${SITE_CONFIG.phoneRaw}`}
+                  className="btn btn-outline"
+                  style={{ padding: '0.65rem 0.9rem', fontSize: '0.84rem' }}
+                >
+                  <Phone size={15} />
+                  <span>Ligar {SITE_CONFIG.phoneDisplay}</span>
+                </a>
+
+                <a
                   href={waUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn btn-whatsapp"
-                  style={{ padding: '0.68rem 1.25rem', fontSize: '0.88rem', fontWeight: 600 }}
+                  style={{ padding: '0.68rem 1.15rem', fontSize: '0.86rem', fontWeight: 600, whiteSpace: 'normal', textAlign: 'center' }}
                 >
                   <WhatsAppIcon size={16} color="#FFFFFF" />
                   <span>Agendar visita ou tirar dúvidas no WhatsApp</span>

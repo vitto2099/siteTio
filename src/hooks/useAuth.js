@@ -15,7 +15,13 @@ const CUSTOM_PASS_STORAGE_KEY = 'anderson_kunicki_custom_pass_hash_v1';
 const INACTIVITY_LIMIT = 30 * 60 * 1000; // 30 minutos
 
 export function useAuth(onToast) {
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(() => {
+    try {
+      return sessionStorage.getItem(AUTH_STORAGE_KEY) || null;
+    } catch {
+      return null;
+    }
+  });
   const [firebaseUser, setFirebaseUser] = useState(null);
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
 
@@ -28,9 +34,15 @@ export function useAuth(onToast) {
           const safeName = sanitizeText(rawName, 60) || 'andersonkunicki';
           setFirebaseUser(user);
           setCurrentUser(safeName);
+          try { sessionStorage.setItem(AUTH_STORAGE_KEY, safeName); } catch {}
         } else {
           setFirebaseUser(null);
-          setCurrentUser(null);
+          try {
+            const savedLocalSession = sessionStorage.getItem(AUTH_STORAGE_KEY);
+            if (!savedLocalSession) setCurrentUser(null);
+          } catch {
+            setCurrentUser(null);
+          }
         }
         setIsLoadingAuth(false);
       });
@@ -64,6 +76,7 @@ export function useAuth(onToast) {
         const name = sanitizeText(rawName, 60) || 'andersonkunicki';
         setFirebaseUser(user);
         setCurrentUser(name);
+        try { sessionStorage.setItem(AUTH_STORAGE_KEY, name); } catch {}
         if (onToast) onToast(`Bem-vindo, ${name}! Autenticado com sucesso.`);
         return true;
       } catch (err) {
@@ -76,21 +89,20 @@ export function useAuth(onToast) {
     const customHash = localStorage.getItem(CUSTOM_PASS_STORAGE_KEY);
 
     // Hash SHA-256 autorizado oficial (fiorino2026)
-    const validHashes = [
+    const defaultHashes = [
       'ecf39b525dc6050fb392ac8a15a1c0bdbac1f766f37d24147bea88d38455a04d'
     ];
 
-    if (customHash) {
-      validHashes.unshift(customHash);
-    }
-
-    const isValid = validHashes.includes(hashedInput);
+    const isValid = customHash
+      ? hashedInput === customHash
+      : defaultHashes.includes(hashedInput);
     const userMatch = cleanUser.toLowerCase() === 'andersonkunicki' || cleanUser.toLowerCase() === 'admin' || cleanUser.includes('@');
 
     if (isValid && userMatch) {
       const rawLoggedName = cleanUser.includes('@') ? cleanUser.split('@')[0] : cleanUser;
       const loggedName = sanitizeText(rawLoggedName, 60) || 'andersonkunicki';
       setCurrentUser(loggedName);
+      try { sessionStorage.setItem(AUTH_STORAGE_KEY, loggedName); } catch {}
       if (onToast) onToast(`Bem-vindo, ${loggedName}. Sessão iniciada.`);
       return true;
     }

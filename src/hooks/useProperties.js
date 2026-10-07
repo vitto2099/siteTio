@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { INITIAL_PROPERTIES, LEGACY_MOCKUP_IDS, getCategoryPrefix } from '../data/properties';
-import { db, isFirebaseConfigured } from '../lib/firebase';
+import { db, auth, isFirebaseConfigured } from '../lib/firebase';
 import { sanitizePropertyPayload } from '../utils/security';
 import { 
   collection, 
@@ -13,8 +13,9 @@ import {
   writeBatch
 } from 'firebase/firestore';
 
-const STORAGE_KEY = 'anderson_kunicki_properties_v3';
+export const STORAGE_KEY = 'anderson_kunicki_properties_v3';
 const COLLECTION_NAME = 'properties';
+const canWriteToCloud = () => Boolean(isFirebaseConfigured && db && auth?.currentUser);
 
 // Normaliza codigos legados e remove os 5 mockups antigos descartados
 function normalizePropertyCodes(list) {
@@ -79,13 +80,13 @@ export function useProperties(onToast) {
             fetched.push({ id: docSnap.id, ...docSnap.data() });
           });
           
-          // Ordenar por data de criacao decrescente
           fetched.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
-
           const normalized = normalizePropertyCodes(fetched);
-          const finalProps = normalized.length > 0 ? normalized : INITIAL_PROPERTIES;
-          setProperties(finalProps);
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(finalProps));
+
+          if (normalized.length > 0) {
+            setProperties(normalized);
+            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized)); } catch {}
+          }
         }, (error) => {
           console.warn('Erro ao sincronizar com Firestore, operando com cache local:', error);
         });
@@ -109,7 +110,11 @@ export function useProperties(onToast) {
 
   const saveLocalBackup = useCallback((updatedProps) => {
     setProperties(updatedProps);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedProps));
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedProps));
+    } catch (err) {
+      console.warn('Limite de armazenamento local atingido:', err);
+    }
   }, []);
 
   // CRUD integrado com Firestore + Contingencia Local e Higienizacao de Payload
@@ -126,7 +131,7 @@ export function useProperties(onToast) {
       payload.createdAt = formData?.createdAt || new Date().toISOString().split('T')[0];
     }
 
-    if (isFirebaseConfigured && db) {
+    if (canWriteToCloud()) {
       try {
         const docRef = doc(db, COLLECTION_NAME, targetId);
         await setDoc(docRef, payload, { merge: true });
@@ -134,7 +139,6 @@ export function useProperties(onToast) {
         return;
       } catch (err) {
         console.error('Erro ao salvar no Firestore:', err);
-        if (onToast) onToast('Erro de conexao com o banco de dados. Salvando localmente...');
       }
     }
 
@@ -155,7 +159,7 @@ export function useProperties(onToast) {
       if (!window.confirm('Tem certeza de que deseja excluir este anúncio permanentemente?')) return;
     }
 
-    if (isFirebaseConfigured && db) {
+    if (canWriteToCloud()) {
       try {
         await deleteDoc(doc(db, COLLECTION_NAME, id));
         if (onToast) onToast('Anúncio excluído da nuvem (Firebase).');
@@ -175,7 +179,7 @@ export function useProperties(onToast) {
     if (!target) return;
     const newFeatured = !target.featured;
 
-    if (isFirebaseConfigured && db) {
+    if (canWriteToCloud()) {
       try {
         await updateDoc(doc(db, COLLECTION_NAME, id), { featured: newFeatured });
         if (onToast) onToast(newFeatured ? 'Imóvel destacado na vitrine!' : 'Destaque removido.');
@@ -204,7 +208,7 @@ export function useProperties(onToast) {
       updatedAt: new Date().toISOString()
     };
 
-    if (isFirebaseConfigured && db) {
+    if (canWriteToCloud()) {
       try {
         await setDoc(doc(db, COLLECTION_NAME, newId), duplicated);
         if (onToast) onToast(`Imóvel duplicado na nuvem! Código: ${duplicated.code}`);
@@ -219,7 +223,7 @@ export function useProperties(onToast) {
   }, [properties, saveLocalBackup, onToast]);
 
   const toggleStatus = useCallback(async (id, newStatus) => {
-    if (isFirebaseConfigured && db) {
+    if (canWriteToCloud()) {
       try {
         await updateDoc(doc(db, COLLECTION_NAME, id), { status: newStatus });
         if (onToast) onToast(`Status atualizado para: ${newStatus.toUpperCase()}`);
@@ -240,7 +244,7 @@ export function useProperties(onToast) {
       if (!window.confirm(`Tem certeza de que deseja excluir ${ids.length} imóvel(is) selecionado(s)?`)) return;
     }
 
-    if (isFirebaseConfigured && db) {
+    if (canWriteToCloud()) {
       try {
         const batch = writeBatch(db);
         ids.forEach(id => {
@@ -260,7 +264,7 @@ export function useProperties(onToast) {
   }, [properties, saveLocalBackup, onToast]);
 
   const bulkStatusChange = useCallback(async (ids, newStatus) => {
-    if (isFirebaseConfigured && db) {
+    if (canWriteToCloud()) {
       try {
         const batch = writeBatch(db);
         ids.forEach(id => {
@@ -308,17 +312,21 @@ export function useProperties(onToast) {
             };
           });
 
-          if (isFirebaseConfigured && db) {
-            const batch = writeBatch(db);
-            sanitizedList.forEach(prop => {
-              batch.set(doc(db, COLLECTION_NAME, prop.id), prop, { merge: true });
-            });
-            await batch.commit();
-            if (onToast) onToast(`${sanitizedList.length} imóvel(is) importado(s) para o Firebase!`);
-          } else {
-            saveLocalBackup(sanitizedList);
-            if (onToast) onToast(`${sanitizedList.length} imóvel(is) importado(s) localmente!`);
+          if (canWriteToCloud()) {
+            try {
+              const batch = writeBatch(db);
+              sanitizedList.forEach(prop => {
+                batch.set(doc(db, COLLECTION_NAME, prop.id), prop, { merge: true });
+              });
+              await batch.commit();
+              if (onToast) onToast(`${sanitizedList.length} imóvel(is) importado(s) para o Firebase!`);
+              return;
+            } catch (err) {
+              console.error('Erro ao importar para Firestore, salvando localmente:', err);
+            }
           }
+          saveLocalBackup(sanitizedList);
+          if (onToast) onToast(`${sanitizedList.length} imóvel(is) importado(s) localmente!`);
         } else {
           if (onToast) onToast('Arquivo JSON inválido. Certifique-se de que é uma lista válida de imóveis.');
         }
