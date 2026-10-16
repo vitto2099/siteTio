@@ -85,7 +85,7 @@ export const sanitizePropertyPayload = (raw = {}) => {
   const source = raw && typeof raw === 'object' ? raw : {};
 
   const code = sanitizeText(source.code ?? '', 30).toUpperCase();
-  const title = sanitizeText(source.title ?? '', 160);
+  const title = sanitizeText(source.title ?? '', 160) || 'Imóvel Anderson Kunicki';
 
   const rawType = String(source.type ?? '').toLowerCase().trim();
   const type = VALID_TYPES.includes(rawType) ? rawType : 'casa';

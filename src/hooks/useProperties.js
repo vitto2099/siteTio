@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { INITIAL_PROPERTIES, LEGACY_MOCKUP_IDS, getCategoryPrefix } from '../data/properties';
-import { db, auth, isFirebaseConfigured } from '../lib/firebase';
+import { db, auth, isFirebaseConfigured, ensureFirebaseAuth } from '../lib/firebase';
 import { sanitizePropertyPayload } from '../utils/security';
 import { 
   collection, 
@@ -153,6 +153,7 @@ export function useProperties(onToast) {
     // 2. Salvar na nuvem (Firestore) se configurado
     if (isFirebaseConfigured && db) {
       try {
+        await ensureFirebaseAuth();
         const docRef = doc(db, COLLECTION_NAME, targetId);
         await setDoc(docRef, payload, { merge: true });
         if (onToast) onToast(editId ? 'Imóvel atualizado na nuvem (Firebase)!' : 'Novo imóvel salvo na nuvem (Firebase)!');
@@ -179,6 +180,7 @@ export function useProperties(onToast) {
     // 2. Excluir no Firestore se configurado
     if (isFirebaseConfigured && db) {
       try {
+        await ensureFirebaseAuth();
         await deleteDoc(doc(db, COLLECTION_NAME, id));
         if (onToast) onToast('Anúncio excluído da nuvem (Firebase).');
         return;
@@ -204,6 +206,7 @@ export function useProperties(onToast) {
     // 2. Atualizar no Firestore
     if (isFirebaseConfigured && db) {
       try {
+        await ensureFirebaseAuth();
         await updateDoc(doc(db, COLLECTION_NAME, id), { featured: newFeatured });
         if (onToast) onToast(newFeatured ? 'Imóvel destacado na vitrine!' : 'Destaque removido.');
         return;
@@ -233,6 +236,7 @@ export function useProperties(onToast) {
 
     if (isFirebaseConfigured && db) {
       try {
+        await ensureFirebaseAuth();
         await setDoc(doc(db, COLLECTION_NAME, newId), duplicated);
         if (onToast) onToast(`Imóvel duplicado na nuvem! Código: ${duplicated.code}`);
         return;
@@ -250,6 +254,7 @@ export function useProperties(onToast) {
 
     if (isFirebaseConfigured && db) {
       try {
+        await ensureFirebaseAuth();
         await updateDoc(doc(db, COLLECTION_NAME, id), { status: newStatus });
         if (onToast) onToast(`Status atualizado para: ${newStatus.toUpperCase()}`);
         return;
@@ -272,6 +277,7 @@ export function useProperties(onToast) {
 
     if (isFirebaseConfigured && db) {
       try {
+        await ensureFirebaseAuth();
         const batch = writeBatch(db);
         ids.forEach(id => {
           batch.delete(doc(db, COLLECTION_NAME, id));
@@ -293,6 +299,7 @@ export function useProperties(onToast) {
 
     if (isFirebaseConfigured && db) {
       try {
+        await ensureFirebaseAuth();
         const batch = writeBatch(db);
         ids.forEach(id => {
           batch.update(doc(db, COLLECTION_NAME, id), { status: newStatus });
@@ -341,6 +348,7 @@ export function useProperties(onToast) {
 
           if (isFirebaseConfigured && db) {
             try {
+              await ensureFirebaseAuth();
               const batch = writeBatch(db);
               sanitizedList.forEach(prop => {
                 batch.set(doc(db, COLLECTION_NAME, prop.id), prop, { merge: true });
