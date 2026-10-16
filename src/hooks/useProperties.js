@@ -25,9 +25,6 @@ function normalizePropertyCodes(list) {
   const cleaned = list
     .filter(p => p && !p.id?.startsWith('prop-00') && !legacySet.has(p.id))
     .map(p => {
-      if (p.id === 'prop-ca-101' && (!Array.isArray(p.images) || p.images.length <= 3) && p.price === 420000) {
-        return { ...INITIAL_PROPERTIES[0] };
-      }
       if (p.code && p.code.startsWith('AK-')) {
         const num = p.code.replace('AK-', '');
         const prefix = getCategoryPrefix(p.type, p.purpose);
