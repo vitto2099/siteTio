@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import {
   X,
   MapPin,
@@ -178,12 +179,13 @@ export default function PropertyModal({ property, onClose }) {
     : [];
 
   return (
-    <div className="modal-backdrop" onClick={onClose}>
-      <div
-        className="modal-content"
-        onClick={(e) => e.stopPropagation()}
-        style={{ position: 'relative' }}
-      >
+    <>
+      <div className="modal-backdrop" onClick={onClose}>
+        <div
+          className="modal-content"
+          onClick={(e) => e.stopPropagation()}
+          style={{ position: 'relative' }}
+        >
         {/* Cabeçalho da Ficha Técnica */}
         <div
           className="modal-header-container"
@@ -760,6 +762,6 @@ export default function PropertyModal({ property, onClose }) {
         onClose={() => setIsFullscreenOpen(false)}
         onIndexChange={(idx) => setActiveIndex(idx)}
       />
-    </div>
+    </>
   );
 }

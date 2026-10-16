@@ -54,7 +54,7 @@ export default function FullscreenGalleryModal({ images = [], activeIndex = 0, i
         inset: 0,
         backgroundColor: 'rgba(3, 7, 18, 0.96)',
         backdropFilter: 'blur(8px)',
-        zIndex: 1200,
+        zIndex: 3500,
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',

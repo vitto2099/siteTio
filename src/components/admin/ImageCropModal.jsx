@@ -134,7 +134,7 @@ export default function ImageCropModal({ imageUrl, isOpen, onClose, onSave }) {
         inset: 0,
         backgroundColor: 'rgba(15, 23, 42, 0.82)',
         backdropFilter: 'blur(4px)',
-        zIndex: 1100,
+        zIndex: 3500,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',

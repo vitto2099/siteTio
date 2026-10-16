@@ -353,12 +353,13 @@ export default function PropertyFormModal({ isOpen, onClose, onSave, editingProp
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div 
-        className="modal-container" 
-        onClick={(e) => e.stopPropagation()} 
-        style={{ maxWidth: '840px', display: 'flex', flexDirection: 'column', backgroundColor: 'var(--bg-main)' }}
-      >
+    <>
+      <div className="modal-backdrop" onClick={onClose}>
+        <div 
+          className="modal-content" 
+          onClick={(e) => e.stopPropagation()} 
+          style={{ maxWidth: '880px', maxHeight: '92vh', overflowY: 'auto', display: 'flex', flexDirection: 'column', backgroundColor: 'var(--bg-main)', padding: 0 }}
+        >
         {/* Cabeçalho do Modal */}
         <div style={{
           display: 'flex', justifyContent: 'space-between', alignItems: 'center',
@@ -853,16 +854,17 @@ export default function PropertyFormModal({ isOpen, onClose, onSave, editingProp
 
         </form>
       </div>
-
-      {/* Modal Interativo de Corte / Ajuste de Imagem (Crop) */}
-      {cropModalOpen && croppingImageIndex !== null && (
-        <ImageCropModal
-          isOpen={cropModalOpen}
-          imageUrl={images[croppingImageIndex]}
-          onClose={() => { setCropModalOpen(false); setCroppingImageIndex(null); }}
-          onSave={handleSaveCroppedImage}
-        />
-      )}
     </div>
+
+    {/* Modal Interativo de Corte / Ajuste de Imagem (Crop) */}
+    {cropModalOpen && croppingImageIndex !== null && (
+      <ImageCropModal
+        isOpen={cropModalOpen}
+        imageUrl={images[croppingImageIndex]}
+        onClose={() => { setCropModalOpen(false); setCroppingImageIndex(null); }}
+        onSave={handleSaveCroppedImage}
+      />
+    )}
+  </>
   );
 }
