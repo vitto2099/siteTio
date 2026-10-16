@@ -753,15 +753,16 @@ export default function PropertyModal({ property, onClose }) {
           </div>
         </div>
       </div>
+    </div>
 
-      {/* Visualização de Fotos em Tela Cheia (Lightbox) */}
-      <FullscreenGalleryModal
-        images={allImages}
-        activeIndex={activeIndex}
-        isOpen={isFullscreenOpen}
-        onClose={() => setIsFullscreenOpen(false)}
-        onIndexChange={(idx) => setActiveIndex(idx)}
-      />
-    </>
+    {/* Visualização de Fotos em Tela Cheia (Lightbox) */}
+    <FullscreenGalleryModal
+      images={allImages}
+      activeIndex={activeIndex}
+      isOpen={isFullscreenOpen}
+      onClose={() => setIsFullscreenOpen(false)}
+      onIndexChange={(idx) => setActiveIndex(idx)}
+    />
+  </>
   );
 }
