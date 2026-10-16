@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from 'react';
 import {
   X,
   MapPin,
@@ -7,9 +6,11 @@ import {
   Video,
   ChevronLeft,
   ChevronRight,
-  Phone
+  Phone,
+  Maximize2
 } from 'lucide-react';
 import WhatsAppIcon from '../common/WhatsAppIcon';
+import FullscreenGalleryModal from './FullscreenGalleryModal';
 import { getWhatsAppUrl, SITE_CONFIG } from '../../config';
 import { formatMoney } from '../../utils/formatters';
 import { getEmbedVideoUrl } from '../../utils/video';
@@ -48,6 +49,7 @@ export default function PropertyModal({ property, onClose }) {
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [copied, setCopied] = useState(false);
+  const [isFullscreenOpen, setIsFullscreenOpen] = useState(false);
 
   useEffect(() => {
     setActiveIndex(0);
@@ -82,8 +84,10 @@ export default function PropertyModal({ property, onClose }) {
   const embedVideoSrc = getEmbedVideoUrl(property.videoUrl);
   const quickMessages = getQuickMessages(property);
 
+  const priceText = property.hidePrice || !property.price ? 'Sob Consulta' : formatMoney(property.price);
+
   const waUrl = getWhatsAppUrl(
-    `Olá Anderson! Gostaria de agendar uma visita ou tirar dúvidas sobre o imóvel "${property.title}" (Ref. ${refCode}) — ${formatMoney(property.price)}.`
+    `Olá Anderson! Gostaria de agendar uma visita ou tirar dúvidas sobre o imóvel "${property.title}" (Ref. ${refCode}) — ${priceText}.`
   );
 
   const handleQuickMessage = (msg) => {
@@ -107,6 +111,9 @@ export default function PropertyModal({ property, onClose }) {
   };
 
   const specs = [];
+  if (property.landDimensions) {
+    specs.push({ label: 'Dimensões Terreno', value: property.landDimensions });
+  }
   if (property.area > 0) {
     specs.push({ label: 'Área Construída', value: `${property.area} m²` });
   }
@@ -131,12 +138,30 @@ export default function PropertyModal({ property, onClose }) {
       value: `${property.bathrooms} ${property.bathrooms === 1 ? 'banheiro' : 'banheiros'}`
     });
   }
+  if (property.livingRooms > 0) {
+    specs.push({
+      label: 'Salas',
+      value: `${property.livingRooms} ${property.livingRooms === 1 ? 'sala' : 'salas'}`
+    });
+  }
+  if (property.kitchens > 0) {
+    specs.push({
+      label: 'Cozinhas',
+      value: `${property.kitchens} ${property.kitchens === 1 ? 'cozinha' : 'cozinhas'}`
+    });
+  }
   const garages = property.garages ?? property.garage;
   if (garages > 0) {
     specs.push({
       label: 'Vagas',
       value: `${garages} ${garages === 1 ? 'vaga' : 'vagas'}`
     });
+  }
+  if (property.storageArea) {
+    specs.push({ label: 'Depósito / Edícula', value: property.storageArea });
+  }
+  if (property.hasPantry) {
+    specs.push({ label: 'Despensa', value: 'Sim' });
   }
   if (property.iptu > 0) {
     specs.push({ label: 'IPTU Anual', value: formatMoney(property.iptu) });
@@ -216,6 +241,29 @@ export default function PropertyModal({ property, onClose }) {
                 {property.neighborhood ? `${property.neighborhood}, ` : ''}
                 {property.city || 'Itaiópolis - SC'}
               </span>
+              {property.mapsUrl && (
+                <a
+                  href={property.mapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    fontSize: '0.74rem',
+                    fontWeight: 700,
+                    color: 'var(--primary-dark)',
+                    backgroundColor: 'var(--bg-main)',
+                    border: '1px solid var(--border-subtle)',
+                    padding: '0.18rem 0.5rem',
+                    borderRadius: '4px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.3rem',
+                    textDecoration: 'none'
+                  }}
+                  title="Abrir rota no Google Maps"
+                >
+                  <MapPin size={12} /> Ver no Google Maps
+                </a>
+              )}
             </div>
 
             <h2
@@ -242,8 +290,8 @@ export default function PropertyModal({ property, onClose }) {
                   whiteSpace: 'nowrap'
                 }}
               >
-                {formatMoney(property.price)}
-                {property.purpose === 'aluguel' && (
+                {priceText}
+                {property.purpose === 'aluguel' && !property.hidePrice && property.price > 0 && (
                   <span style={{ fontSize: '0.8rem', fontWeight: 400, color: 'var(--text-muted)' }}>
                     {' '}/mês
                   </span>
@@ -283,18 +331,52 @@ export default function PropertyModal({ property, onClose }) {
               overflow: 'hidden',
               marginBottom: '0.75rem',
               position: 'relative',
-              backgroundColor: 'var(--bg-subtle)'
+              backgroundColor: '#0F172A'
             }}
           >
             <img
               src={currentImg}
               alt={`${property.title} - Foto ${activeIndex + 1}`}
-              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+              onClick={() => setIsFullscreenOpen(true)}
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'contain',
+                display: 'block',
+                cursor: 'pointer'
+              }}
               onError={(e) => {
                 e.target.src =
                   'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&q=80';
               }}
+              title="Clique para ver em tela cheia"
             />
+
+            {/* Botão de Tela Cheia */}
+            <button
+              type="button"
+              onClick={() => setIsFullscreenOpen(true)}
+              style={{
+                position: 'absolute',
+                top: '0.85rem',
+                right: '0.85rem',
+                backgroundColor: 'rgba(15, 23, 42, 0.8)',
+                color: '#FFFFFF',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                borderRadius: '4px',
+                padding: '0.35rem 0.65rem',
+                fontSize: '0.74rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.35rem',
+                zIndex: 5
+              }}
+              title="Ver em tela cheia"
+            >
+              <Maximize2 size={13} /> Tela Cheia
+            </button>
 
             {allImages.length > 1 && (
               <>
@@ -315,7 +397,9 @@ export default function PropertyModal({ property, onClose }) {
                     display: 'inline-flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    boxShadow: 'var(--shadow-sm)'
+                    boxShadow: 'var(--shadow-sm)',
+                    border: 'none',
+                    cursor: 'pointer'
                   }}
                 >
                   <ChevronLeft size={18} />
@@ -337,7 +421,9 @@ export default function PropertyModal({ property, onClose }) {
                     display: 'inline-flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    boxShadow: 'var(--shadow-sm)'
+                    boxShadow: 'var(--shadow-sm)',
+                    border: 'none',
+                    cursor: 'pointer'
                   }}
                 >
                   <ChevronRight size={18} />
@@ -665,6 +751,15 @@ export default function PropertyModal({ property, onClose }) {
           </div>
         </div>
       </div>
+
+      {/* Visualização de Fotos em Tela Cheia (Lightbox) */}
+      <FullscreenGalleryModal
+        images={allImages}
+        activeIndex={activeIndex}
+        isOpen={isFullscreenOpen}
+        onClose={() => setIsFullscreenOpen(false)}
+        onIndexChange={(idx) => setActiveIndex(idx)}
+      />
     </div>
   );
 }

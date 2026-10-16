@@ -128,6 +128,13 @@ export const sanitizePropertyPayload = (raw = {}) => {
   const description = sanitizeText(source.description ?? '', 4000);
 
   const videoUrl = isValidSafeUrl(source.videoUrl) ? source.videoUrl.trim() : '';
+  const mapsUrl = isValidSafeUrl(source.mapsUrl) ? source.mapsUrl.trim() : '';
+  const landDimensions = sanitizeText(source.landDimensions ?? '', 60);
+  const storageArea = sanitizeText(source.storageArea ?? '', 60);
+  const hidePrice = Boolean(source.hidePrice);
+  const hasPantry = Boolean(source.hasPantry);
+  const livingRooms = toNonNegativeInt(source.livingRooms);
+  const kitchens = toNonNegativeInt(source.kitchens);
 
   const rawImages = Array.isArray(source.images) ? source.images : [];
   const validImages = rawImages
@@ -159,13 +166,19 @@ export const sanitizePropertyPayload = (raw = {}) => {
     purpose,
     status,
     price,
+    hidePrice,
     area,
     landArea,
+    landDimensions,
     iptu,
     condoFee,
     bedrooms,
     suites,
     bathrooms,
+    livingRooms,
+    kitchens,
+    storageArea,
+    hasPantry,
     garage,
     garages,
     address,
@@ -174,6 +187,7 @@ export const sanitizePropertyPayload = (raw = {}) => {
     state,
     description,
     videoUrl,
+    mapsUrl,
     images,
     imageUrl,
     features,

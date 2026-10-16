@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { X, Save, Upload, Image as ImageIcon, Trash2, Plus, Check } from 'lucide-react';
+import { 
+  X, Save, Upload, Image as ImageIcon, Trash2, Plus, Check, 
+  Crop, ChevronLeft, ChevronRight, Star, MapPin, Eye, EyeOff 
+} from 'lucide-react';
 import { formatMoney } from '../../utils/formatters';
 import { getCategoryPrefix } from '../../data/properties';
+import ImageCropModal from './ImageCropModal';
 
 const DEFAULT_AMENITIES = [
   'Suíte Master', 'Churrasqueira', 'Piscina', 'Quintal Amplo', 'Portão Eletrônico',
@@ -12,14 +16,16 @@ const DEFAULT_AMENITIES = [
 
 const AMENITIES_STORAGE_KEY = 'anderson_kunicki_custom_amenities_v1';
 const PROPERTIES_STORAGE_KEY = 'anderson_kunicki_properties_v3';
-const MAX_IMAGES = 12;
+const MAX_IMAGES = 16;
 const DEFAULT_FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&q=80';
 
 const EMPTY_FORM_STATE = {
   code: '', title: '', type: 'casa', purpose: 'venda', status: 'ativo',
-  price: '', area: '', landArea: '', bedrooms: '', suites: '', bathrooms: '', garages: '',
+  price: '', hidePrice: false, area: '', landArea: '', landDimensions: '',
+  bedrooms: '', suites: '', bathrooms: '', garages: '',
+  livingRooms: '', kitchens: '', storageArea: '', hasPantry: false,
   address: '', neighborhood: '', city: 'Itaiópolis - SC', iptu: '', condoFee: '',
-  videoUrl: '', description: '', featured: false
+  videoUrl: '', mapsUrl: '', description: '', featured: false
 };
 
 function generateNextCode(type, purpose, propertiesList = []) {
@@ -50,7 +56,7 @@ function generateNextCode(type, purpose, propertiesList = []) {
   return `${prefix}-${maxNum + 1}`;
 }
 
-function compressImageFile(file, maxDimension = 1080, quality = 0.72) {
+function compressImageFile(file, maxDimension = 1280, quality = 0.75) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onerror = () => reject(new Error('Erro ao ler imagem'));
@@ -74,8 +80,8 @@ function compressImageFile(file, maxDimension = 1080, quality = 0.72) {
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0, width, height);
         let compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
-        if (compressedDataUrl.length > 95000) {
-          compressedDataUrl = canvas.toDataURL('image/jpeg', 0.55);
+        if (compressedDataUrl.length > 120000) {
+          compressedDataUrl = canvas.toDataURL('image/jpeg', 0.58);
         }
         resolve(compressedDataUrl);
       };
@@ -95,9 +101,7 @@ export default function PropertyFormModal({ isOpen, onClose, onSave, editingProp
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed) && parsed.length > 0) return parsed;
       }
-    } catch {
-      // Fallback para lista padrão
-    }
+    } catch {}
     return DEFAULT_AMENITIES;
   });
 
@@ -106,6 +110,10 @@ export default function PropertyFormModal({ isOpen, onClose, onSave, editingProp
   const [images, setImages] = useState([]);
   const [customUrl, setCustomUrl] = useState('');
   const [isCompressing, setIsCompressing] = useState(false);
+
+  // Modal de Recorte (Crop)
+  const [cropModalOpen, setCropModalOpen] = useState(false);
+  const [croppingImageIndex, setCroppingImageIndex] = useState(null);
 
   const saveAmenitiesList = (newList) => {
     setAvailableAmenities(newList);
@@ -138,21 +146,39 @@ export default function PropertyFormModal({ isOpen, onClose, onSave, editingProp
         : Array.isArray(editingProperty.tags) ? editingProperty.tags : [];
 
       setFormData({
-        code: editingProperty.code || editingProperty.id || '', title: editingProperty.title || '',
-        type: editingProperty.type || 'casa', purpose: editingProperty.purpose || 'venda',
-        status: editingProperty.status || 'ativo', price: editingProperty.price ?? '',
-        area: editingProperty.area ?? '', landArea: editingProperty.landArea ?? '',
-        bedrooms: editingProperty.bedrooms ?? '', suites: editingProperty.suites ?? '',
-        bathrooms: editingProperty.bathrooms ?? '', garages: editingProperty.garages ?? editingProperty.garage ?? '',
-        address: editingProperty.address || '', neighborhood: editingProperty.neighborhood || '',
-        city: editingProperty.city || 'Itaiópolis - SC', iptu: editingProperty.iptu ?? '',
-        condoFee: editingProperty.condoFee ?? '', videoUrl: editingProperty.videoUrl || '',
-        description: editingProperty.description || '', featured: Boolean(editingProperty.featured)
+        code: editingProperty.code || editingProperty.id || '',
+        title: editingProperty.title || '',
+        type: editingProperty.type || 'casa',
+        purpose: editingProperty.purpose || 'venda',
+        status: editingProperty.status || 'ativo',
+        price: editingProperty.price ?? '',
+        hidePrice: Boolean(editingProperty.hidePrice),
+        area: editingProperty.area ?? '',
+        landArea: editingProperty.landArea ?? '',
+        landDimensions: editingProperty.landDimensions || '',
+        bedrooms: editingProperty.bedrooms ?? '',
+        suites: editingProperty.suites ?? '',
+        bathrooms: editingProperty.bathrooms ?? '',
+        garages: editingProperty.garages ?? editingProperty.garage ?? '',
+        livingRooms: editingProperty.livingRooms ?? '',
+        kitchens: editingProperty.kitchens ?? '',
+        storageArea: editingProperty.storageArea || '',
+        hasPantry: Boolean(editingProperty.hasPantry),
+        address: editingProperty.address || '',
+        neighborhood: editingProperty.neighborhood || '',
+        city: editingProperty.city || 'Itaiópolis - SC',
+        iptu: editingProperty.iptu ?? '',
+        condoFee: editingProperty.condoFee ?? '',
+        videoUrl: editingProperty.videoUrl || '',
+        mapsUrl: editingProperty.mapsUrl || '',
+        description: editingProperty.description || '',
+        featured: Boolean(editingProperty.featured)
       });
       setSelectedAmenities(existingFeatures);
       const initialImages = Array.isArray(editingProperty.images) && editingProperty.images.length > 0
         ? editingProperty.images : (editingProperty.imageUrl ? [editingProperty.imageUrl] : []);
       setImages(initialImages);
+
       if (existingFeatures.length > 0) {
         let updated = [...availableAmenities];
         let changed = false;
@@ -217,7 +243,7 @@ export default function PropertyFormModal({ isOpen, onClose, onSave, editingProp
     setIsCompressing(true);
     try {
       const compressedList = await Promise.all(
-        files.map(file => compressImageFile(file, 1080, 0.72))
+        files.map(file => compressImageFile(file, 1280, 0.75))
       );
       setImages(prev => [...prev, ...compressedList].slice(0, MAX_IMAGES));
     } catch (err) {
@@ -245,6 +271,31 @@ export default function PropertyFormModal({ isOpen, onClose, onSave, editingProp
     });
   };
 
+  const moveImage = (fromIndex, toIndex) => {
+    if (toIndex < 0 || toIndex >= images.length) return;
+    setImages(prev => {
+      const list = [...prev];
+      const [moved] = list.splice(fromIndex, 1);
+      list.splice(toIndex, 0, moved);
+      return list;
+    });
+  };
+
+  const handleOpenCrop = (index) => {
+    setCroppingImageIndex(index);
+    setCropModalOpen(true);
+  };
+
+  const handleSaveCroppedImage = (newCroppedUrl) => {
+    if (croppingImageIndex === null) return;
+    setImages(prev => {
+      const list = [...prev];
+      list[croppingImageIndex] = newCroppedUrl;
+      return list;
+    });
+    setCroppingImageIndex(null);
+  };
+
   const removeImage = (index) => {
     setImages(prev => prev.filter((_, i) => i !== index));
   };
@@ -259,13 +310,20 @@ export default function PropertyFormModal({ isOpen, onClose, onSave, editingProp
       ...formData,
       code: (formData.code || '').trim().toUpperCase() || fallbackCode,
       price: parseFloat(formData.price) || 0,
+      hidePrice: Boolean(formData.hidePrice),
       area: parseFloat(formData.area) || 0,
       landArea: parseFloat(formData.landArea) || 0,
+      landDimensions: (formData.landDimensions || '').trim(),
+      mapsUrl: (formData.mapsUrl || '').trim(),
       bedrooms: parseInt(formData.bedrooms, 10) || 0,
       suites: parseInt(formData.suites, 10) || 0,
       bathrooms: parseInt(formData.bathrooms, 10) || 0,
       garages: parseInt(formData.garages, 10) || 0,
       garage: parseInt(formData.garages, 10) || 0,
+      livingRooms: parseInt(formData.livingRooms, 10) || 0,
+      kitchens: parseInt(formData.kitchens, 10) || 0,
+      storageArea: (formData.storageArea || '').trim(),
+      hasPantry: Boolean(formData.hasPantry),
       iptu: parseFloat(formData.iptu) || 0,
       condoFee: parseFloat(formData.condoFee) || 0,
       imageUrl: finalImages[0],
@@ -278,8 +336,8 @@ export default function PropertyFormModal({ isOpen, onClose, onSave, editingProp
   };
 
   const labelStyle = {
-    fontSize: '0.78rem', fontWeight: 700, color: 'var(--primary-dark)',
-    marginBottom: '0.3rem', display: 'block'
+    display: 'block', fontSize: '0.8rem', fontWeight: 700,
+    color: 'var(--primary-dark)', marginBottom: '0.35rem'
   };
 
   const blockBoxStyle = {
@@ -288,17 +346,18 @@ export default function PropertyFormModal({ isOpen, onClose, onSave, editingProp
   };
 
   const blockTitleStyle = {
-    fontSize: '0.82rem', fontWeight: 800, color: 'var(--primary-dark)',
-    textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '1rem',
-    paddingBottom: '0.5rem', borderBottom: '1px solid var(--border-subtle)'
+    fontSize: '0.98rem', fontWeight: 800, color: 'var(--primary-dark)',
+    marginTop: 0, marginBottom: '1rem', paddingBottom: '0.45rem',
+    borderBottom: '1px solid var(--border-subtle)', display: 'flex',
+    alignItems: 'center', justifyContent: 'space-between'
   };
 
   return (
-    <div className="modal-backdrop" onClick={onClose}>
+    <div className="modal-overlay" onClick={onClose}>
       <div 
-        className="modal-content" 
+        className="modal-container" 
         onClick={(e) => e.stopPropagation()} 
-        style={{ maxWidth: '820px', display: 'flex', flexDirection: 'column', backgroundColor: 'var(--bg-main)' }}
+        style={{ maxWidth: '840px', display: 'flex', flexDirection: 'column', backgroundColor: 'var(--bg-main)' }}
       >
         {/* Cabeçalho do Modal */}
         <div style={{
@@ -370,7 +429,7 @@ export default function PropertyFormModal({ isOpen, onClose, onSave, editingProp
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.85rem', marginBottom: '0.9rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '0.85rem', marginBottom: '0.9rem' }}>
               <div>
                 <label style={labelStyle}>Título do Anúncio *</label>
                 <input 
@@ -380,39 +439,67 @@ export default function PropertyFormModal({ isOpen, onClose, onSave, editingProp
               </div>
 
               <div>
-                <label style={labelStyle}>Valor em R$ *</label>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <label style={labelStyle}>Valor em R$ (Opcional)</label>
+                  {formData.hidePrice && (
+                    <span style={{ fontSize: '0.72rem', color: '#92400E', fontWeight: 700 }}>Privado (Sob Consulta)</span>
+                  )}
+                </div>
                 <input 
-                  type="number" className="input-field" placeholder="420000" 
-                  value={formData.price} onChange={(e) => setFormData(prev => ({ ...prev, price: e.target.value }))} required
+                  type="number" className="input-field" placeholder="Ex: 420000 (deixe em branco se for sob consulta)" 
+                  value={formData.price} onChange={(e) => setFormData(prev => ({ ...prev, price: e.target.value }))}
                 />
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 700, marginTop: '0.2rem' }}>
-                  Prévia: <span style={{ color: 'var(--primary-dark)' }}>{formData.price ? formatMoney(formData.price) : 'R$ 0'}</span>
+                  Prévia: <span style={{ color: 'var(--primary-dark)' }}>{formData.price ? formatMoney(formData.price) : 'Sob Consulta'}</span>
                 </div>
               </div>
             </div>
 
-            <label 
-              htmlFor="chkFeaturedProperty" 
-              style={{
-                display: 'inline-flex', alignItems: 'center', gap: '0.6rem', padding: '0.6rem 0.9rem',
-                backgroundColor: 'var(--bg-subtle)', border: '1px solid var(--border-subtle)',
-                borderRadius: 'var(--radius-xs)', cursor: 'pointer', fontSize: '0.85rem',
-                fontWeight: 700, color: 'var(--primary-dark)'
-              }}
-            >
-              <input 
-                type="checkbox" id="chkFeaturedProperty" checked={formData.featured}
-                onChange={(e) => setFormData(prev => ({ ...prev, featured: e.target.checked }))}
-                style={{ width: '16px', height: '16px', cursor: 'pointer', accentColor: 'var(--primary-dark)' }}
-              />
-              <span>Destacar este imóvel na página inicial</span>
-            </label>
+            {/* Opções de Preço e Destaque */}
+            <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginTop: '0.5rem' }}>
+              <label 
+                htmlFor="chkHidePrice" 
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '0.55rem', padding: '0.6rem 0.85rem',
+                  backgroundColor: formData.hidePrice ? '#FEF3C7' : 'var(--bg-subtle)',
+                  border: `1px solid ${formData.hidePrice ? '#FDE68A' : 'var(--border-subtle)'}`,
+                  borderRadius: 'var(--radius-xs)', cursor: 'pointer', fontSize: '0.84rem',
+                  fontWeight: 700, color: formData.hidePrice ? '#92400E' : 'var(--primary-dark)'
+                }}
+              >
+                <input 
+                  type="checkbox" id="chkHidePrice" checked={formData.hidePrice}
+                  onChange={(e) => setFormData(prev => ({ ...prev, hidePrice: e.target.checked }))}
+                  style={{ width: '16px', height: '16px', cursor: 'pointer', accentColor: '#92400E' }}
+                />
+                <span>Ocultar valor na vitrine pública (Exibir como "Sob Consulta")</span>
+              </label>
+
+              <label 
+                htmlFor="chkFeaturedProperty" 
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '0.55rem', padding: '0.6rem 0.85rem',
+                  backgroundColor: formData.featured ? 'var(--bg-subtle)' : 'var(--bg-subtle)',
+                  border: '1px solid var(--border-subtle)',
+                  borderRadius: 'var(--radius-xs)', cursor: 'pointer', fontSize: '0.84rem',
+                  fontWeight: 700, color: 'var(--primary-dark)'
+                }}
+              >
+                <input 
+                  type="checkbox" id="chkFeaturedProperty" checked={formData.featured}
+                  onChange={(e) => setFormData(prev => ({ ...prev, featured: e.target.checked }))}
+                  style={{ width: '16px', height: '16px', cursor: 'pointer', accentColor: 'var(--primary-dark)' }}
+                />
+                <span>Destacar este imóvel na página inicial</span>
+              </label>
+            </div>
           </div>
 
-          {/* BLOCO 2 — LOCALIZAÇÃO, MEDIDAS E DESCRIÇÃO */}
+          {/* BLOCO 2 — LOCALIZAÇÃO, MEDIDAS E ESTRUTURA */}
           <div style={blockBoxStyle}>
-            <h4 style={blockTitleStyle}>2. Localização, Medidas e Descrição</h4>
+            <h4 style={blockTitleStyle}>2. Localização, Medidas e Cômodos</h4>
 
+            {/* Localização e Link do Google Maps */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.85rem', marginBottom: '0.9rem' }}>
               <div>
                 <label style={labelStyle}>Bairro</label>
@@ -430,13 +517,82 @@ export default function PropertyFormModal({ isOpen, onClose, onSave, editingProp
               </div>
             </div>
 
+            {/* Campo Novo: Link do Google Maps */}
+            <div style={{ marginBottom: '1rem' }}>
+              <label style={labelStyle}>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+                  <MapPin size={15} color="var(--primary-dark)" /> Link do Google Maps (Localização)
+                </span>
+              </label>
+              <input 
+                type="url" className="input-field" 
+                placeholder="Ex: https://maps.app.goo.gl/... ou link de rota do Google Maps" 
+                value={formData.mapsUrl} onChange={(e) => setFormData(prev => ({ ...prev, mapsUrl: e.target.value }))} 
+              />
+              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.2rem', display: 'block' }}>
+                Os visitantes poderão clicar em "Ver no Google Maps" diretamente na ficha técnica do imóvel.
+              </span>
+            </div>
+
+            {/* Medidas e Dimensões (Ex: 12x47) */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '0.75rem', marginBottom: '0.9rem' }}>
+              <div>
+                <label style={labelStyle}>Dimensões (Ex: 12x47)</label>
+                <input 
+                  type="text" className="input-field" placeholder="Ex: 12x47 m" 
+                  value={formData.landDimensions} onChange={(e) => setFormData(prev => ({ ...prev, landDimensions: e.target.value }))} 
+                />
+              </div>
+              <div>
+                <label style={labelStyle}>Área Const. (m²)</label>
+                <input type="number" className="input-field" placeholder="160" value={formData.area} onChange={(e) => setFormData(prev => ({ ...prev, area: e.target.value }))} />
+              </div>
+              <div>
+                <label style={labelStyle}>Área Terreno (m²)</label>
+                <input type="number" className="input-field" placeholder="564" value={formData.landArea} onChange={(e) => setFormData(prev => ({ ...prev, landArea: e.target.value }))} />
+              </div>
+            </div>
+
+            {/* Cômodos e Estrutura Completa */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(105px, 1fr))', gap: '0.75rem', marginBottom: '1rem' }}>
-              <div><label style={labelStyle}>Área Const. (m²)</label><input type="number" className="input-field" placeholder="160" value={formData.area} onChange={(e) => setFormData(prev => ({ ...prev, area: e.target.value }))} /></div>
-              <div><label style={labelStyle}>Terreno (m²)</label><input type="number" className="input-field" placeholder="450" value={formData.landArea} onChange={(e) => setFormData(prev => ({ ...prev, landArea: e.target.value }))} /></div>
               <div><label style={labelStyle}>Quartos</label><input type="number" className="input-field" placeholder="3" value={formData.bedrooms} onChange={(e) => setFormData(prev => ({ ...prev, bedrooms: e.target.value }))} /></div>
               <div><label style={labelStyle}>Suítes</label><input type="number" className="input-field" placeholder="1" value={formData.suites} onChange={(e) => setFormData(prev => ({ ...prev, suites: e.target.value }))} /></div>
               <div><label style={labelStyle}>Banheiros</label><input type="number" className="input-field" placeholder="2" value={formData.bathrooms} onChange={(e) => setFormData(prev => ({ ...prev, bathrooms: e.target.value }))} /></div>
               <div><label style={labelStyle}>Vagas</label><input type="number" className="input-field" placeholder="2" value={formData.garages} onChange={(e) => setFormData(prev => ({ ...prev, garages: e.target.value }))} /></div>
+              <div><label style={labelStyle}>Salas</label><input type="number" className="input-field" placeholder="2" value={formData.livingRooms} onChange={(e) => setFormData(prev => ({ ...prev, livingRooms: e.target.value }))} /></div>
+              <div><label style={labelStyle}>Cozinhas</label><input type="number" className="input-field" placeholder="1" value={formData.kitchens} onChange={(e) => setFormData(prev => ({ ...prev, kitchens: e.target.value }))} /></div>
+            </div>
+
+            {/* Depósito e Despensa */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.85rem', marginBottom: '1rem', alignItems: 'center' }}>
+              <div>
+                <label style={labelStyle}>Área de Depósito / Edícula</label>
+                <input 
+                  type="text" className="input-field" placeholder="Ex: 15 m² ou Depósito individual" 
+                  value={formData.storageArea} onChange={(e) => setFormData(prev => ({ ...prev, storageArea: e.target.value }))} 
+                />
+              </div>
+
+              <div>
+                <label style={{ ...labelStyle, visibility: 'hidden' }}>Despensa</label>
+                <label 
+                  htmlFor="chkPantry" 
+                  style={{
+                    display: 'inline-flex', alignItems: 'center', gap: '0.55rem', padding: '0.55rem 0.85rem',
+                    backgroundColor: formData.hasPantry ? 'var(--bg-subtle)' : 'var(--bg-subtle)',
+                    border: '1px solid var(--border-subtle)',
+                    borderRadius: 'var(--radius-xs)', cursor: 'pointer', fontSize: '0.84rem',
+                    fontWeight: 700, color: 'var(--primary-dark)', width: '100%'
+                  }}
+                >
+                  <input 
+                    type="checkbox" id="chkPantry" checked={formData.hasPantry}
+                    onChange={(e) => setFormData(prev => ({ ...prev, hasPantry: e.target.checked }))}
+                    style={{ width: '16px', height: '16px', cursor: 'pointer', accentColor: 'var(--primary-dark)' }}
+                  />
+                  <span>Possui Despensa</span>
+                </label>
+              </div>
             </div>
 
             <div style={{ marginBottom: '1rem' }}>
@@ -448,11 +604,11 @@ export default function PropertyFormModal({ isOpen, onClose, onSave, editingProp
               />
             </div>
 
-            {/* Comodidades em Chips Simples de 1 Clique + Exclusão em 2 Cliques no X */}
+            {/* Comodidades em Chips */}
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem', flexWrap: 'wrap', gap: '0.5rem' }}>
                 <label style={{ ...labelStyle, marginBottom: 0 }}>
-                  Comodidades <span style={{ fontWeight: 500, color: 'var(--text-muted)' }}>(clique para marcar · clique 2x no × para excluir da lista)</span>
+                  Comodidades <span style={{ fontWeight: 500, color: 'var(--text-muted)' }}>(clique para marcar)</span>
                 </label>
                 <button
                   type="button"
@@ -525,9 +681,14 @@ export default function PropertyFormModal({ isOpen, onClose, onSave, editingProp
             </div>
           </div>
 
-          {/* BLOCO 3 — FOTOS E VÍDEO */}
+          {/* BLOCO 3 — FOTOS E VÍDEO (ATÉ 16 FOTOS COM CROP E REORDENAÇÃO) */}
           <div style={{ ...blockBoxStyle, marginBottom: '1rem' }}>
-            <h4 style={blockTitleStyle}>3. Fotos e Vídeo ({images.length}/{MAX_IMAGES} fotos)</h4>
+            <h4 style={blockTitleStyle}>
+              <span>3. Galeria de Fotos e Vídeo ({images.length}/{MAX_IMAGES} fotos)</span>
+              <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)' }}>
+                Fotos Horizontais e Verticais suportadas
+              </span>
+            </h4>
 
             <div style={{ display: 'flex', gap: '0.65rem', flexWrap: 'wrap', alignItems: 'center', marginBottom: '1rem' }}>
               <label className="btn btn-navy btn-sm" style={{ cursor: 'pointer', padding: '0.5rem 0.95rem' }}>
@@ -549,50 +710,101 @@ export default function PropertyFormModal({ isOpen, onClose, onSave, editingProp
             </div>
 
             {images.length > 0 ? (
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(135px, 1fr))', gap: '0.75rem', marginBottom: '1rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '0.85rem', marginBottom: '1rem' }}>
                 {images.map((imgUrl, idx) => (
                   <div 
                     key={idx} 
                     style={{
                       position: 'relative', borderRadius: 'var(--radius-xs)', overflow: 'hidden',
                       border: idx === 0 ? '2px solid var(--primary-dark)' : '1px solid var(--border-subtle)',
-                      backgroundColor: '#FFFFFF'
+                      backgroundColor: '#FFFFFF', boxShadow: 'var(--shadow-sm)'
                     }}
                   >
-                    <img 
-                      src={imgUrl} alt={`Foto ${idx + 1}`} 
-                      style={{ width: '100%', height: '92px', objectFit: 'cover', display: 'block' }}
-                      onError={(e) => { e.target.src = DEFAULT_FALLBACK_IMAGE; }}
-                    />
-                    {idx === 0 && (
-                      <span style={{
-                        position: 'absolute', top: '5px', left: '5px', backgroundColor: 'var(--primary-dark)',
-                        color: '#FFFFFF', fontSize: '0.65rem', fontWeight: 800, padding: '0.15rem 0.45rem',
-                        borderRadius: '4px', textTransform: 'uppercase'
-                      }}>
-                        Capa
-                      </span>
-                    )}
+                    {/* Imagem */}
+                    <div style={{ position: 'relative', height: '110px', backgroundColor: '#0F172A' }}>
+                      <img 
+                        src={imgUrl} alt={`Foto ${idx + 1}`} 
+                        style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
+                        onError={(e) => { e.target.src = DEFAULT_FALLBACK_IMAGE; }}
+                      />
+
+                      {idx === 0 && (
+                        <span style={{
+                          position: 'absolute', top: '6px', left: '6px', backgroundColor: 'var(--primary-dark)',
+                          color: '#FFFFFF', fontSize: '0.65rem', fontWeight: 800, padding: '0.15rem 0.45rem',
+                          borderRadius: '4px', textTransform: 'uppercase', letterSpacing: '0.04em'
+                        }}>
+                          Capa
+                        </span>
+                      )}
+
+                      {/* Botão de Cortar/Editar sobre a imagem */}
+                      <button
+                        type="button"
+                        onClick={() => handleOpenCrop(idx)}
+                        style={{
+                          position: 'absolute', top: '6px', right: '6px',
+                          backgroundColor: 'rgba(15, 23, 42, 0.85)', color: '#FFFFFF',
+                          border: 'none', borderRadius: '4px', padding: '0.25rem 0.45rem',
+                          fontSize: '0.68rem', fontWeight: 700, cursor: 'pointer',
+                          display: 'flex', alignItems: 'center', gap: '0.25rem'
+                        }}
+                        title="Recortar ou girar foto"
+                      >
+                        <Crop size={12} /> Cortar
+                      </button>
+                    </div>
+
+                    {/* Barra de Ações: Reordenar e Excluir */}
                     <div style={{ 
                       display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                       padding: '0.35rem 0.45rem', backgroundColor: '#FFFFFF', borderTop: '1px solid var(--border-subtle)' 
                     }}>
-                      {idx === 0 ? (
-                        <span style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--text-muted)' }}>Foto Principal</span>
-                      ) : (
+                      {/* Mover para esquerda / direita */}
+                      <div style={{ display: 'flex', gap: '0.2rem' }}>
+                        <button
+                          type="button"
+                          onClick={() => moveImage(idx, idx - 1)}
+                          disabled={idx === 0}
+                          style={{
+                            background: 'none', border: 'none', cursor: idx === 0 ? 'not-allowed' : 'pointer',
+                            opacity: idx === 0 ? 0.3 : 1, padding: '0.15rem', color: 'var(--primary-dark)'
+                          }}
+                          title="Mover para frente"
+                        >
+                          <ChevronLeft size={16} />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => moveImage(idx, idx + 1)}
+                          disabled={idx === images.length - 1}
+                          style={{
+                            background: 'none', border: 'none', cursor: idx === images.length - 1 ? 'not-allowed' : 'pointer',
+                            opacity: idx === images.length - 1 ? 0.3 : 1, padding: '0.15rem', color: 'var(--primary-dark)'
+                          }}
+                          title="Mover para trás"
+                        >
+                          <ChevronRight size={16} />
+                        </button>
+                      </div>
+
+                      {/* Definir como Capa */}
+                      {idx !== 0 && (
                         <button 
                           type="button" onClick={() => setPrimaryImage(idx)} 
-                          style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--primary-dark)', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}
+                          style={{ fontSize: '0.68rem', fontWeight: 700, color: 'var(--primary-dark)', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}
                         >
-                          Definir Capa
+                          Capa
                         </button>
                       )}
+
+                      {/* Excluir */}
                       <button 
                         type="button" onClick={() => removeImage(idx)} 
-                        style={{ color: '#991B1B', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+                        style={{ color: '#991B1B', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: '0.15rem' }}
                         title="Remover foto"
                       >
-                        <Trash2 size={14} />
+                        <Trash2 size={13} />
                       </button>
                     </div>
                   </div>
@@ -600,11 +812,11 @@ export default function PropertyFormModal({ isOpen, onClose, onSave, editingProp
               </div>
             ) : (
               <div style={{ 
-                fontSize: '0.82rem', color: 'var(--text-muted)', textAlign: 'center', padding: '1.1rem', 
+                fontSize: '0.82rem', color: 'var(--text-muted)', textAlign: 'center', padding: '1.25rem', 
                 backgroundColor: 'var(--bg-subtle)', borderRadius: 'var(--radius-xs)', marginBottom: '1rem'
               }}>
-                <ImageIcon size={20} style={{ marginBottom: '0.25rem', opacity: 0.6 }} />
-                <div>Nenhuma foto adicionada ainda. As fotos enviadas são otimizadas automaticamente.</div>
+                <ImageIcon size={22} style={{ marginBottom: '0.25rem', opacity: 0.6 }} />
+                <div>Nenhuma foto adicionada ainda. Você pode enviar até 16 fotos horizontais ou verticais.</div>
               </div>
             )}
 
@@ -620,24 +832,37 @@ export default function PropertyFormModal({ isOpen, onClose, onSave, editingProp
               </div>
 
               <div>
-                <label style={labelStyle}>Condomínio (R$)</label>
+                <label style={labelStyle}>Condomínio Mensal (R$)</label>
                 <input type="number" className="input-field" placeholder="0" value={formData.condoFee} onChange={(e) => setFormData(prev => ({ ...prev, condoFee: e.target.value }))} />
               </div>
             </div>
           </div>
 
-          {/* Rodapé de Ações */}
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.65rem', paddingTop: '0.5rem' }}>
-            <button type="button" className="btn btn-outline" onClick={onClose}>
+          {/* Botões do Rodapé */}
+          <div style={{ 
+            display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', 
+            paddingTop: '0.85rem', borderTop: '1px solid var(--border-subtle)' 
+          }}>
+            <button type="button" className="btn btn-outline" onClick={onClose} style={{ padding: '0.65rem 1.25rem' }}>
               Cancelar
             </button>
-            <button type="submit" className="btn btn-navy" disabled={isCompressing} style={{ fontWeight: 700 }}>
+            <button type="submit" className="btn btn-navy" style={{ padding: '0.65rem 1.75rem', fontWeight: 800 }}>
               <Save size={16} /> {editingProperty ? 'Salvar Alterações' : 'Cadastrar Imóvel'}
             </button>
           </div>
 
         </form>
       </div>
+
+      {/* Modal Interativo de Corte / Ajuste de Imagem (Crop) */}
+      {cropModalOpen && croppingImageIndex !== null && (
+        <ImageCropModal
+          isOpen={cropModalOpen}
+          imageUrl={images[croppingImageIndex]}
+          onClose={() => { setCropModalOpen(false); setCroppingImageIndex(null); }}
+          onSave={handleSaveCroppedImage}
+        />
+      )}
     </div>
   );
 }

@@ -10,8 +10,13 @@ export default function PropertyCard({ property, onSelectProperty }) {
     'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800&q=80';
 
   const specs = [];
+  if (property.landDimensions) {
+    specs.push(property.landDimensions);
+  }
   const mainArea = property.area || property.landArea;
-  if (mainArea > 0) {
+  if (mainArea > 0 && !property.landDimensions) {
+    specs.push(`${mainArea} m²`);
+  } else if (mainArea > 0 && property.landDimensions) {
     specs.push(`${mainArea} m²`);
   }
   if (property.bedrooms > 0) {
@@ -217,15 +222,15 @@ export default function PropertyCard({ property, onSelectProperty }) {
             <div
               style={{
                 fontFamily: 'var(--font-heading)',
-                fontSize: '1.22rem',
+                fontSize: (property.hidePrice || !property.price) ? '1.08rem' : '1.22rem',
                 fontWeight: 700,
-                color: 'var(--text-dark)',
+                color: (property.hidePrice || !property.price) ? '#92400E' : 'var(--text-dark)',
                 letterSpacing: '-0.02em',
                 lineHeight: 1.1
               }}
             >
-              {formatMoney(property.price)}
-              {property.purpose === 'aluguel' && (
+              {(property.hidePrice || !property.price) ? 'Sob Consulta' : formatMoney(property.price)}
+              {property.purpose === 'aluguel' && !(property.hidePrice || !property.price) && (
                 <span style={{ fontSize: '0.78rem', fontWeight: 400, color: 'var(--text-muted)' }}>
                   {' '}/mês
                 </span>

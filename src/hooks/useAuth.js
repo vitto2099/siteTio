@@ -37,12 +37,10 @@ export function useAuth(onToast) {
           try { sessionStorage.setItem(AUTH_STORAGE_KEY, safeName); } catch {}
         } else {
           setFirebaseUser(null);
+          setCurrentUser(null);
           try {
-            const savedLocalSession = sessionStorage.getItem(AUTH_STORAGE_KEY);
-            if (!savedLocalSession) setCurrentUser(null);
-          } catch {
-            setCurrentUser(null);
-          }
+            sessionStorage.removeItem(AUTH_STORAGE_KEY);
+          } catch {}
         }
         setIsLoadingAuth(false);
       });

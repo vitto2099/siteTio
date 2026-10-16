@@ -128,9 +128,26 @@ export default function AdminDashboard({
             }}>
               Anderson Kunicki · CRECI-SC 60173 F
             </p>
-            <h2 style={{ fontSize: '1.75rem', color: 'var(--primary-dark)', margin: 0, fontWeight: 800 }}>
-              Painel de Imóveis
-            </h2>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+              <h2 style={{ fontSize: '1.75rem', color: 'var(--primary-dark)', margin: 0, fontWeight: 800 }}>
+                Painel de Imóveis
+              </h2>
+              <span style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.35rem',
+                padding: '0.2rem 0.6rem',
+                borderRadius: '999px',
+                fontSize: '0.74rem',
+                fontWeight: 700,
+                backgroundColor: '#DCFCE7',
+                color: '#166534',
+                border: '1px solid #BBF7D0'
+              }}>
+                <span style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: '#16A34A' }}></span>
+                Nuvem Firebase Conectada
+              </span>
+            </div>
           </div>
 
           {/* Ações do Topo */}
@@ -460,6 +477,11 @@ export default function AdminDashboard({
                             </div>
                             <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>
                               {prop.neighborhood ? `${prop.neighborhood} · ` : ''}{prop.city || 'Itaiópolis - SC'}
+                              {prop.landDimensions && (
+                                <span style={{ marginLeft: '0.35rem', color: 'var(--primary-dark)', fontWeight: 600 }}>
+                                  · {prop.landDimensions}
+                                </span>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -471,8 +493,22 @@ export default function AdminDashboard({
                           {prop.purpose === 'aluguel' ? 'Aluguel' : 'Venda'}
                         </div>
                         <div style={{ fontWeight: 800, color: 'var(--primary-dark)', fontSize: '0.95rem' }}>
-                          {formatMoney(prop.price)}
+                          {prop.price > 0 ? formatMoney(prop.price) : 'Sob Consulta'}
                         </div>
+                        {prop.hidePrice && (
+                          <span style={{
+                            display: 'inline-block',
+                            fontSize: '0.68rem',
+                            fontWeight: 700,
+                            color: '#92400E',
+                            backgroundColor: '#FEF3C7',
+                            padding: '0.1rem 0.4rem',
+                            borderRadius: '4px',
+                            marginTop: '0.2rem'
+                          }}>
+                            Sob Consulta no site
+                          </span>
+                        )}
                       </td>
 
                       {/* Status em 1 clique */}
