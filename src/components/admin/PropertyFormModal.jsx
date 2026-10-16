@@ -56,7 +56,7 @@ function generateNextCode(type, purpose, propertiesList = []) {
   return `${prefix}-${maxNum + 1}`;
 }
 
-function compressImageFile(file, maxDimension = 1280, quality = 0.75) {
+function compressImageFile(file, maxDimension = 1000, quality = 0.65) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onerror = () => reject(new Error('Erro ao ler imagem'));
@@ -80,8 +80,8 @@ function compressImageFile(file, maxDimension = 1280, quality = 0.75) {
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0, width, height);
         let compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
-        if (compressedDataUrl.length > 120000) {
-          compressedDataUrl = canvas.toDataURL('image/jpeg', 0.58);
+        if (compressedDataUrl.length > 55000) {
+          compressedDataUrl = canvas.toDataURL('image/jpeg', 0.50);
         }
         resolve(compressedDataUrl);
       };

@@ -122,7 +122,7 @@ export default function ImageCropModal({ imageUrl, isOpen, onClose, onSave }) {
   const handleApplyCrop = () => {
     if (!canvasRef.current) return;
     // Exportar em alta qualidade compactada JPEG
-    const croppedDataUrl = canvasRef.current.toDataURL('image/jpeg', 0.85);
+    const croppedDataUrl = canvasRef.current.toDataURL('image/jpeg', 0.65);
     onSave(croppedDataUrl);
     onClose();
   };
