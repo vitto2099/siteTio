@@ -4,6 +4,8 @@ import { X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Maximize, Minimize } fro
 export default function FullscreenGalleryModal({ images = [], activeIndex = 0, isOpen, onClose, onIndexChange }) {
   const [currentIndex, setCurrentIndex] = useState(activeIndex);
   const [isZoomed, setIsZoomed] = useState(false);
+  const [touchStartX, setTouchStartX] = useState(null);
+  const [touchEndX, setTouchEndX] = useState(null);
 
   useEffect(() => {
     setCurrentIndex(activeIndex);
@@ -28,6 +30,26 @@ export default function FullscreenGalleryModal({ images = [], activeIndex = 0, i
   }, [isOpen, images.length, currentIndex]);
 
   if (!isOpen || !images.length) return null;
+
+  const handleTouchStart = (e) => {
+    setTouchStartX(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e) => {
+    setTouchEndX(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStartX || !touchEndX) return;
+    const distance = touchStartX - touchEndX;
+    if (distance > 40 && images.length > 1) {
+      handleNext();
+    } else if (distance < -40 && images.length > 1) {
+      handlePrev();
+    }
+    setTouchStartX(null);
+    setTouchEndX(null);
+  };
 
   const handlePrev = (e) => {
     if (e) e.stopPropagation();
@@ -123,6 +145,9 @@ export default function FullscreenGalleryModal({ images = [], activeIndex = 0, i
 
       {/* Imagem Central Maximizado */}
       <div
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
         style={{
           flex: 1,
           display: 'flex',
@@ -130,7 +155,8 @@ export default function FullscreenGalleryModal({ images = [], activeIndex = 0, i
           justifyContent: 'center',
           position: 'relative',
           padding: '0 1rem',
-          overflow: isZoomed ? 'auto' : 'hidden'
+          overflow: isZoomed ? 'auto' : 'hidden',
+          touchAction: 'pan-y'
         }}
       >
         <img

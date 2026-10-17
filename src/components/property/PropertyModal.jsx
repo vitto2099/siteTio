@@ -51,10 +51,32 @@ export default function PropertyModal({ property, onClose }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [copied, setCopied] = useState(false);
   const [isFullscreenOpen, setIsFullscreenOpen] = useState(false);
+  const [touchStartX, setTouchStartX] = useState(null);
+  const [touchEndX, setTouchEndX] = useState(null);
 
   useEffect(() => {
     setActiveIndex(0);
   }, [property?.id, property?.code]);
+
+  const handleTouchStart = (e) => {
+    setTouchStartX(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e) => {
+    setTouchEndX(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStartX || !touchEndX) return;
+    const distance = touchStartX - touchEndX;
+    if (distance > 40 && allImages.length > 1) {
+      handleNextImage();
+    } else if (distance < -40 && allImages.length > 1) {
+      handlePrevImage();
+    }
+    setTouchStartX(null);
+    setTouchEndX(null);
+  };
 
   useEffect(() => {
     if (!property) return;
@@ -324,23 +346,44 @@ export default function PropertyModal({ property, onClose }) {
 
         {/* Corpo da Ficha Técnica */}
         <div className="modal-body-container" style={{ padding: '1.5rem 1.75rem 2rem' }}>
-          {/* Galeria Principal */}
+          {/* Galeria Principal com Suporte a Swipe no Celular */}
           <div
             className="modal-photo-viewer"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
             style={{
               height: '420px',
               borderRadius: 'var(--radius-md)',
               overflow: 'hidden',
               marginBottom: '0.75rem',
               position: 'relative',
-              backgroundColor: '#0F172A'
+              backgroundColor: '#070C18',
+              touchAction: 'pan-y'
             }}
           >
+            {/* Fundo ambiente desfocado para fotos verticais e horizontais preencherem com beleza */}
+            <div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                backgroundImage: `url(${currentImg})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                filter: 'blur(22px) brightness(0.35)',
+                transform: 'scale(1.15)',
+                pointerEvents: 'none'
+              }}
+            />
+
+            {/* Imagem Principal Nítida */}
             <img
               src={currentImg}
               alt={`${property.title} - Foto ${activeIndex + 1}`}
               onClick={() => setIsFullscreenOpen(true)}
               style={{
+                position: 'relative',
+                zIndex: 2,
                 width: '100%',
                 height: '100%',
                 objectFit: 'contain',
@@ -351,7 +394,7 @@ export default function PropertyModal({ property, onClose }) {
                 e.target.src =
                   'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&q=80';
               }}
-              title="Clique para ver em tela cheia"
+              title="Toque para ver em tela cheia"
             />
 
             {/* Botão de Tela Cheia */}
@@ -362,18 +405,19 @@ export default function PropertyModal({ property, onClose }) {
                 position: 'absolute',
                 top: '0.85rem',
                 right: '0.85rem',
-                backgroundColor: 'rgba(15, 23, 42, 0.8)',
+                backgroundColor: 'rgba(15, 23, 42, 0.82)',
                 color: '#FFFFFF',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                borderRadius: '4px',
-                padding: '0.35rem 0.65rem',
+                border: '1px solid rgba(255, 255, 255, 0.25)',
+                borderRadius: '6px',
+                padding: '0.4rem 0.75rem',
                 fontSize: '0.74rem',
                 fontWeight: 700,
                 cursor: 'pointer',
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '0.35rem',
-                zIndex: 5
+                zIndex: 5,
+                backdropFilter: 'blur(6px)'
               }}
               title="Ver em tela cheia"
             >
@@ -382,6 +426,25 @@ export default function PropertyModal({ property, onClose }) {
 
             {allImages.length > 1 && (
               <>
+                {/* Dica visual de deslizar para mobile */}
+                <span
+                  style={{
+                    position: 'absolute',
+                    bottom: '0.75rem',
+                    left: '0.85rem',
+                    backgroundColor: 'rgba(15, 23, 42, 0.75)',
+                    color: '#E2E8F0',
+                    fontSize: '0.7rem',
+                    fontWeight: 600,
+                    padding: '0.22rem 0.6rem',
+                    borderRadius: '4px',
+                    zIndex: 5,
+                    backdropFilter: 'blur(4px)'
+                  }}
+                >
+                  Deslize para o lado
+                </span>
+
                 <button
                   type="button"
                   onClick={handlePrevImage}
@@ -394,14 +457,15 @@ export default function PropertyModal({ property, onClose }) {
                     width: '38px',
                     height: '38px',
                     borderRadius: '50%',
-                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.92)',
                     color: 'var(--text-dark)',
                     display: 'inline-flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     boxShadow: 'var(--shadow-sm)',
                     border: 'none',
-                    cursor: 'pointer'
+                    cursor: 'pointer',
+                    zIndex: 5
                   }}
                 >
                   <ChevronLeft size={18} />
@@ -418,14 +482,15 @@ export default function PropertyModal({ property, onClose }) {
                     width: '38px',
                     height: '38px',
                     borderRadius: '50%',
-                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.92)',
                     color: 'var(--text-dark)',
                     display: 'inline-flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     boxShadow: 'var(--shadow-sm)',
                     border: 'none',
-                    cursor: 'pointer'
+                    cursor: 'pointer',
+                    zIndex: 5
                   }}
                 >
                   <ChevronRight size={18} />
@@ -435,12 +500,14 @@ export default function PropertyModal({ property, onClose }) {
                     position: 'absolute',
                     bottom: '0.75rem',
                     right: '0.85rem',
-                    backgroundColor: 'rgba(15, 23, 42, 0.78)',
+                    backgroundColor: 'rgba(15, 23, 42, 0.82)',
                     color: '#FFFFFF',
                     fontSize: '0.74rem',
-                    fontWeight: 600,
-                    padding: '0.2rem 0.6rem',
-                    borderRadius: '4px'
+                    fontWeight: 700,
+                    padding: '0.22rem 0.65rem',
+                    borderRadius: '4px',
+                    zIndex: 5,
+                    backdropFilter: 'blur(4px)'
                   }}
                 >
                   {activeIndex + 1} / {allImages.length}

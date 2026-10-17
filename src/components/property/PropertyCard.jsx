@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, Camera } from 'lucide-react';
 import { formatMoney } from '../../utils/formatters';
 
 export default function PropertyCard({ property, onSelectProperty }) {
@@ -131,6 +131,29 @@ export default function PropertyCard({ property, onSelectProperty }) {
             </span>
           )}
         </div>
+
+        {/* Indicador de Quantidade de Fotos */}
+        {property.images && property.images.length > 1 && (
+          <span
+            style={{
+              position: 'absolute',
+              bottom: '0.75rem',
+              left: '0.85rem',
+              backgroundColor: 'rgba(15, 23, 42, 0.78)',
+              color: '#FFFFFF',
+              padding: '0.2rem 0.55rem',
+              borderRadius: '4px',
+              fontSize: '0.7rem',
+              fontWeight: 600,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.3rem',
+              backdropFilter: 'blur(4px)'
+            }}
+          >
+            <Camera size={12} /> {property.images.length} fotos
+          </span>
+        )}
 
         {/* Código de Referência Discreto */}
         <span

@@ -462,7 +462,8 @@ input, select, textarea {
     padding: 1rem !important;
   }
   .modal-photo-viewer {
-    height: clamp(210px, 36vh, 290px) !important;
+    height: clamp(270px, 44vh, 400px) !important;
+    border-radius: 8px !important;
   }
   .modal-specs-grid {
     grid-template-columns: repeat(2, 1fr) !important;
