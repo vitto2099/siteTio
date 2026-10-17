@@ -8,10 +8,20 @@ export default function WhatsAppWidget() {
   const [message, setMessage] = useState('');
 
   const handleSend = (customText) => {
-    const textToSend =
+    let textToSend =
       customText ||
       message.trim() ||
       'Olá Anderson! Vim através do site e gostaria de atendimento.';
+
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const imovelRef = urlParams.get('imovel');
+      if (imovelRef) {
+        const directUrl = `${window.location.origin}/?imovel=${encodeURIComponent(imovelRef)}`;
+        textToSend += `\n\nLink do imóvel: ${directUrl}`;
+      }
+    }
+
     window.open(getWhatsAppUrl(textToSend), '_blank');
     setOpen(false);
     setMessage('');

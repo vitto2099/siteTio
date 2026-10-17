@@ -108,13 +108,17 @@ export default function PropertyModal({ property, onClose }) {
   const quickMessages = getQuickMessages(property);
 
   const priceText = property.hidePrice || !property.price ? 'Sob Consulta' : formatMoney(property.price);
+  
+  const directPropertyUrl = typeof window !== 'undefined'
+    ? `${window.location.origin}/?imovel=${encodeURIComponent(refCode)}`
+    : `https://anderson-kunicki.vercel.app/?imovel=${encodeURIComponent(refCode)}`;
 
   const waUrl = getWhatsAppUrl(
-    `Olá Anderson! Gostaria de agendar uma visita ou tirar dúvidas sobre o imóvel "${property.title}" (Ref. ${refCode}) — ${priceText}.`
+    `Olá Anderson! Gostaria de agendar uma visita ou tirar dúvidas sobre o imóvel "${property.title}" (Ref. ${refCode}) — ${priceText}.\n\nLink do imóvel: ${directPropertyUrl}`
   );
 
   const handleQuickMessage = (msg) => {
-    const text = `Olá Anderson! Sobre o imóvel "${property.title}" (Ref. ${refCode}): ${msg}.`;
+    const text = `Olá Anderson! Sobre o imóvel "${property.title}" (Ref. ${refCode}):\n${msg}\n\nLink do imóvel: ${directPropertyUrl}`;
     window.open(getWhatsAppUrl(text), '_blank');
   };
 
