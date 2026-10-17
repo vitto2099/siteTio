@@ -1,39 +1,33 @@
 # Anderson Kunicki - Corretor Imobiliário (CRECI-SC 60173 F)
 
-Plataforma web imobiliária desenvolvida em **React 18** e **Vite 5**, projetada especificamente para o escritório **Anderson Kunicki - Corretor de Imóveis** em Itaiópolis/SC. O sistema combina uma vitrine com **Design Editorial Arquitetônico** e um painel de gestão em tempo real integrado ao **Supabase (PostgreSQL & Realtime)**.
+Plataforma web imobiliária moderna desenvolvida em **React 18** e **Vite 5**, projetada especificamente para o escritório **Anderson Kunicki - Corretor de Imóveis** em Itaiópolis/SC. O sistema une uma vitrine com **Design Editorial Arquitetônico**, experiência mobile fluida com gestos touch e um painel de gestão em tempo real integrado ao **Supabase (PostgreSQL & Realtime)**.
 
 ---
 
-## Diretrizes do Design System Editorial
+## Destaques e Novas Funcionalidades
 
-- **Sobriedade Arquitetônica:** Paleta baseada em tons de pedra quente (`#F8F7F4`), branco puro (`#FFFFFF`), carvão escuro (`#18181B`), azul marinho profundo (`#0F172A`) e carmim sóbrio (`#991B1B`).
-- **Política de Zero Emojis:** Toda a comunicação visual utiliza exclusivamente tipografia estruturada (*Outfit* e *Inter*) e iconografia vetorial linear (*Lucide*), garantindo seriedade institucional.
-- **Foco na Fotografia e Conversão:** Interface limpa, livre de poluição visual, popups intrusivos ou efeitos sonoros automáticos.
+### 1. Migração Completa para o Supabase (Cloud & Realtime)
+- **Persistência Global em Tempo Real:** Banco de dados PostgreSQL gerenciado via Supabase com Row Level Security (RLS) habilitado.
+- **Sincronização Instantânea via WebSockets:** Imóveis cadastrados, editados ou excluídos no desktop sincronizam no mesmo segundo no celular de clientes sem necessidade de recarregar a página.
+- **Zero Restrições de Domínio:** Funciona perfeitamente em `localhost`, na Vercel e em redes móveis sem bloqueios de autorização de navegador.
 
----
+### 2. Experiência Mobile Otimizada (Smartphones & Tablets)
+- **Navegação por Gestos (Swipe Touch):** Deslize para a esquerda ou direita com o polegar para alternar fotos na ficha técnica e no modo tela cheia.
+- **Fundo Ambiente Inteligente (Ambient Backdrop Blur):** Efeito de desfoque suave da própria foto no fundo, preenchendo a tela com elegância e eliminando faixas pretas duras em fotos verticais ou horizontais.
+- **Visualizador Ampliado:** Área de fotos no celular com altura proporcional (`clamp(270px, 44vh, 400px)`), garantindo alta visibilidade dos detalhes arquitetônicos.
+- **Indicador de Galeria nos Cards:** Selo discreto com ícone de câmera indicando a quantidade de fotos cadastradas no imóvel (ex: `16 fotos`).
 
-## As 5 Funções Centrais do Sistema
+### 3. Ficha Técnica Completa e Cadastro Robusto
+- **Até 16 Fotos com Recorte Sob Medida:** Modal de corte interativo integrado para enquadrar fotos perfeitamente.
+- **Rotas e Localização no Google Maps:** Campo de link do Google Maps para o cliente abrir o trajeto até o imóvel com 1 clique.
+- **Especificações Construtivas Detalhadas:** Dimensões do terreno (ex: 12x47m), salas, cozinhas, depósito/edícula, despensa, suítes, banheiros e vagas.
+- **Opção de Valor Sob Consulta:** Flexibilidade para ocultar o valor numérico na vitrine pública e exibir "Sob Consulta".
 
-1. **Vitrine Editorial e Busca Unificada:**
-   - Barra única de pesquisa e filtragem instantânea por finalidade (Venda/Aluguel), categoria (Casa, Terreno, Sítio/Rural, Apartamento, Comercial), ordenação e busca textual por código, rua ou bairro.
-   - Cards com hierarquia clara destacando fotografia, localização, metragem, dormitórios e valor em Reais (R$).
-
-2. **Ficha Técnica Imersiva sem Ruído Visual:**
-   - Modal detalhado com galeria fotográfica interativa (até 16 fotos com corte inteligente), quadro completo de especificações construtivas (área total, área construída, dimensões do terreno, suítes, banheiros, vagas, salas, cozinhas, depósito, despensa) e suporte a vídeo demonstrativo (YouTube/Vimeo) e Google Maps.
-
-3. **Conversão Direta e Contextual via WhatsApp:**
-   - Acionamento direto do WhatsApp do corretor preenchendo automaticamente os dados do imóvel de interesse (título, código de referência e valor).
-   - Botão flutuante silencioso e discreto para atendimento rápido.
-
-4. **Dashboard Simplificado do Corretor:**
-   - Indicadores objetivos de carteira (Total, Disponíveis, Destaques e VGV).
-   - Operação em 1 clique diretamente na listagem para destacar imóvel ou alterar status (Disponível, Vendido, Reservado).
-   - Formulário enxuto com upload de fotos, recorte interativo, reordenação de galeria e exportação/importação de backups JSON.
-
-5. **Sincronização Cloud Supabase e Segurança Blindada:**
-   - Persistência em tempo real via **Supabase PostgreSQL & Realtime** com fallback resiliente em cache local (`localStorage`).
-   - Autenticação criptográfica **SHA-256** com salt, rate-limiting contra tentativas de força bruta e encerramento automático de sessão por inatividade (30 minutos).
-   - Página dedicada de conformidade com a **LGPD** (Política de Privacidade).
+### 4. Segurança e Desempenho
+- **Autenticação Criptográfica SHA-256:** Login seguro com proteção contra força bruta (rate-limiting de 5 tentativas) e encerramento automático de sessão por inatividade.
+- **Sanitização Anti-XSS Rigorosa:** Todos os campos de texto e URLs passam por filtros de segurança antes de serem gravados.
+- **Zero Emojis e Zero Poluição Visual:** Identidade visual sóbria baseada em tipografia editorial (*Outfit* e *Inter*) e ícones vetoriais lineares (*Lucide*).
+- **100% de Testes Automatizados Aprovados:** Suítes completas de usabilidade, design editorial, infraestrutura e segurança.
 
 ---
 
@@ -42,19 +36,19 @@ Plataforma web imobiliária desenvolvida em **React 18** e **Vite 5**, projetada
 ```text
 siteTio/
 ├── public/
-│   ├── .htaccess                     # Regras de roteamento e segurança Apache (Hostinger)
+│   ├── .htaccess                     # Regras de roteamento e segurança Apache
 │   ├── favicon.svg                   # Identidade vetorial oficial
 │   ├── manifest.json                 # Manifesto Web App
-│   ├── robots.txt                    # Diretrizes de indexação
-│   ├── sitemap.xml                   # Mapa XML para motores de busca
+│   ├── robots.txt                    # Diretrizes de indexação para motores de busca
+│   ├── sitemap.xml                   # Mapa XML oficial do site
 │   └── anderson-kunicki.jpg          # Retrato institucional do corretor
 ├── src/
 │   ├── components/
 │   │   ├── admin/                    # Painel Administrativo do Corretor
-│   │   │   ├── AdminDashboard.jsx    # Listagem gerencial e ações em 1 clique
+│   │   │   ├── AdminDashboard.jsx    # Listagem gerencial, métricas e ações rápidas
 │   │   │   ├── AdminLogin.jsx        # Autenticação segura com rate-limit
-│   │   │   ├── ChangePasswordModal.jsx # Alteração de credenciais de acesso
-│   │   │   ├── ImageCropperModal.jsx # Recorte sob medida de fotos
+│   │   │   ├── ChangePasswordModal.jsx # Alteração de senha administrativa
+│   │   │   ├── ImageCropperModal.jsx # Recorte interativo sob medida de fotos
 │   │   │   └── PropertyFormModal.jsx # Cadastro e edição simplificada de imóveis
 │   │   ├── common/                   # Componentes Base
 │   │   │   ├── Toast.jsx             # Notificações discretas de sistema
@@ -64,20 +58,22 @@ siteTio/
 │   │   │   ├── Footer.jsx            # Rodapé com dados do CRECI-SC e links úteis
 │   │   │   └── WhatsAppWidget.jsx    # Atendimento flutuante silencioso
 │   │   ├── property/                 # Domínio da Vitrine Imobiliária
-│   │   │   ├── PropertyCard.jsx      # Card editorial de imóvel
+│   │   │   ├── FullscreenGalleryModal.jsx # Galeria em tela cheia com swipe e zoom
+│   │   │   ├── PropertyCard.jsx      # Card editorial de imóvel com contador de fotos
 │   │   │   ├── PropertyFilters.jsx   # Barra unificada de busca e filtros
-│   │   │   └── PropertyModal.jsx     # Ficha técnica completa e galeria
+│   │   │   └── PropertyModal.jsx     # Ficha técnica completa com swipe touch e mapa
 │   │   └── sections/                 # Seções Institucionais
 │   │       ├── AboutContact.jsx      # Apresentação do corretor, endereço e mapa
 │   │       ├── Hero.jsx              # Abertura editorial e chamada principal
 │   │       └── PrivacyPage.jsx       # Política de Privacidade e LGPD
 │   ├── config/
+│   │   ├── index.js                  # Ponto central de exportação de configurações
 │   │   └── site.config.js            # Parâmetros institucionais, telefone e endereço
 │   ├── data/
-│   │   └── properties.js             # Catálogo semente inicial
+│   │   └── properties.js             # Catálogo de imóveis e utilitários de categorias
 │   ├── hooks/                        # Hooks de Estado e Sincronização
-│   │   ├── useAuth.js                # Controle de sessão e segurança
-│   │   ├── useProperties.js          # CRUD em tempo real no Supabase e filtros
+│   │   ├── useAuth.js                # Controle de sessão e segurança SHA-256
+│   │   ├── useProperties.js          # Sincronização em tempo real via Supabase
 │   │   └── useToast.js               # Gerenciamento de feedbacks visuais
 │   ├── lib/
 │   │   └── supabase.js               # Inicialização do cliente Supabase e Realtime
@@ -89,10 +85,13 @@ siteTio/
 │   ├── App.jsx                       # Orquestração principal de rotas e modais
 │   ├── index.css                     # Tokens e estilos do Design System Editorial
 │   └── main.jsx                      # Inicialização da árvore React
+├── tests/
+│   ├── security.test.mjs             # Testes de criptografia, sanitização e Supabase
+│   └── usability.test.mjs            # Testes de design editorial, UX e regras de negócio
 ├── .env.example                      # Modelo de variáveis de ambiente do Supabase
-├── vercel.json                       # Regras de rewrite SPA e security headers
-├── package.json                      # Dependências e scripts NPM
-└── vite.config.js                    # Configuração de bundler Vite
+├── vercel.json                       # Regras de rewrite SPA e headers de segurança HTTP
+├── package.json                      # Dependências oficiais e scripts de automação
+└── vite.config.js                    # Configuração de bundler Vite e divisão de chunks
 ```
 
 ---
@@ -104,28 +103,32 @@ siteTio/
 npm install
 ```
 
-### 2. Configurar variáveis de ambiente (Supabase)
+### 2. Configurar variáveis de ambiente
 Copie o arquivo `.env.example` para `.env.local` e preencha com as credenciais do seu projeto Supabase:
 ```bash
 cp .env.example .env.local
 ```
 
-### 3. Iniciar o servidor de desenvolvimento
+### 3. Rodar os testes automatizados
+```bash
+npm test
+```
+
+### 4. Iniciar o servidor de desenvolvimento
 ```bash
 npm run dev
 ```
 
-### 4. Gerar build otimizado de produção
+### 5. Gerar build de produção
 ```bash
 npm run build
 ```
 
 ---
 
-## Deploy em Produção (Vercel e Hostinger)
+## Deploy em Produção (Vercel)
 
-### Deploy na Vercel (Recomendado)
-1. Conecte o repositório na **Vercel** ou execute `npx vercel --prod` na raiz do projeto.
+1. Conecte o repositório na **Vercel** ou execute `npx vercel --prod`.
 2. Em **Project Settings > Environment Variables**, adicione:
    - `VITE_SUPABASE_URL`
    - `VITE_SUPABASE_ANON_KEY`
