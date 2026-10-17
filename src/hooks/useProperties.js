@@ -1,17 +1,11 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { INITIAL_PROPERTIES, LEGACY_MOCKUP_IDS, getCategoryPrefix } from '../data/properties';
-import { db, isFirebaseConfigured } from '../lib/firebase';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { sanitizePropertyPayload } from '../utils/security';
-import { collection, onSnapshot, query } from 'firebase/firestore';
-import { 
-  cloudSaveProperty, 
-  cloudDeleteProperty, 
-  cloudFetchProperties 
-} from '../lib/cloudApi';
 
 export const STORAGE_KEY = 'anderson_kunicki_properties_v3';
 export const INITIALIZED_KEY = 'anderson_kunicki_db_initialized_v3';
-const COLLECTION_NAME = 'properties';
+const TABLE_NAME = 'properties';
 
 // Normaliza codigos legados e remove mockups antigos descartados
 function normalizePropertyCodes(list) {
@@ -30,6 +24,15 @@ function normalizePropertyCodes(list) {
     });
 
   return cleaned;
+}
+
+// Converte registro do Supabase para o formato do imóvel
+function mapSupabaseRow(row) {
+  if (!row) return null;
+  if (row.data && typeof row.data === 'object') {
+    return { id: row.id, ...row.data };
+  }
+  return row;
 }
 
 export function useProperties(onToast) {
@@ -71,45 +74,75 @@ export function useProperties(onToast) {
     sortBy: 'recente'
   });
 
-  // Listener em tempo real do Firestore com contingência REST
+  const saveLocalBackup = useCallback((updatedProps) => {
+    setProperties(updatedProps);
+    try {
+      localStorage.setItem(INITIALIZED_KEY, 'true');
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedProps));
+    } catch (err) {
+      console.warn('Limite de armazenamento local atingido:', err);
+    }
+  }, []);
+
+  // Sincronização em tempo real com o Supabase
   useEffect(() => {
     let isMounted = true;
 
-    if (isFirebaseConfigured && db) {
+    if (isSupabaseConfigured && supabase) {
+      // 1. Carregar registros iniciais do Supabase
+      const fetchFromSupabase = async () => {
+        try {
+          const { data, error } = await supabase
+            .from(TABLE_NAME)
+            .select('*')
+            .order('updated_at', { ascending: false });
+
+          if (!error && Array.isArray(data)) {
+            const mapped = data.map(mapSupabaseRow).filter(Boolean);
+            mapped.sort((a, b) => new Date(b.createdAt || b.updatedAt || 0) - new Date(a.createdAt || a.updatedAt || 0));
+            const normalized = normalizePropertyCodes(mapped);
+
+            if (isMounted) {
+              try { localStorage.setItem(INITIALIZED_KEY, 'true'); } catch {}
+              setProperties(normalized);
+              try { localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized)); } catch {}
+            }
+          } else if (error) {
+            console.warn('Erro ao carregar imóveis do Supabase:', error.message);
+          }
+        } catch (err) {
+          console.warn('Falha na conexão com Supabase:', err);
+        }
+      };
+
+      fetchFromSupabase();
+
+      // 2. Ouvir alterações em tempo real (Realtime Channel)
+      let channel;
       try {
-        const q = query(collection(db, COLLECTION_NAME));
-        const unsubscribe = onSnapshot(q, (snapshot) => {
-          const fetched = [];
-          snapshot.forEach((docSnap) => {
-            fetched.push({ id: docSnap.id, ...docSnap.data() });
-          });
-          
-          fetched.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
-          const normalized = normalizePropertyCodes(fetched);
-
-          if (isMounted) {
-            try { localStorage.setItem(INITIALIZED_KEY, 'true'); } catch {}
-            setProperties(normalized);
-            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized)); } catch {}
-          }
-        }, async (error) => {
-          console.warn('Listener Firestore restrito, sincronizando via REST API:', error);
-          const restData = await cloudFetchProperties();
-          if (isMounted && Array.isArray(restData)) {
-            const normalized = normalizePropertyCodes(restData);
-            setProperties(normalized);
-            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized)); } catch {}
-          }
-        });
-
-        return () => {
-          isMounted = false;
-          unsubscribe();
-        };
+        channel = supabase
+          .channel('public:properties')
+          .on(
+            'postgres_changes',
+            { event: '*', schema: 'public', table: TABLE_NAME },
+            () => {
+              // Ao receber qualquer evento (INSERT, UPDATE, DELETE), recarregar para manter consistência
+              fetchFromSupabase();
+            }
+          )
+          .subscribe();
       } catch (err) {
-        console.warn('Falha ao inicializar listener do Firestore:', err);
+        console.warn('Falha ao assinar canal Realtime do Supabase:', err);
       }
+
+      return () => {
+        isMounted = false;
+        if (channel && supabase) {
+          supabase.removeChannel(channel);
+        }
+      };
     } else {
+      // Fallback: carregar dados locais se Supabase não estiver configurado
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored !== null) {
         try {
@@ -122,17 +155,7 @@ export function useProperties(onToast) {
     }
   }, []);
 
-  const saveLocalBackup = useCallback((updatedProps) => {
-    setProperties(updatedProps);
-    try {
-      localStorage.setItem(INITIALIZED_KEY, 'true');
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedProps));
-    } catch (err) {
-      console.warn('Limite de armazenamento local atingido:', err);
-    }
-  }, []);
-
-  // CRUD com Publicação Online Direta na Nuvem
+  // CRUD com Publicação Online Direta no Supabase
   const saveProperty = useCallback(async (formData, editId) => {
     const targetId = editId || `prop-${Date.now()}`;
     const sanitized = sanitizePropertyPayload(formData);
@@ -157,12 +180,22 @@ export function useProperties(onToast) {
     }
     saveLocalBackup(updated);
 
-    // 2. Salvar na nuvem online de forma infalível
-    try {
-      await cloudSaveProperty(targetId, payload);
-      if (onToast) onToast(editId ? 'Imóvel atualizado na nuvem online!' : 'Novo imóvel publicado online!');
-    } catch (err) {
-      console.error('Erro ao salvar na nuvem:', err);
+    // 2. Salvar na nuvem Supabase se configurado
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { error } = await supabase.from(TABLE_NAME).upsert({
+          id: targetId,
+          data: payload,
+          updated_at: new Date().toISOString()
+        });
+
+        if (error) throw error;
+        if (onToast) onToast(editId ? 'Imóvel atualizado na nuvem (Supabase)!' : 'Novo imóvel publicado online!');
+      } catch (err) {
+        console.error('Erro ao salvar no Supabase:', err);
+        if (onToast) onToast(editId ? 'Imóvel atualizado localmente.' : 'Novo imóvel salvo localmente.');
+      }
+    } else {
       if (onToast) onToast(editId ? 'Imóvel atualizado localmente.' : 'Novo imóvel salvo localmente.');
     }
   }, [properties, saveLocalBackup, onToast]);
@@ -176,12 +209,17 @@ export function useProperties(onToast) {
     const updated = properties.filter(p => p.id !== id);
     saveLocalBackup(updated);
 
-    // 2. Excluir na nuvem online
-    try {
-      await cloudDeleteProperty(id);
-      if (onToast) onToast('Anúncio excluído da nuvem com sucesso.');
-    } catch (err) {
-      console.error('Erro ao excluir na nuvem:', err);
+    // 2. Excluir no Supabase
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { error } = await supabase.from(TABLE_NAME).delete().eq('id', id);
+        if (error) throw error;
+        if (onToast) onToast('Anúncio excluído da nuvem com sucesso.');
+      } catch (err) {
+        console.error('Erro ao excluir no Supabase:', err);
+        if (onToast) onToast('Anúncio excluído localmente.');
+      }
+    } else {
       if (onToast) onToast('Anúncio excluído localmente.');
     }
   }, [properties, saveLocalBackup, onToast]);
@@ -191,14 +229,23 @@ export function useProperties(onToast) {
     if (!target) return;
     const newFeatured = !target.featured;
 
-    const updated = properties.map(p => p.id === id ? { ...p, featured: newFeatured } : p);
+    const updatedPayload = { ...target, featured: newFeatured, updatedAt: new Date().toISOString() };
+    const updated = properties.map(p => p.id === id ? updatedPayload : p);
     saveLocalBackup(updated);
 
-    try {
-      await cloudSaveProperty(id, { ...target, featured: newFeatured });
+    if (isSupabaseConfigured && supabase) {
+      try {
+        await supabase.from(TABLE_NAME).upsert({
+          id,
+          data: updatedPayload,
+          updated_at: new Date().toISOString()
+        });
+        if (onToast) onToast(newFeatured ? 'Imóvel destacado na vitrine!' : 'Destaque removido.');
+      } catch (err) {
+        console.error('Erro ao atualizar destaque no Supabase:', err);
+      }
+    } else {
       if (onToast) onToast(newFeatured ? 'Imóvel destacado na vitrine!' : 'Destaque removido.');
-    } catch (err) {
-      console.error('Erro ao atualizar destaque na nuvem:', err);
     }
   }, [properties, saveLocalBackup, onToast]);
 
@@ -218,25 +265,43 @@ export function useProperties(onToast) {
 
     saveLocalBackup([duplicated, ...properties]);
 
-    try {
-      await cloudSaveProperty(newId, duplicated);
-      if (onToast) onToast(`Imóvel duplicado na nuvem! Código: ${duplicated.code}`);
-    } catch (err) {
-      console.error('Erro ao duplicar na nuvem:', err);
-      if (onToast) onToast(`Imóvel duplicado localmente.`);
+    if (isSupabaseConfigured && supabase) {
+      try {
+        await supabase.from(TABLE_NAME).upsert({
+          id: newId,
+          data: duplicated,
+          updated_at: new Date().toISOString()
+        });
+        if (onToast) onToast(`Imóvel duplicado na nuvem! Código: ${duplicated.code}`);
+      } catch (err) {
+        console.error('Erro ao duplicar no Supabase:', err);
+        if (onToast) onToast(`Imóvel duplicado localmente.`);
+      }
+    } else {
+      if (onToast) onToast(`Imóvel duplicado localmente. Código: ${duplicated.code}`);
     }
   }, [properties, saveLocalBackup, onToast]);
 
   const toggleStatus = useCallback(async (id, newStatus) => {
     const target = properties.find(p => p.id === id);
-    const updated = properties.map(p => p.id === id ? { ...p, status: newStatus } : p);
+    if (!target) return;
+    const updatedPayload = { ...target, status: newStatus, updatedAt: new Date().toISOString() };
+    const updated = properties.map(p => p.id === id ? updatedPayload : p);
     saveLocalBackup(updated);
 
-    try {
-      if (target) await cloudSaveProperty(id, { ...target, status: newStatus });
+    if (isSupabaseConfigured && supabase) {
+      try {
+        await supabase.from(TABLE_NAME).upsert({
+          id,
+          data: updatedPayload,
+          updated_at: new Date().toISOString()
+        });
+        if (onToast) onToast(`Status atualizado para: ${newStatus.toUpperCase()}`);
+      } catch (err) {
+        console.error('Erro ao atualizar status no Supabase:', err);
+      }
+    } else {
       if (onToast) onToast(`Status atualizado para: ${newStatus.toUpperCase()}`);
-    } catch (err) {
-      console.error('Erro ao atualizar status na nuvem:', err);
     }
   }, [properties, saveLocalBackup, onToast]);
 
@@ -249,29 +314,36 @@ export function useProperties(onToast) {
     const updated = properties.filter(p => !ids.includes(p.id));
     saveLocalBackup(updated);
 
-    try {
-      await Promise.all(ids.map(id => cloudDeleteProperty(id)));
-      if (onToast) onToast(`${ids.length} imóvel(is) excluído(s) da nuvem.`);
-    } catch (err) {
-      console.error('Erro ao excluir em lote na nuvem:', err);
+    if (isSupabaseConfigured && supabase) {
+      try {
+        await supabase.from(TABLE_NAME).delete().in('id', ids);
+        if (onToast) onToast(`${ids.length} imóvel(is) excluído(s) da nuvem.`);
+      } catch (err) {
+        console.error('Erro ao excluir em lote no Supabase:', err);
+      }
+    } else {
+      if (onToast) onToast(`${ids.length} imóvel(is) excluído(s) localmente.`);
     }
   }, [properties, saveLocalBackup, onToast]);
 
   const bulkStatusChange = useCallback(async (ids, newStatus) => {
-    const updated = properties.map(p => ids.includes(p.id) ? { ...p, status: newStatus } : p);
+    const updated = properties.map(p => ids.includes(p.id) ? { ...p, status: newStatus, updatedAt: new Date().toISOString() } : p);
     saveLocalBackup(updated);
 
-    try {
-      await Promise.all(
-        ids.map(id => {
-          const prop = properties.find(p => p.id === id);
-          if (prop) return cloudSaveProperty(id, { ...prop, status: newStatus });
-          return Promise.resolve();
-        })
-      );
-      if (onToast) onToast(`Status de ${ids.length} imóvel(is) atualizado na nuvem.`);
-    } catch (err) {
-      console.error('Erro ao atualizar status em lote na nuvem:', err);
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const rows = ids.map(id => {
+          const prop = updated.find(p => p.id === id);
+          return prop ? { id, data: prop, updated_at: new Date().toISOString() } : null;
+        }).filter(Boolean);
+
+        await supabase.from(TABLE_NAME).upsert(rows);
+        if (onToast) onToast(`Status de ${ids.length} imóvel(is) atualizado na nuvem.`);
+      } catch (err) {
+        console.error('Erro ao atualizar status em lote no Supabase:', err);
+      }
+    } else {
+      if (onToast) onToast(`Status de ${ids.length} imóvel(is) atualizado localmente.`);
     }
   }, [properties, saveLocalBackup, onToast]);
 
@@ -306,11 +378,21 @@ export function useProperties(onToast) {
 
           saveLocalBackup(sanitizedList);
 
-          try {
-            await Promise.all(sanitizedList.map(p => cloudSaveProperty(p.id, p)));
-            if (onToast) onToast(`${sanitizedList.length} imóvel(is) publicado(s) online na nuvem!`);
-          } catch (err) {
-            console.error('Erro ao importar na nuvem:', err);
+          if (isSupabaseConfigured && supabase) {
+            try {
+              const rows = sanitizedList.map(p => ({
+                id: p.id,
+                data: p,
+                updated_at: new Date().toISOString()
+              }));
+              const { error } = await supabase.from(TABLE_NAME).upsert(rows);
+              if (error) throw error;
+              if (onToast) onToast(`${sanitizedList.length} imóvel(is) publicado(s) online no Supabase!`);
+            } catch (err) {
+              console.error('Erro ao importar no Supabase:', err);
+              if (onToast) onToast(`${sanitizedList.length} imóvel(is) importado(s) localmente.`);
+            }
+          } else {
             if (onToast) onToast(`${sanitizedList.length} imóvel(is) importado(s) localmente.`);
           }
         } else {

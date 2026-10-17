@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { formatMoney } from '../../utils/formatters';
 import ChangePasswordModal from './ChangePasswordModal';
+import { isSupabaseConfigured } from '../../lib/supabase';
 
 const FALLBACK_IMG = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=200&q=80';
 
@@ -132,21 +133,39 @@ export default function AdminDashboard({
               <h2 style={{ fontSize: '1.75rem', color: 'var(--primary-dark)', margin: 0, fontWeight: 800 }}>
                 Painel de Imóveis
               </h2>
-              <span style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.35rem',
-                padding: '0.2rem 0.6rem',
-                borderRadius: '999px',
-                fontSize: '0.74rem',
-                fontWeight: 700,
-                backgroundColor: '#DCFCE7',
-                color: '#166534',
-                border: '1px solid #BBF7D0'
-              }}>
-                <span style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: '#16A34A' }}></span>
-                Nuvem Firebase Conectada
-              </span>
+              {isSupabaseConfigured ? (
+                <span style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.35rem',
+                  padding: '0.2rem 0.6rem',
+                  borderRadius: '999px',
+                  fontSize: '0.74rem',
+                  fontWeight: 700,
+                  backgroundColor: '#DCFCE7',
+                  color: '#166534',
+                  border: '1px solid #BBF7D0'
+                }}>
+                  <span style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: '#16A34A' }}></span>
+                  Nuvem Supabase Conectada
+                </span>
+              ) : (
+                <span style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.35rem',
+                  padding: '0.2rem 0.6rem',
+                  borderRadius: '999px',
+                  fontSize: '0.74rem',
+                  fontWeight: 700,
+                  backgroundColor: '#FEF3C7',
+                  color: '#92400E',
+                  border: '1px solid #FDE68A'
+                }}>
+                  <span style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: '#D97706' }}></span>
+                  Modo Local (Aguardando Supabase)
+                </span>
+              )}
             </div>
           </div>
 

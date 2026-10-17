@@ -239,18 +239,15 @@ describe('Suite 2: Testes de Seguranca, Anti-XSS, Autenticacao e Infraestrutura'
     });
   });
 
-  describe('Teste 7: Auditoria Estatica de Regras do Firestore (firestore.rules) e Headers HTTP (vercel.json)', () => {
-    it('firestore.rules deve exigir request.auth != null para escrita/exclusao, validar dados e bloquear demais colecoes', () => {
-      const rulesPath = path.join(PROJECT_ROOT, 'firestore.rules');
-      assert.ok(fs.existsSync(rulesPath), 'Arquivo firestore.rules deve existir na raiz do projeto');
+  describe('Teste 7: Auditoria de Configuracao do Supabase (supabase.js) e Headers HTTP (vercel.json)', () => {
+    it('src/lib/supabase.js deve existir e validar URL https e chave anonima com protecao contra strings placeholder', () => {
+      const supabaseLibPath = path.join(PROJECT_ROOT, 'src', 'lib', 'supabase.js');
+      assert.ok(fs.existsSync(supabaseLibPath), 'Arquivo src/lib/supabase.js deve existir');
 
-      const rulesContent = fs.readFileSync(rulesPath, 'utf8');
-      assert.match(rulesContent, /allow\s+create,\s*update:\s*if\s+request\.auth\s*!=\s*null/, 'Escrita deve exigir request.auth != null');
-      assert.match(rulesContent, /request\.resource\.data\.title\s+is\s+string/, 'Deve validar tipo string para title');
-      assert.match(rulesContent, /request\.resource\.data\.price\s+is\s+number/, 'Deve validar tipo number para price');
-      assert.match(rulesContent, /request\.resource\.data\.price\s*>=\s*0/, 'Deve impedir preco negativo nas rules');
-      assert.match(rulesContent, /allow\s+delete:\s*if\s+request\.auth\s*!=\s*null/, 'Exclusao deve exigir request.auth != null');
-      assert.match(rulesContent, /allow\s+read,\s*write:\s*if\s+false/, 'Deve existir bloqueio padrao para demais colecoes');
+      const content = fs.readFileSync(supabaseLibPath, 'utf8');
+      assert.match(content, /createClient/, 'Deve utilizar createClient do @supabase/supabase-js');
+      assert.match(content, /isSupabaseConfigured/, 'Deve exportar flag de validacao isSupabaseConfigured');
+      assert.match(content, /startsWith\('https:\/\/'\)/, 'Deve exigir URL HTTPS');
     });
 
     it('vercel.json deve configurar headers de seguranca HTTP contra sniffing, clickjacking e vazamento de referrer', () => {
@@ -271,12 +268,12 @@ describe('Suite 2: Testes de Seguranca, Anti-XSS, Autenticacao e Infraestrutura'
   });
 
   describe('Teste 8: Varredura de Segredos e Chaves Privadas em src/', () => {
-    it('deve garantir que nenhuma chave privada ou API key real do Google/Firebase foi hardcoded em src/', () => {
+    it('deve garantir que nenhuma chave privada de servico (service_role) ou credencial hardcoded esta presente em src/', () => {
       const files = getAllSourceFiles(SRC_DIR, ['.js', '.jsx']);
       const secretPatterns = [
-        { name: 'Google/Firebase API Key (AIza...)', regex: /AIza[0-9A-Za-z_-]{35}/ },
+        { name: 'Google API Key (AIza...)', regex: /AIza[0-9A-Za-z_-]{35}/ },
         { name: 'Private Key PEM Block', regex: /-----BEGIN (RSA |EC )?PRIVATE KEY-----/ },
-        { name: 'Firebase Service Account client_email', regex: /firebase-adminsdk-[a-z0-9-]+@[a-z0-9-]+\.iam\.gserviceaccount\.com/i }
+        { name: 'Supabase Service Role Key', regex: /service_role/i }
       ];
 
       const leaks = [];
