@@ -2,8 +2,6 @@
 
 Plataforma web imobiliária desenvolvida em **React 18** e **Vite 5**, projetada especificamente para o escritório **Anderson Kunicki - Corretor de Imóveis** em Itaiópolis/SC. O sistema combina uma vitrine com **Design Editorial Arquitetônico** e um painel de gestão em tempo real integrado ao **Supabase (PostgreSQL & Realtime)**.
 
-Para detalhes completos sobre as decisões de produto, requisitos e diretrizes visuais, consulte o documento [ARCHITECTURE.md](./ARCHITECTURE.md).
-
 ---
 
 ## Diretrizes do Design System Editorial
@@ -92,8 +90,6 @@ siteTio/
 │   ├── index.css                     # Tokens e estilos do Design System Editorial
 │   └── main.jsx                      # Inicialização da árvore React
 ├── .env.example                      # Modelo de variáveis de ambiente do Supabase
-├── ARCHITECTURE.md                   # Documentação de Arquitetura, UX e Requisitos
-├── HOSTINGER_DEPLOY.md               # Guia de publicação em servidor Apache/Hostinger
 ├── vercel.json                       # Regras de rewrite SPA e security headers
 ├── package.json                      # Dependências e scripts NPM
 └── vite.config.js                    # Configuração de bundler Vite
