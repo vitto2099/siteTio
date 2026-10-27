@@ -61,24 +61,45 @@ export default function WhatsAppWidget() {
             marginBottom: '0.75rem'
           }}
         >
-          {/* Cabeçalho */}
+          {/* Cabeçalho com Emblema AK Oficial */}
           <div
             style={{
-              backgroundColor: 'var(--primary-dark)',
+              background: 'var(--brand-slate-gradient)',
               color: '#FFFFFF',
-              padding: '1rem 1.15rem',
+              padding: '0.9rem 1.1rem',
+              borderBottom: '3px solid var(--brand-red-top)',
               display: 'flex',
               justifyContent: 'space-between',
-              alignItems: 'center'
+              alignItems: 'center',
+              gap: '0.65rem'
             }}
           >
-            <div>
-              <strong style={{ display: 'block', fontSize: '0.92rem', lineHeight: 1.2 }}>
-                {SITE_CONFIG.brokerName}
-              </strong>
-              <span style={{ fontSize: '0.74rem', color: '#CBD5E1' }}>
-                {SITE_CONFIG.creci} · WhatsApp Direto
-              </span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+              <div
+                style={{
+                  backgroundColor: '#FFFFFF',
+                  borderRadius: '6px',
+                  padding: '0.2rem 0.3rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0
+                }}
+              >
+                <img
+                  src="/logo-icon.png"
+                  alt="AK"
+                  style={{ height: '24px', width: 'auto', display: 'block' }}
+                />
+              </div>
+              <div>
+                <strong style={{ display: 'block', fontSize: '0.92rem', lineHeight: 1.2 }}>
+                  {SITE_CONFIG.brokerName}
+                </strong>
+                <span style={{ fontSize: '0.72rem', color: '#CBD5E1' }}>
+                  {SITE_CONFIG.creci} · WhatsApp Direto
+                </span>
+              </div>
             </div>
             <button
               type="button"
@@ -126,7 +147,7 @@ export default function WhatsAppWidget() {
                     transition: 'var(--transition-fast)'
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = 'var(--primary-dark)';
+                    e.currentTarget.style.borderColor = 'var(--brand-red-solid)';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.borderColor = 'var(--border-subtle)';

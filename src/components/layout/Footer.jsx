@@ -11,9 +11,9 @@ export default function Footer({ setCurrentTab }) {
   return (
     <footer
       style={{
-        backgroundColor: 'var(--primary-dark)',
+        backgroundColor: '#0B0F14',
         color: '#E2E8F0',
-        borderTop: '1px solid #1E293B',
+        borderTop: '4px solid var(--brand-red-solid)',
         marginTop: 'auto'
       }}
     >
@@ -28,31 +28,29 @@ export default function Footer({ setCurrentTab }) {
             borderBottom: '1px solid rgba(255, 255, 255, 0.08)'
           }}
         >
-          {/* Coluna 1: Marca & CRECI */}
+          {/* Coluna 1: Logomarca Oficial & Apresentação */}
           <div>
             <div
               style={{
-                fontFamily: 'var(--font-heading)',
-                fontSize: '1.25rem',
-                fontWeight: 700,
-                color: '#FFFFFF',
-                letterSpacing: '-0.02em',
-                marginBottom: '0.25rem'
+                display: 'inline-block',
+                backgroundColor: '#FFFFFF',
+                padding: '0.85rem 1.15rem',
+                borderRadius: 'var(--radius-sm)',
+                borderBottom: '3px solid var(--brand-red-top)',
+                boxShadow: '0 8px 20px rgba(0, 0, 0, 0.25)',
+                marginBottom: '1rem'
               }}
             >
-              Anderson <span style={{ color: '#D9777F' }}>Kunicki</span>
-            </div>
-            <div
-              style={{
-                fontSize: '0.75rem',
-                color: '#94A3B8',
-                fontWeight: 600,
-                letterSpacing: '0.04em',
-                textTransform: 'uppercase',
-                marginBottom: '0.9rem'
-              }}
-            >
-              Corretor de Imóveis · {SITE_CONFIG.creci}
+              <img
+                src="/logo-full.png"
+                alt="Anderson Kunicki — Corretor de Imóveis — CRECI-SC 60173 F"
+                style={{
+                  height: '78px',
+                  width: 'auto',
+                  objectFit: 'contain',
+                  display: 'block'
+                }}
+              />
             </div>
             <p
               style={{
@@ -72,7 +70,7 @@ export default function Footer({ setCurrentTab }) {
               style={{
                 color: '#FFFFFF',
                 fontSize: '0.88rem',
-                fontWeight: 600,
+                fontWeight: 700,
                 textTransform: 'uppercase',
                 letterSpacing: '0.05em',
                 marginBottom: '1rem'
@@ -154,7 +152,7 @@ export default function Footer({ setCurrentTab }) {
               style={{
                 color: '#FFFFFF',
                 fontSize: '0.88rem',
-                fontWeight: 600,
+                fontWeight: 700,
                 textTransform: 'uppercase',
                 letterSpacing: '0.05em',
                 marginBottom: '1rem'
@@ -175,17 +173,17 @@ export default function Footer({ setCurrentTab }) {
               }}
             >
               <li style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
-                <MapPin size={15} style={{ color: '#94A3B8', flexShrink: 0, marginTop: '3px' }} />
+                <MapPin size={15} style={{ color: '#FF4D4D', flexShrink: 0, marginTop: '3px' }} />
                 <span>{SITE_CONFIG.fullAddress}</span>
               </li>
               <li style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <Phone size={15} style={{ color: '#94A3B8', flexShrink: 0 }} />
+                <Phone size={15} style={{ color: '#FF4D4D', flexShrink: 0 }} />
                 <a href={`tel:${SITE_CONFIG.phoneRaw}`} style={{ color: 'inherit' }}>
                   {SITE_CONFIG.phoneFormatted}
                 </a>
               </li>
               <li style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <Mail size={15} style={{ color: '#94A3B8', flexShrink: 0 }} />
+                <Mail size={15} style={{ color: '#FF4D4D', flexShrink: 0 }} />
                 <a href={`mailto:${SITE_CONFIG.email}`} style={{ color: 'inherit' }}>
                   {SITE_CONFIG.email}
                 </a>

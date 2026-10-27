@@ -1,6 +1,6 @@
 /* ==========================================================================
-   Anderson Kunicki — Consultoria Imobiliária
-   Design System Editorial Arquitetônico
+   Anderson Kunicki — Corretor de Imóveis (CRECI-SC 60173 F)
+   Design System Editorial Arquitetônico + Identidade Visual Oficial AK
    ========================================================================== */
 
 :root {
@@ -17,20 +17,34 @@
 
   --accent-red: #8B1E24;
   --accent-red-hover: #70161B;
-  --accent-red-subtle: rgba(139, 30, 36, 0.08);
+  --accent-red-subtle: rgba(190, 10, 15, 0.08);
+
+  /* Identidade Visual Oficial Anderson Kunicki (Vermelho & Grafite Metálico) */
+  --brand-red-top: #E60000;
+  --brand-red-mid: #B80000;
+  --brand-red-bottom: #650000;
+  --brand-red-solid: #C00008;
+  --brand-red-gradient: linear-gradient(180deg, #E30512 0%, #730005 100%);
+  --brand-red-gradient-hover: linear-gradient(180deg, #C8000A 0%, #580003 100%);
+
+  --brand-slate-top: #4E5865;
+  --brand-slate-mid: #232A34;
+  --brand-slate-bottom: #0B0F14;
+  --brand-slate-gradient: linear-gradient(180deg, #3D4652 0%, #0D1217 100%);
+  --brand-slate-gradient-hover: linear-gradient(180deg, #4E5865 0%, #151C24 100%);
 
   --gold-primary: #B45309;
   --gold-light: #FEF3C7;
   --gold-subtle: rgba(180, 83, 9, 0.1);
 
-  --text-dark: #111827;
-  --text-body: #4B5563;
-  --text-muted: #6B7280;
+  --text-dark: #0F141A;
+  --text-body: #374151;
+  --text-muted: #64748B;
   --text-light: #9CA3AF;
   --text-white: #FFFFFF;
 
   --border-subtle: #E5E4DF;
-  --border-medium: #D4D2CA;
+  --border-medium: #CBD5E1;
   --border-focus: #0F172A;
 
   /* Sombras Sutis e Arquitetônicas */
@@ -117,6 +131,14 @@ input, select, textarea {
   padding: 0 1.5rem;
 }
 
+/* Linha cônica oficial da marca Anderson Kunicki */
+.brand-tapered-line {
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, transparent 0%, #3D4652 22%, #0B0F14 50%, #3D4652 78%, transparent 100%);
+  clip-path: polygon(0 50%, 50% 0, 100% 50%, 50% 100%);
+}
+
 /* Scrollbar Discreta */
 ::-webkit-scrollbar {
   width: 8px;
@@ -146,7 +168,7 @@ input, select, textarea {
 }
 
 /* ==========================================================================
-   Botões Editoriais
+   Botões Editoriais com Identidade Visual AK
    ========================================================================== */
 .btn {
   display: inline-flex;
@@ -168,22 +190,24 @@ input, select, textarea {
 }
 
 .btn-navy {
-  background-color: var(--primary-dark);
+  background: var(--brand-slate-gradient);
   color: #FFFFFF;
+  box-shadow: 0 2px 6px rgba(11, 15, 20, 0.18);
 }
 
 .btn-navy:hover {
-  background-color: var(--primary-navy);
+  background: var(--brand-slate-gradient-hover);
   color: #FFFFFF;
 }
 
 .btn-red {
-  background-color: var(--accent-red);
+  background: var(--brand-red-gradient);
   color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(184, 0, 0, 0.24);
 }
 
 .btn-red:hover {
-  background-color: var(--accent-red-hover);
+  background: var(--brand-red-gradient-hover);
   color: #FFFFFF;
 }
 
@@ -194,8 +218,9 @@ input, select, textarea {
 }
 
 .btn-outline:hover {
-  border-color: var(--primary-dark);
-  background-color: var(--bg-main);
+  border-color: var(--brand-red-solid);
+  color: var(--brand-red-solid);
+  background-color: #FFF8F8;
 }
 
 .btn-whatsapp {
@@ -215,7 +240,7 @@ input, select, textarea {
 }
 
 /* ==========================================================================
-   Badges Sóbrias
+   Badges Sóbrias com Identidade AK
    ========================================================================== */
 .badge {
   display: inline-flex;
@@ -229,7 +254,7 @@ input, select, textarea {
 }
 
 .badge-venda {
-  background: var(--primary-dark);
+  background: var(--brand-slate-gradient);
   color: #FFFFFF;
 }
 
@@ -239,9 +264,8 @@ input, select, textarea {
 }
 
 .badge-featured {
-  background: #F5EFE6;
-  color: #8B1E24;
-  border: 1px solid #E6D8C5;
+  background: var(--brand-red-gradient);
+  color: #FFFFFF;
 }
 
 .badge-sold {
@@ -256,7 +280,7 @@ input, select, textarea {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.6);
+  background: rgba(11, 15, 20, 0.68);
   backdrop-filter: blur(4px);
   z-index: 2000;
   display: flex;
@@ -290,8 +314,8 @@ input, select, textarea {
 
 .input-field:focus {
   outline: none;
-  border-color: var(--primary-dark);
-  box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.08);
+  border-color: var(--brand-red-solid);
+  box-shadow: 0 0 0 2px rgba(192, 0, 8, 0.1);
 }
 
 /* ==========================================================================
@@ -310,7 +334,7 @@ input, select, textarea {
 .property-card:hover {
   transform: translateY(-3px);
   box-shadow: var(--shadow-md);
-  border-color: var(--border-medium);
+  border-color: rgba(192, 0, 8, 0.35);
 }
 
 .property-card .property-card-img {
@@ -319,6 +343,23 @@ input, select, textarea {
 
 .property-card:hover .property-card-img {
   transform: scale(1.03);
+}
+
+/* ==========================================================================
+   Hero Grid Responsivo
+   ========================================================================== */
+.hero-brand-grid {
+  display: grid;
+  grid-template-columns: 1.35fr 0.85fr;
+  gap: 2.5rem;
+  align-items: center;
+}
+
+@media (max-width: 920px) {
+  .hero-brand-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
 }
 
 /* ==========================================================================
@@ -351,12 +392,12 @@ input, select, textarea {
   bottom: 2rem;
   left: 2rem;
   z-index: 3000;
-  background-color: var(--primary-dark);
+  background: var(--brand-slate-gradient);
   color: #FFFFFF;
   padding: 0.85rem 1.25rem;
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow-lg);
-  border-left: 3px solid var(--accent-red);
+  border-left: 4px solid var(--brand-red-top);
   font-weight: 500;
   font-size: 0.88rem;
   display: flex;
@@ -371,14 +412,14 @@ input, select, textarea {
   position: fixed;
   top: 0;
   right: -100%;
-  width: 300px;
+  width: 310px;
   height: 100vh;
   background-color: #FFFFFF;
   box-shadow: var(--shadow-lg);
   z-index: 2500;
   display: flex;
   flex-direction: column;
-  padding: 1.75rem 1.5rem;
+  padding: 1.5rem;
   transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -389,7 +430,7 @@ input, select, textarea {
 .mobile-nav-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.45);
+  background: rgba(11, 15, 20, 0.55);
   backdrop-filter: blur(2px);
   z-index: 2400;
   opacity: 0;
@@ -447,6 +488,12 @@ input, select, textarea {
   }
   .header-wa-text {
     display: none !important;
+  }
+  .header-wordmark-img {
+    height: 36px !important;
+  }
+  .header-emblem-img {
+    height: 42px !important;
   }
   .modal-backdrop {
     padding: 0.5rem !important;

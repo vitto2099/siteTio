@@ -102,7 +102,7 @@ export default function PropertyCard({ property, onSelectProperty }) {
         >
           <span
             style={{
-              backgroundColor: 'rgba(15, 23, 42, 0.88)',
+              background: 'var(--brand-slate-gradient)',
               backdropFilter: 'blur(4px)',
               color: '#FFFFFF',
               fontSize: '0.72rem',
@@ -118,13 +118,13 @@ export default function PropertyCard({ property, onSelectProperty }) {
           {property.featured && (
             <span
               style={{
-                backgroundColor: 'rgba(255, 255, 255, 0.94)',
-                color: 'var(--accent-red)',
+                background: 'var(--brand-red-gradient)',
+                color: '#FFFFFF',
                 fontSize: '0.72rem',
-                fontWeight: 600,
+                fontWeight: 700,
                 padding: '0.24rem 0.65rem',
                 borderRadius: 'var(--radius-xs)',
-                border: '1px solid rgba(139, 30, 36, 0.2)'
+                boxShadow: '0 2px 6px rgba(184, 0, 0, 0.25)'
               }}
             >
               Destaque
@@ -139,7 +139,7 @@ export default function PropertyCard({ property, onSelectProperty }) {
               position: 'absolute',
               bottom: '0.75rem',
               left: '0.85rem',
-              backgroundColor: 'rgba(15, 23, 42, 0.78)',
+              backgroundColor: 'rgba(11, 15, 20, 0.82)',
               color: '#FFFFFF',
               padding: '0.2rem 0.55rem',
               borderRadius: '4px',
@@ -161,12 +161,12 @@ export default function PropertyCard({ property, onSelectProperty }) {
             position: 'absolute',
             bottom: '0.75rem',
             right: '0.85rem',
-            backgroundColor: 'rgba(255, 255, 255, 0.92)',
+            backgroundColor: 'rgba(255, 255, 255, 0.94)',
             color: 'var(--text-dark)',
             padding: '0.18rem 0.55rem',
             borderRadius: '4px',
             fontSize: '0.7rem',
-            fontWeight: 600,
+            fontWeight: 700,
             letterSpacing: '0.02em'
           }}
         >
@@ -187,8 +187,8 @@ export default function PropertyCard({ property, onSelectProperty }) {
         <div
           style={{
             fontSize: '0.78rem',
-            fontWeight: 500,
-            color: 'var(--text-muted)',
+            fontWeight: 600,
+            color: 'var(--brand-red-solid)',
             marginBottom: '0.3rem',
             whiteSpace: 'nowrap',
             overflow: 'hidden',
@@ -247,7 +247,7 @@ export default function PropertyCard({ property, onSelectProperty }) {
                 fontFamily: 'var(--font-heading)',
                 fontSize: (property.hidePrice || !property.price) ? '1.08rem' : '1.22rem',
                 fontWeight: 700,
-                color: (property.hidePrice || !property.price) ? '#92400E' : 'var(--text-dark)',
+                color: (property.hidePrice || !property.price) ? 'var(--brand-red-solid)' : 'var(--text-dark)',
                 letterSpacing: '-0.02em',
                 lineHeight: 1.1
               }}
@@ -273,7 +273,7 @@ export default function PropertyCard({ property, onSelectProperty }) {
               gap: '0.3rem',
               fontSize: '0.84rem',
               fontWeight: 600,
-              color: 'var(--primary-dark)',
+              color: 'var(--text-dark)',
               padding: '0.45rem 0.85rem',
               borderRadius: 'var(--radius-xs)',
               backgroundColor: 'var(--bg-main)',
@@ -281,12 +281,12 @@ export default function PropertyCard({ property, onSelectProperty }) {
               transition: 'var(--transition-fast)'
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = 'var(--primary-dark)';
+              e.currentTarget.style.background = 'var(--brand-red-gradient)';
               e.currentTarget.style.color = '#FFFFFF';
-              e.currentTarget.style.borderColor = 'var(--primary-dark)';
+              e.currentTarget.style.borderColor = 'transparent';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'var(--bg-main)';
+              e.currentTarget.style.background = 'var(--bg-main)';
               e.currentTarget.style.color = 'var(--text-dark)';
               e.currentTarget.style.borderColor = 'var(--border-subtle)';
             }}

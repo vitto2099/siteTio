@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import {
   X,
   MapPin,
@@ -735,13 +735,17 @@ export default function PropertyModal({ property, onClose }) {
                 marginBottom: '1.15rem'
               }}
             >
-              <div>
-                <div style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-dark)' }}>
-                  {SITE_CONFIG.brokerName}
-                </div>
-                <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
-                  Corretor de Imóveis · {SITE_CONFIG.creci} · {SITE_CONFIG.phoneDisplay}
-                </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <img
+                  src="/logo-emblem.png"
+                  alt="AK"
+                  style={{ height: '44px', width: 'auto', objectFit: 'contain', flexShrink: 0 }}
+                />
+                <img
+                  src="/logo-wordmark.png"
+                  alt="Anderson Kunicki — Corretor de Imóveis"
+                  style={{ height: '38px', width: 'auto', objectFit: 'contain', display: 'block' }}
+                />
               </div>
 
               <div style={{ display: 'flex', gap: '0.55rem', flexWrap: 'wrap' }}>

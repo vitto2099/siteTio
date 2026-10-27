@@ -33,11 +33,11 @@ export default function Header({ currentTab, setCurrentTab, onOpenAdminModal, cu
           position: 'sticky',
           top: 0,
           zIndex: 1000,
-          backgroundColor: 'rgba(255, 255, 255, 0.94)',
+          backgroundColor: 'rgba(255, 255, 255, 0.98)',
           backdropFilter: 'blur(12px)',
           WebkitBackdropFilter: 'blur(12px)',
-          borderBottom: '1px solid var(--border-subtle)',
-          boxShadow: isScrolled ? '0 4px 18px rgba(15, 23, 42, 0.04)' : 'none',
+          borderBottom: '2px solid rgba(192, 0, 8, 0.16)',
+          boxShadow: isScrolled ? '0 6px 22px rgba(11, 15, 20, 0.08)' : '0 1px 4px rgba(11, 15, 20, 0.03)',
           transition: 'box-shadow 0.25s ease'
         }}
       >
@@ -47,12 +47,12 @@ export default function Header({ currentTab, setCurrentTab, onOpenAdminModal, cu
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            height: isScrolled ? '68px' : '76px',
+            height: isScrolled ? '74px' : '84px',
             transition: 'height 0.22s ease',
             gap: '1.25rem'
           }}
         >
-          {/* Marca Tipográfica Editorial */}
+          {/* Identidade Visual Oficial: Símbolo AK + Letreiro Anderson Kunicki */}
           <a
             href="/"
             onClick={(e) => {
@@ -64,48 +64,36 @@ export default function Header({ currentTab, setCurrentTab, onOpenAdminModal, cu
               alignItems: 'center',
               gap: '0.75rem',
               textDecoration: 'none',
-              minWidth: 0
+              minWidth: 0,
+              padding: '0.25rem 0'
             }}
+            aria-label="Anderson Kunicki — Corretor de Imóveis CRECI-SC 60173 F"
           >
             <img
-              src="/favicon.svg"
-              alt="Anderson Kunicki"
+              src="/logo-emblem.png"
+              alt="Símbolo AK — Anderson Kunicki"
+              className="header-emblem-img"
               style={{
-                width: '36px',
-                height: '36px',
-                borderRadius: '8px',
-                objectFit: 'cover',
+                height: isScrolled ? '48px' : '56px',
+                width: 'auto',
+                objectFit: 'contain',
                 flexShrink: 0,
-                border: '1px solid var(--border-subtle)'
+                transition: 'height 0.22s ease'
               }}
             />
-            <div style={{ minWidth: 0 }}>
-              <div
-                style={{
-                  fontFamily: 'var(--font-heading)',
-                  fontSize: '1.12rem',
-                  fontWeight: 700,
-                  color: 'var(--text-dark)',
-                  letterSpacing: '-0.02em',
-                  lineHeight: 1.15,
-                  whiteSpace: 'nowrap'
-                }}
-              >
-                Anderson <span style={{ color: 'var(--accent-red)' }}>Kunicki</span>
-              </div>
-              <div
-                style={{
-                  fontSize: '0.7rem',
-                  fontWeight: 500,
-                  color: 'var(--text-muted)',
-                  letterSpacing: '0.02em',
-                  whiteSpace: 'nowrap',
-                  marginTop: '0.1rem'
-                }}
-              >
-                Corretor de Imóveis · {SITE_CONFIG.creci}
-              </div>
-            </div>
+            <img
+              src="/logo-wordmark.png"
+              alt="Anderson Kunicki — Corretor de Imóveis — CRECI-SC 60173 F"
+              className="header-wordmark-img"
+              style={{
+                height: isScrolled ? '42px' : '48px',
+                width: 'auto',
+                maxWidth: '230px',
+                objectFit: 'contain',
+                display: 'block',
+                transition: 'height 0.22s ease'
+              }}
+            />
           </a>
 
           {/* Navegação Principal */}
@@ -131,11 +119,11 @@ export default function Header({ currentTab, setCurrentTab, onOpenAdminModal, cu
                         setCurrentTab(item.id);
                       }}
                       style={{
-                        fontSize: '0.92rem',
-                        fontWeight: isActive ? 600 : 500,
-                        color: isActive ? 'var(--text-dark)' : 'var(--text-body)',
-                        padding: '0.35rem 0',
-                        borderBottom: isActive ? '2px solid var(--accent-red)' : '2px solid transparent',
+                        fontSize: '0.94rem',
+                        fontWeight: isActive ? 700 : 600,
+                        color: isActive ? 'var(--brand-red-solid)' : 'var(--text-dark)',
+                        padding: '0.4rem 0',
+                        borderBottom: isActive ? '2.5px solid var(--brand-red-top)' : '2.5px solid transparent',
                         transition: 'var(--transition)'
                       }}
                     >
@@ -164,9 +152,9 @@ export default function Header({ currentTab, setCurrentTab, onOpenAdminModal, cu
               href={waUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn btn-navy btn-sm"
+              className="btn btn-red btn-sm"
               style={{
-                padding: '0.5rem 1rem',
+                padding: '0.55rem 1.05rem',
                 fontWeight: 600,
                 borderRadius: 'var(--radius-sm)'
               }}
@@ -202,31 +190,35 @@ export default function Header({ currentTab, setCurrentTab, onOpenAdminModal, cu
         onClick={() => setMobileOpen(false)}
       />
 
-      {/* Gaveta de Navegação Mobile */}
+      {/* Gaveta de Navegação Mobile com Logomarca Completa */}
       <aside className={`mobile-nav-drawer ${mobileOpen ? 'open' : ''}`}>
         <div
           style={{
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'flex-start',
-            marginBottom: '1.5rem',
-            paddingBottom: '1rem',
+            marginBottom: '1.25rem',
+            paddingBottom: '1.15rem',
             borderBottom: '1px solid var(--border-subtle)'
           }}
         >
-          <div>
-            <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.08rem', fontWeight: 700, color: 'var(--text-dark)' }}>
-              Anderson <span style={{ color: 'var(--accent-red)' }}>Kunicki</span>
-            </div>
-            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>
-              Corretor de Imóveis · {SITE_CONFIG.creci}
-            </div>
+          <div style={{ flex: 1, pr: '0.5rem' }}>
+            <img
+              src="/logo-full.png"
+              alt="Anderson Kunicki — Corretor de Imóveis CRECI-SC 60173 F"
+              style={{
+                height: '86px',
+                width: 'auto',
+                objectFit: 'contain',
+                display: 'block'
+              }}
+            />
             {currentUser && (
               <div
                 style={{
                   fontSize: '0.74rem',
                   color: 'var(--text-body)',
-                  marginTop: '0.4rem',
+                  marginTop: '0.55rem',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '0.3rem'
@@ -261,11 +253,11 @@ export default function Header({ currentTab, setCurrentTab, onOpenAdminModal, cu
                 style={{
                   padding: '0.75rem 0.9rem',
                   borderRadius: 'var(--radius-sm)',
-                  fontWeight: isActive ? 600 : 500,
+                  fontWeight: isActive ? 700 : 500,
                   fontSize: '0.95rem',
-                  backgroundColor: isActive ? 'var(--bg-main)' : 'transparent',
-                  color: isActive ? 'var(--accent-red)' : 'var(--text-dark)',
-                  borderLeft: isActive ? '3px solid var(--accent-red)' : '3px solid transparent'
+                  backgroundColor: isActive ? '#FFF5F5' : 'transparent',
+                  color: isActive ? 'var(--brand-red-solid)' : 'var(--text-dark)',
+                  borderLeft: isActive ? '3px solid var(--brand-red-top)' : '3px solid transparent'
                 }}
               >
                 {item.label}
@@ -288,7 +280,7 @@ export default function Header({ currentTab, setCurrentTab, onOpenAdminModal, cu
             href={waUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="btn btn-navy"
+            className="btn btn-red"
             style={{ width: '100%', justifyContent: 'center' }}
           >
             <WhatsAppIcon size={16} color="#FFFFFF" /> Conversar no WhatsApp

@@ -70,45 +70,45 @@ export default function AdminLogin({ onLogin }) {
         borderRadius: 'var(--radius-md)',
         boxShadow: 'var(--shadow-md)',
         border: '1px solid var(--border-subtle)',
+        borderTop: '4px solid var(--brand-red-top)',
         overflow: 'hidden'
       }}>
         
-        {/* Cabeçalho Sóbrio */}
+        {/* Cabeçalho com Logomarca Oficial */}
         <div style={{
-          backgroundColor: 'var(--primary-dark)',
-          padding: '2rem 1.75rem 1.65rem',
-          color: '#FFFFFF'
+          backgroundColor: '#FFFFFF',
+          padding: '1.75rem 1.75rem 1.25rem',
+          borderBottom: '1px solid var(--border-subtle)',
+          textAlign: 'center'
         }}>
+          <img
+            src="/logo-full.png"
+            alt="Anderson Kunicki — Corretor de Imóveis CRECI-SC 60173 F"
+            style={{
+              height: '92px',
+              width: 'auto',
+              margin: '0 auto 0.85rem',
+              display: 'block',
+              objectFit: 'contain'
+            }}
+          />
+
           <div style={{
             display: 'inline-flex',
             alignItems: 'center',
-            gap: '0.45rem',
-            fontSize: '0.72rem',
+            gap: '0.4rem',
+            fontSize: '0.74rem',
             fontWeight: 700,
-            color: '#94A3B8',
+            color: 'var(--brand-red-solid)',
             textTransform: 'uppercase',
             letterSpacing: '0.06em',
-            marginBottom: '0.4rem'
+            backgroundColor: '#FFF5F5',
+            padding: '0.25rem 0.65rem',
+            borderRadius: '4px',
+            border: '1px solid rgba(192, 0, 8, 0.16)'
           }}>
-            <Lock size={13} /> Área do Corretor
+            <Lock size={12} /> Painel Restrito do Corretor
           </div>
-
-          <h2 style={{
-            fontSize: '1.45rem',
-            fontWeight: 800,
-            margin: '0 0 0.25rem',
-            color: '#FFFFFF'
-          }}>
-            Painel de Imóveis
-          </h2>
-
-          <p style={{
-            fontSize: '0.82rem',
-            color: '#CBD5E1',
-            margin: 0
-          }}>
-            Anderson Kunicki · CRECI-SC 60173 F
-          </p>
         </div>
 
         {/* Formulário */}
@@ -238,7 +238,7 @@ export default function AdminLogin({ onLogin }) {
 
           <button
             type="submit"
-            className="btn btn-navy"
+            className="btn btn-red"
             disabled={isLoading || lockoutTime > 0}
             style={{
               width: '100%',
