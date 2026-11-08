@@ -46,6 +46,9 @@ export default function PropertyCard({ property, onSelectProperty }) {
     ? `${property.neighborhood} · ${cityClean}`
     : cityClean;
 
+  const isContainImage =
+    property.imageFit === 'contain' || coverPhoto.includes('post-anderson-kunicki');
+
   return (
     <article
       className="property-card"
@@ -61,25 +64,41 @@ export default function PropertyCard({ property, onSelectProperty }) {
         cursor: 'pointer'
       }}
     >
-      {/* Imagem em Proporção 16:10 */}
+      {/* Imagem em Proporção 16:10 (ou 4:3 com fundo ambiente para artes verticais) */}
       <div
         style={{
           position: 'relative',
-          aspectRatio: '16 / 10',
+          aspectRatio: isContainImage ? '4 / 3' : '16 / 10',
           width: '100%',
           overflow: 'hidden',
-          backgroundColor: 'var(--bg-subtle)'
+          backgroundColor: isContainImage ? '#070C18' : 'var(--bg-subtle)'
         }}
       >
+        {isContainImage && (
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              backgroundImage: `url(${coverPhoto})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              filter: 'blur(20px) brightness(0.42)',
+              transform: 'scale(1.15)',
+              pointerEvents: 'none'
+            }}
+          />
+        )}
         <img
           src={coverPhoto}
           alt={`${property.title} — ${locationText}`}
           className="property-card-img"
           loading="lazy"
           style={{
+            position: 'relative',
+            zIndex: 1,
             width: '100%',
             height: '100%',
-            objectFit: 'cover',
+            objectFit: isContainImage ? 'contain' : 'cover',
             display: 'block'
           }}
           onError={(e) => {

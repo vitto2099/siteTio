@@ -3,8 +3,8 @@ import { INITIAL_PROPERTIES, LEGACY_MOCKUP_IDS, getCategoryPrefix } from '../dat
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { sanitizePropertyPayload } from '../utils/security';
 
-export const STORAGE_KEY = 'anderson_kunicki_properties_v3';
-export const INITIALIZED_KEY = 'anderson_kunicki_db_initialized_v3';
+export const STORAGE_KEY = 'anderson_kunicki_properties_v4';
+export const INITIALIZED_KEY = 'anderson_kunicki_db_initialized_v4';
 const TABLE_NAME = 'properties';
 
 // Normaliza codigos legados e remove mockups antigos descartados
@@ -40,6 +40,8 @@ export function useProperties(onToast) {
     try {
       localStorage.removeItem('anderson_kunicki_react_properties_v1');
       localStorage.removeItem('anderson_kunicki_react_properties_v2');
+      localStorage.removeItem('anderson_kunicki_properties_v3');
+      localStorage.removeItem('anderson_kunicki_db_initialized_v3');
       
       const stored = localStorage.getItem(STORAGE_KEY);
       const isInitialized = localStorage.getItem(INITIALIZED_KEY);
@@ -47,11 +49,14 @@ export function useProperties(onToast) {
       if (stored !== null) {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed)) {
-          return normalizePropertyCodes(parsed);
+          const cleaned = normalizePropertyCodes(parsed);
+          if (cleaned.length > 0) {
+            return cleaned;
+          }
         }
       }
 
-      if (isInitialized) {
+      if (isInitialized && INITIAL_PROPERTIES.length === 0) {
         return [];
       }
 
@@ -61,7 +66,7 @@ export function useProperties(onToast) {
       } catch {}
       return INITIAL_PROPERTIES;
     } catch {
-      return [];
+      return INITIAL_PROPERTIES;
     }
   });
   
@@ -101,11 +106,23 @@ export function useProperties(onToast) {
             const mapped = data.map(mapSupabaseRow).filter(Boolean);
             mapped.sort((a, b) => new Date(b.createdAt || b.updatedAt || 0) - new Date(a.createdAt || a.updatedAt || 0));
             const normalized = normalizePropertyCodes(mapped);
+            const finalProps = normalized.length > 0 ? normalized : INITIAL_PROPERTIES;
+
+            if (normalized.length === 0 && INITIAL_PROPERTIES.length > 0) {
+              try {
+                const seedRows = INITIAL_PROPERTIES.map(p => ({
+                  id: p.id,
+                  data: p,
+                  updated_at: new Date().toISOString()
+                }));
+                await supabase.from(TABLE_NAME).upsert(seedRows);
+              } catch {}
+            }
 
             if (isMounted) {
               try { localStorage.setItem(INITIALIZED_KEY, 'true'); } catch {}
-              setProperties(normalized);
-              try { localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized)); } catch {}
+              setProperties(finalProps);
+              try { localStorage.setItem(STORAGE_KEY, JSON.stringify(finalProps)); } catch {}
             }
           } else if (error) {
             console.warn('Erro ao carregar imóveis do Supabase:', error.message);
