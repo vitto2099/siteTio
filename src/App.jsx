@@ -7,6 +7,7 @@ import Toast from './components/common/Toast';
 import Hero from './components/sections/Hero';
 import AboutContact from './components/sections/AboutContact';
 import PrivacyPage from './components/sections/PrivacyPage';
+import UpdatesFeed from './components/sections/UpdatesFeed';
 
 import PropertyCard from './components/property/PropertyCard';
 import PropertyFilters from './components/property/PropertyFilters';
@@ -15,10 +16,12 @@ import PropertyModal from './components/property/PropertyModal';
 import AdminDashboard from './components/admin/AdminDashboard';
 import AdminLogin from './components/admin/AdminLogin';
 import PropertyFormModal from './components/admin/PropertyFormModal';
+import PostFormModal from './components/admin/PostFormModal';
 
 import { useToast } from './hooks/useToast';
 import { useAuth } from './hooks/useAuth';
 import { useProperties } from './hooks/useProperties';
+import { usePosts } from './hooks/usePosts';
 
 import { Building } from 'lucide-react';
 import WhatsAppIcon from './components/common/WhatsAppIcon';
@@ -31,6 +34,7 @@ function getTabFromLocation() {
   const route = path || hash;
 
   if (route === 'admin') return 'admin';
+  if (route === 'atualizacoes' || route === 'novidades' || route === 'blog' || route === 'posts') return 'updates';
   if (route === 'sobre' || route === 'contato') return 'about';
   if (route === 'privacidade' || route === 'lgpd' || route === 'termos') return 'privacy';
   return 'home';
@@ -41,9 +45,12 @@ export default function App() {
   const [selectedPropertyModal, setSelectedPropertyModal] = useState(null);
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [editingProperty, setEditingProperty] = useState(null);
+  const [isPostModalOpen, setIsPostModalOpen] = useState(false);
+  const [editingPost, setEditingPost] = useState(null);
 
   const { toastMessage, showToast } = useToast();
   const { currentUser, login, logout, updateUserPassword } = useAuth(showToast);
+  const { posts, savePost, deletePost } = usePosts(showToast);
   const {
     properties,
     filteredProperties,
@@ -74,6 +81,7 @@ export default function App() {
     setCurrentTabState(tabName);
     const pathMap = {
       home: '/',
+      updates: '/atualizacoes',
       about: '/sobre',
       privacy: '/privacidade',
       admin: '/admin'
@@ -125,7 +133,7 @@ export default function App() {
         imovelParam ||
         (hashParam &&
         hashParam.length >= 3 &&
-        !['home', 'sobre', 'contato', 'admin', 'privacidade', 'lgpd', 'termos'].includes(hashParam)
+        !['home', 'atualizacoes', 'novidades', 'blog', 'posts', 'sobre', 'contato', 'admin', 'privacidade', 'lgpd', 'termos'].includes(hashParam)
           ? hashParam
           : null);
 
@@ -160,6 +168,12 @@ export default function App() {
     saveProperty(formData, editId);
     setIsFormModalOpen(false);
     setEditingProperty(null);
+  };
+
+  const handleSavePostForm = (formData, editId) => {
+    savePost(formData, editId);
+    setIsPostModalOpen(false);
+    setEditingPost(null);
   };
 
   return (
@@ -327,6 +341,24 @@ export default function App() {
           </>
         )}
 
+        {currentTab === 'updates' && (
+          <UpdatesFeed
+            posts={posts}
+            properties={properties}
+            currentUser={currentUser}
+            onOpenNewPost={() => {
+              setEditingPost(null);
+              setIsPostModalOpen(true);
+            }}
+            onEditPost={(post) => {
+              setEditingPost(post);
+              setIsPostModalOpen(true);
+            }}
+            onDeletePost={deletePost}
+            onSelectProperty={(p) => handleOpenPropertyModal(p)}
+          />
+        )}
+
         {currentTab === 'about' && <AboutContact />}
 
         {currentTab === 'privacy' && (
@@ -337,6 +369,7 @@ export default function App() {
           (currentUser ? (
             <AdminDashboard
               properties={properties}
+              posts={posts}
               onOpenAddModal={() => {
                 setEditingProperty(null);
                 setIsFormModalOpen(true);
@@ -354,6 +387,16 @@ export default function App() {
               onExportBackup={exportBackupJSON}
               onImportBackup={importBackupJSON}
               onSelectProperty={(p) => handleOpenPropertyModal(p)}
+              onOpenNewPost={() => {
+                setEditingPost(null);
+                setIsPostModalOpen(true);
+              }}
+              onEditPost={(post) => {
+                setEditingPost(post);
+                setIsPostModalOpen(true);
+              }}
+              onDeletePost={deletePost}
+              onGoUpdates={() => setCurrentTab('updates')}
               currentUser={currentUser}
               onLogout={logout}
               onUpdatePassword={updateUserPassword}
@@ -381,6 +424,19 @@ export default function App() {
           }}
           onSave={handleSavePropertyForm}
           editingProperty={editingProperty}
+          properties={properties}
+        />
+      )}
+
+      {isPostModalOpen && (
+        <PostFormModal
+          isOpen={isPostModalOpen}
+          onClose={() => {
+            setIsPostModalOpen(false);
+            setEditingPost(null);
+          }}
+          onSave={handleSavePostForm}
+          editingPost={editingPost}
           properties={properties}
         />
       )}

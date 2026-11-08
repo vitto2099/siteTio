@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { formatMoney } from '../../utils/formatters';
 import ChangePasswordModal from './ChangePasswordModal';
+import AdminPostsSection, { AdminSectionTabs } from './AdminPostsSection';
 import { isSupabaseConfigured } from '../../lib/supabase';
 
 const FALLBACK_IMG = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=200&q=80';
@@ -20,6 +21,7 @@ const TYPE_LABELS = {
 
 export default function AdminDashboard({ 
   properties = [], 
+  posts = [],
   onOpenAddModal, 
   onEditProperty, 
   onDeleteProperty, 
@@ -31,6 +33,10 @@ export default function AdminDashboard({
   onExportBackup,
   onImportBackup,
   onSelectProperty, 
+  onOpenNewPost,
+  onEditPost,
+  onDeletePost,
+  onGoUpdates,
   currentUser, 
   onLogout,
   onUpdatePassword,
@@ -38,6 +44,7 @@ export default function AdminDashboard({
   onToast
 }) {
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('imoveis');
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('todos');
   const [typeFilter, setTypeFilter] = useState('todos');
@@ -131,7 +138,7 @@ export default function AdminDashboard({
             </p>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
               <h2 style={{ fontSize: '1.75rem', color: 'var(--primary-dark)', margin: 0, fontWeight: 800 }}>
-                Painel de Imóveis
+                Painel Administrativo
               </h2>
               {isSupabaseConfigured ? (
                 <span style={{
@@ -171,13 +178,25 @@ export default function AdminDashboard({
 
           {/* Ações do Topo */}
           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
-            <button 
-              className="btn btn-navy" 
-              onClick={onOpenAddModal} 
-              style={{ fontWeight: 700, padding: '0.65rem 1.25rem', fontSize: '0.88rem' }}
-            >
-              <Plus size={17} /> Cadastrar Imóvel
-            </button>
+            {activeSection === 'imoveis' ? (
+              <button 
+                className="btn btn-navy" 
+                onClick={onOpenAddModal} 
+                style={{ fontWeight: 700, padding: '0.65rem 1.25rem', fontSize: '0.88rem' }}
+              >
+                <Plus size={17} /> Cadastrar Imóvel
+              </button>
+            ) : (
+              onOpenNewPost && (
+                <button 
+                  className="btn btn-red" 
+                  onClick={onOpenNewPost} 
+                  style={{ fontWeight: 700, padding: '0.65rem 1.15rem', fontSize: '0.88rem' }}
+                >
+                  <Plus size={17} /> Criar Nova Postagem
+                </button>
+              )
+            )}
 
             {onGoHome && (
               <button 
@@ -280,6 +299,18 @@ export default function AdminDashboard({
           </div>
         </div>
 
+        {/* Seletor Separado: Carteira de Imóveis vs. Mural de Atualizações (Posts) */}
+        <AdminSectionTabs
+          activeSection={activeSection}
+          setActiveSection={setActiveSection}
+          propertiesCount={properties.length}
+          postsCount={posts.length}
+          onOpenAddProperty={onOpenAddModal}
+          onOpenNewPost={onOpenNewPost}
+        />
+
+        {activeSection === 'imoveis' ? (
+          <>
         {/* 4 Cartões de Resumo Minimalistas */}
         <div style={{ 
           display: 'grid', 
@@ -670,6 +701,16 @@ export default function AdminDashboard({
             </table>
           )}
         </div>
+          </>
+        ) : (
+          <AdminPostsSection
+            posts={posts}
+            onOpenNewPost={onOpenNewPost}
+            onEditPost={onEditPost}
+            onDeletePost={onDeletePost}
+            onGoUpdates={onGoUpdates}
+          />
+        )}
 
       </div>
 

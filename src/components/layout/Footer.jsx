@@ -102,6 +102,18 @@ export default function Footer({ setCurrentTab }) {
               </li>
               <li>
                 <a
+                  href="/atualizacoes"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleNav('updates');
+                  }}
+                  style={{ color: '#CBD5E1', fontSize: '0.88rem' }}
+                >
+                  Atualizações e Novidades
+                </a>
+              </li>
+              <li>
+                <a
                   href="/sobre"
                   onClick={(e) => {
                     e.preventDefault();

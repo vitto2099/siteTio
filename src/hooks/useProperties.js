@@ -13,7 +13,14 @@ function normalizePropertyCodes(list) {
   const legacySet = new Set(LEGACY_MOCKUP_IDS);
 
   const cleaned = list
-    .filter(p => p && !p.id?.startsWith('prop-00') && !legacySet.has(p.id))
+    .filter(
+      p =>
+        p &&
+        !p.id?.startsWith('prop-00') &&
+        !p.id?.startsWith('post-') &&
+        p.entityType !== 'post' &&
+        !legacySet.has(p.id)
+    )
     .map(p => {
       if (p.code && p.code.startsWith('AK-')) {
         const num = p.code.replace('AK-', '');

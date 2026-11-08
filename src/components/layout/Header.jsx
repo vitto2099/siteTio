@@ -19,6 +19,7 @@ export default function Header({ currentTab, setCurrentTab, onOpenAdminModal, cu
 
   const baseNavItems = [
     { id: 'home', label: 'Imóveis', path: '/' },
+    { id: 'updates', label: 'Atualizações', path: '/atualizacoes' },
     { id: 'about', label: 'Sobre e Contato', path: '/sobre' }
   ];
 
