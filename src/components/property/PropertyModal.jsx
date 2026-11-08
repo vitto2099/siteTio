@@ -111,7 +111,7 @@ export default function PropertyModal({ property, onClose }) {
   
   const directPropertyUrl = typeof window !== 'undefined'
     ? `${window.location.origin}/?imovel=${encodeURIComponent(refCode)}`
-    : `https://anderson-kunicki.vercel.app/?imovel=${encodeURIComponent(refCode)}`;
+    : `https://andersonkunicki.com.br/?imovel=${encodeURIComponent(refCode)}`;
 
   const waUrl = getWhatsAppUrl(
     `Olá Anderson! Gostaria de agendar uma visita ou tirar dúvidas sobre o imóvel "${property.title}" (Ref. ${refCode}) — ${priceText}.\n\nLink do imóvel: ${directPropertyUrl}`
