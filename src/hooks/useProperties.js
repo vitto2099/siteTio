@@ -51,7 +51,9 @@ export function useProperties(onToast) {
         if (Array.isArray(parsed)) {
           const cleaned = normalizePropertyCodes(parsed);
           if (cleaned.length > 0) {
-            return cleaned;
+            const existingIds = new Set(cleaned.map(p => p.id));
+            const missingInitial = INITIAL_PROPERTIES.filter(p => !existingIds.has(p.id));
+            return [...missingInitial, ...cleaned];
           }
         }
       }
@@ -106,11 +108,13 @@ export function useProperties(onToast) {
             const mapped = data.map(mapSupabaseRow).filter(Boolean);
             mapped.sort((a, b) => new Date(b.createdAt || b.updatedAt || 0) - new Date(a.createdAt || a.updatedAt || 0));
             const normalized = normalizePropertyCodes(mapped);
-            const finalProps = normalized.length > 0 ? normalized : INITIAL_PROPERTIES;
+            const existingIds = new Set(normalized.map(p => p.id));
+            const missingInitial = INITIAL_PROPERTIES.filter(p => !existingIds.has(p.id));
+            const finalProps = normalized.length > 0 ? [...missingInitial, ...normalized] : INITIAL_PROPERTIES;
 
-            if (normalized.length === 0 && INITIAL_PROPERTIES.length > 0) {
+            if (missingInitial.length > 0) {
               try {
-                const seedRows = INITIAL_PROPERTIES.map(p => ({
+                const seedRows = missingInitial.map(p => ({
                   id: p.id,
                   data: p,
                   updated_at: new Date().toISOString()
