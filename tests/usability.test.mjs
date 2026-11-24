@@ -196,4 +196,51 @@ describe('Suite 1: Testes de Usabilidade, Design Editorial e Simplicidade', () =
       }
     });
   });
+
+  describe('Teste 6: Integridade dos Dados Estruturados JSON-LD (index.html)', () => {
+    it('deve possuir JSON-LD valido sem Product incompleto para evitar erros no Search Console', () => {
+      const indexHtmlPath = path.join(PROJECT_ROOT, 'index.html');
+      const htmlContent = fs.readFileSync(indexHtmlPath, 'utf8');
+      const ldJsonMatches = [...htmlContent.matchAll(/<script\s+type="application\/ld\+json">([\s\S]*?)<\/script>/gi)];
+
+      assert.ok(ldJsonMatches.length >= 1, 'Bloco <script type="application/ld+json"> ausente em index.html');
+
+      function collectProductNodes(node, found = []) {
+        if (!node || typeof node !== 'object') return found;
+        if (Array.isArray(node)) {
+          for (const item of node) collectProductNodes(item, found);
+          return found;
+        }
+        const types = Array.isArray(node['@type']) ? node['@type'] : [node['@type']];
+        if (types.includes('Product')) {
+          found.push(node);
+        }
+        for (const value of Object.values(node)) {
+          collectProductNodes(value, found);
+        }
+        return found;
+      }
+
+      for (const match of ldJsonMatches) {
+        const parsed = JSON.parse(match[1]);
+        assert.equal(parsed['@context'], 'https://schema.org');
+        assert.equal(parsed['@type'], 'RealEstateAgent');
+
+        const catalogItems = parsed.hasOfferCatalog?.itemListElement || [];
+        assert.ok(catalogItems.length > 0, 'hasOfferCatalog.itemListElement deve conter itens');
+        for (const entry of catalogItems) {
+          assert.equal(entry.itemOffered?.['@type'], 'Service');
+        }
+
+        const productNodes = collectProductNodes(parsed);
+        for (const product of productNodes) {
+          const hasRequiredSnippetField = Boolean(product.offers || product.review || product.aggregateRating);
+          assert.ok(
+            hasRequiredSnippetField,
+            `Node Product "${product.name || 'sem nome'}" deve especificar offers, review ou aggregateRating`
+          );
+        }
+      }
+    });
+  });
 });
